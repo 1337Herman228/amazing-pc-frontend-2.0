@@ -112,9 +112,6 @@ const initialState = {
             quantity: 1,
         },
     ],
-
-    // loading:false,
-    // error:false,
 };
 
 export const cartSlice = createSlice({
