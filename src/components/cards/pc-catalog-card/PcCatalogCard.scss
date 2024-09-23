@@ -1,0 +1,173 @@
+@use '../../../styles/media' as *;
+@use '../../../styles/mixins' as *;
+@use '../../../styles/variables' as *;
+
+.pc-card-container {
+    transition-duration: 0.3s;
+    border-radius: var(--border-radius-section);
+
+    @include hover{
+         transform: scale(1.02);
+    }
+
+    .pc-card {
+         background-color: var(--tm-color-dark-black-2);
+         border-radius: var(--border-radius-section);
+         padding: 40px;
+         height: 100%;
+
+         &__mark-div {
+              position: relative;
+
+              .pc-card__mark {
+                   position: absolute;
+                   padding-top: 25px;
+                   padding-left: 20px;
+
+                   font-size: 15px;
+                   font-weight: 300;
+                   color: black;
+                   background-color: var(--tm-color-green-lime);
+                   border: none;
+                   border-radius: var(--border-radius-section);
+                   padding: 7px 20px;
+              }
+         }
+
+         &__img {
+              object-fit: contain;
+              width: 100%;
+              height: 400px;
+         }
+
+         &__info {
+              padding-bottom: 5px;
+
+              &-title-and-price {
+                   display: flex;
+                   align-items: center;
+                   justify-content: space-between;
+
+                   .pc-card__info-title {
+                        font-size: 30px;
+                        font-weight: 400;
+                        text-transform: uppercase;
+                   }
+
+                   .pc-card__info-price {
+                        font-size: 18px;
+                        color: var(--tm-color-purpur);
+                        font-weight: 500;
+                   }
+              }
+
+              &-description {
+                   color: var(--tm-color-dark-white);
+                   font-size: 16px;
+                   font-weight: 300;
+              }
+         }
+
+         &__configuration-list {
+              display: flex;
+              flex-direction: column;
+              padding-top: 10px;
+              padding-bottom: 20px;
+              gap: 20px;
+
+              .component {
+                   display: flex;
+                   align-items: center;
+                   gap: 10px;
+
+                   &__img {
+                        filter: invert(1);
+                   }
+
+                   &__name {
+                        font-size: 16px;
+                        font-weight: 300;
+                   }
+              }
+         }
+    }
+
+    .card-buttons {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         gap: 10px;
+         margin-top: -20px;
+
+         &__link {
+              display: flex;
+              font-size: 13px;
+              align-items: center;
+              gap: 5px;
+
+              // &__svg{
+              //      // filter: invert(1);
+              // }
+
+              &__text {
+                   display: flex;
+                   align-items: center;
+
+                   @media (max-width: 1400px) {
+                        display: none;
+                   }
+
+                   @media (max-width: 1250px) {
+                        display: block;
+                   }
+
+                   @media (max-width: 850px) {
+                        display: none;
+                   }
+
+                   @include mobile {
+                        display: block;
+                   }
+
+                   @media (max-width: 460px) {
+                        display: none;
+                   }
+              }
+         }
+
+         &__link--more-info {
+              padding: 10px clamp(15px, 1.5vw, 25px);
+              max-height: 38px;
+              background-color: var(--tm-color-dark-black-2);
+
+              @include hover {
+                   background-color: white;
+              }
+         }
+
+         &__link--more-info-notebook {
+              padding: 15px 100px;
+              max-height: 38px;
+              background-color: var(--tm-color-dark-black-2);
+
+              @include hover {
+                   background-color: white;
+              }
+
+              @include mobile {
+                   padding: 15px min(100px, 20vw);
+              }
+         }
+
+         &__link--configurator {
+              text-transform: uppercase;
+              border-radius: var(--border-radius-section);
+              padding: 7px clamp(15px, 1.5vw, 25px);
+
+              @media (max-width: 1400px) {
+                   max-height: 38px;
+                   padding: 8px;
+              }
+         }
+    }
+}

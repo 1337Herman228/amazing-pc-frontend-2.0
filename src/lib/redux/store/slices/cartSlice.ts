@@ -2,6 +2,10 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
+interface IinitialState {
+
+}
+
 const initialState = {
     items: [
         {
@@ -128,15 +132,17 @@ export const cartSlice = createSlice({
                 (item) => item.id !== action.payload
             );
         },
-        changeItemQuantity: (state, action) => {
-            state.items.find((item) => item.id === action.payload.id).quantity =
-                action.payload.quantity;
-        },
+        // changeItemQuantity: (state, action) => {
+        //     state.items.find((item) => item.id === action.payload.id).quantity =
+        //         action.payload.quantity;
+        // },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { getCartItems, addCartItem, deleteCartItem, changeItemQuantity } =
+export const { getCartItems, addCartItem, deleteCartItem, 
+    // changeItemQuantity 
+} =
     cartSlice.actions;
 
 export default cartSlice.reducer;
