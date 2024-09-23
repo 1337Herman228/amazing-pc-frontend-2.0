@@ -1,0 +1,334 @@
+@use "../../../../styles/media" as *;
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/variables" as *;
+
+.header {
+    position: fixed;
+    height: 70px;
+    width: 100%;
+    z-index: 1100;
+    background-color: var(--tm-color-dark-black);
+    padding: 20px;
+    box-shadow: 0 0.2px 0 var(--tm-color-dark-white);
+    backdrop-filter: blur(10px);
+}
+
+.header__inner {
+    display: grid;
+    grid-template-columns: 180px auto auto;
+    font-size: 16px;
+    // justify-content: center;
+
+    @include tablet {
+        grid-template-columns: 150px auto auto;
+        font-size: 11px;
+        padding-inline: 5px;
+    }
+
+    @include mobile {
+        grid-template-columns: 220px auto;
+        font-size: 10px;
+    }
+
+    .header__logo {
+        display: flex;
+
+        @include tablet {
+            .logo__img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @include mobile {
+            .logo__img {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        .logo__text {
+            font-family: "Permanent Marker";
+            justify-self: center;
+            align-self: center;
+            font-size: 23px;
+            font-weight: 400;
+            color: var(--main-color);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+
+            @include tablet {
+                font-size: 18px;
+            }
+            @include mobile {
+                font-size: 21px;
+            }
+
+            @include hover {
+                color: var(--main-color-accent);
+                transition-duration: var(--transition-duration);
+            }
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: 0;
+        }
+    }
+
+    .header__menu {
+        .header__menu-list {
+            display: flex;
+            align-items: center;
+
+            .header__menu-item {
+                .header__menu-link {
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 5px 11px;
+
+                    @include tablet {
+                        padding: 7px 5px 3px 5px;
+
+                        @include hover {
+                            &::after {
+                                width: 85%;
+                                height: 1px;
+                                color: var(--main-color);
+                            }
+                        }
+                    }
+
+                    @include hover {
+                        &::after {
+                            width: 85%;
+                            color: var(--main-color);
+                        }
+
+                        @include tablet {
+                            &::after {
+                                width: 90%;
+                            }
+                        }
+                    }
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        top: 100%;
+                        left: 50%;
+                        translate: -50%;
+                        width: 0;
+                        height: 2px;
+                        background-color: var(--main-color);
+                        transition-duration: inherit;
+
+                        @include tablet {
+                            height: 1px;
+                        }
+                    }
+                }
+
+                .header__menu-link.current-link {
+                    &::after {
+                        width: 85%;
+                    }
+
+                    @include tablet {
+                        &::after {
+                            width: 90%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // .header__side-button-menu{
+
+    .header__side-button-menu-list {
+        align-self: center;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        position: relative;
+
+        .header__side-button-menu-btn {
+            background-color: transparent;
+            border: 0px solid transparent;
+            cursor: pointer;
+
+            @include tablet {
+                width: 30px;
+            }
+
+            .btn-icon {
+                transition-duration: var(--transition-duration);
+                filter: invert(0%);
+
+                &:hover {
+                    filter: invert(50%);
+                }
+            }
+
+            &.btn--count-mark {
+                position: relative;
+
+                &::after {
+                    content: attr(data-custom);
+                    font-size: 11px;
+                    position: absolute;
+                    bottom: -5px;
+                    right: 0;
+                    padding: 1px 5px;
+                    padding-top: 2px;
+                    background-color: var(--main-color);
+                    border-radius: var(--border-radius);
+
+                    @include tablet {
+                        font-size: 9px;
+                        padding: 0px 5px;
+                        padding-top: 1px;
+                        bottom: -1px;
+                    }
+                }
+            }
+        }
+        // }
+    }
+    // }
+
+    .button__burger-menu {
+        // @include reset-button;
+        @include square(30px);
+
+        padding: 7px;
+        background-color: transparent;
+        color: currentColor;
+        border: 0px solid transparent;
+    }
+
+    .burger-button {
+        position: relative;
+
+        @include hover {
+            filter: invert(50%);
+        }
+
+        &::after {
+            @include abs-center;
+
+            content: "";
+            width: 50%;
+            height: 1.5px;
+            background-color: var(--tm-color-white);
+            border-radius: 5px;
+            box-shadow:
+                0 -6px,
+                0 6px;
+        }
+    }
+}
+
+.mobile-overlay {
+    position: relative;
+    background-color: var(--tm-color-dark-grey) 0.999;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: none;
+    color: var(--tm-color-white);
+
+    backdrop-filter: blur(3px);
+
+    &:after {
+        position: absolute;
+        content: "";
+        background: inherit;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        box-shadow: inset 0 0 0 3000px rgba(31, 30, 30, 0.8);
+        // filter: blur(10px);
+    }
+
+    &:modal {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .cross-button {
+        z-index: 100;
+        position: relative;
+        top: 12.5px;
+        right: 5px;
+
+        @include reset-button;
+        @include square(30px);
+
+        @include hover {
+            filter: invert(50%);
+        }
+
+        &::after,
+        &::before {
+            content: "";
+            position: absolute;
+            background-color: var(--tm-color-white);
+            top: 47%;
+            left: 4.5px;
+            width: 70%;
+            height: 1.5px;
+        }
+        &::after {
+            rotate: -45deg;
+        }
+        &::before {
+            rotate: 45deg;
+        }
+    }
+
+    .mobile-overlay__close-button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__list {
+        @include flex-center;
+
+        flex-direction: column;
+        row-gap: 15px;
+        min-height: 80vh;
+
+        .mobile-overlay__link {
+            z-index: 100;
+            padding: 5px;
+            position: relative;
+
+            @include hover {
+                &::after {
+                    width: 100%;
+                    color: var(--main-color);
+                }
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                translate: -50%;
+                width: 0;
+                height: 1px;
+                background-color: var(--main-color);
+                transition-duration: inherit;
+            }
+        }
+    }
+}

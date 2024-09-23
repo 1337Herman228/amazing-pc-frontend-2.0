@@ -46,8 +46,6 @@ const SignUpPage = () => {
         }
     };
 
-    // if (isLoading) return <div>Loading...</div>;
-
     return (
         <>
             <ConfigProvider
