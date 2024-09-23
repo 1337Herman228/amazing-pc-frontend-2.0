@@ -1,0 +1,104 @@
+@use "../../../styles/mixins" as *;
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 7px;
+
+    &__label {
+        font-size: 16px;
+        color: var(--text-color-grey);
+        padding-bottom: 5px;
+
+        &-text {
+            position: relative;
+
+            &.require {
+                &::after {
+                    content: "*";
+                    font-size: 21px;
+                    position: absolute;
+                    color: var(--main-color);
+                    right: -12px;
+                    top: 0px;
+                    width: 10px;
+                    height: 15px;
+                }
+            }
+        }
+
+        &-password-show-btn {
+            z-index: 2000;
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            right: 1px;
+            top: 7px;
+            @include reset-button;
+            filter: invert(0.7);
+        }
+    }
+
+    .input-wrapper {
+        position: relative;
+
+        &::after {
+            content: url(/correct-icon.svg);
+            zoom: 0.8;
+            position: absolute;
+            right: 25px;
+            top: 15px;
+            font-size: 20px;
+            width: 10px;
+            height: 10px;
+        }
+
+        &.error {
+            &::after {
+                content: url(/warning-icon.svg);
+                zoom: 0.5;
+                position: absolute;
+                right: 50px;
+                top: 20px;
+            }
+        }
+
+        &.no-mark {
+            &::after {
+                content: "";
+            }
+        }
+    }
+
+    &__input {
+        width: 100%;
+        background-color: var(--tm-color-dark-black);
+        border: 1px solid gray;
+        color: var(--text-color-grey);
+        padding: 10px;
+        outline: none;
+        transition-duration: var(--transition-duration);
+        border-radius: 2px;
+
+        @include hover {
+            border: 1px solid var(--main-color);
+        }
+
+        &:focus {
+            border: 1px solid var(--main-color);
+        }
+
+        &.error {
+            border: 1px solid var(--red-error-color);
+        }
+    }
+
+    &__error {
+        padding-block: 3px;
+        font-size: 14px;
+        color: var(--red-error-color);
+        font-weight: 300;
+    }
+}

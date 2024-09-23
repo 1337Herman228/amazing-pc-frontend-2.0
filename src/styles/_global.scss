@@ -1,0 +1,322 @@
+@use "mixins" as *;
+@use "variables" as *;
+@use "media" as *;
+
+:root {
+    --text-main-color: var(--tm-color-white);
+    --background-main-color: var(--tm-color-light-black);
+
+    scrollbar-color: var(--main-color) transparent;
+}
+
+::selection {
+    background-color: var(--main-color); /* Цвет фона выделения */
+    color: var(--configurator-contol-btn-bg-color); /* Цвет текста выделения */
+}
+
+body {
+    @include fluid-text(18, 16);
+
+    font-family: var(--font-family-base);
+    font-weight: 400;
+    line-height: 1.28;
+    color: var(--tm-color-white);
+    background-color: var(--background-main-color);
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a,
+button,
+input,
+textarea,
+svg * {
+    transition-duration: var(--transition-duration);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 500;
+}
+
+h1 {
+    @include fluid-text(60, 43);
+}
+
+h2 {
+    @include fluid-text(50, 36);
+}
+
+h3,
+.h3 {
+    @include fluid-text(30, 26);
+}
+
+h4 {
+    @include fluid-text(20, 18);
+}
+
+hr {
+    border: 0 !important;
+    border-top: 1px solid #2a2a2a !important;
+}
+
+.display-none {
+    display: none !important;
+}
+
+.link-more-details {
+    --linkFontSize: 15px;
+
+    @include reset-link();
+
+    // padding: 15px 60px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 400;
+    color: black;
+    transition-duration: var(--transition-duration);
+
+    background-color: var(--main-color);
+    border-radius: var(--border-radius);
+
+    font-size: var(--linkFontSize);
+
+    &:hover {
+        color: black;
+        background-color: var(--main-color-accent);
+    }
+
+    @include tablet {
+        --linkFontSize: 13px;
+    }
+
+    @include mobile {
+        --linkFontSize: 2.5vw;
+        margin: 7px auto;
+    }
+}
+
+.gray-card {
+    background-color: var(--tm-color-card-black);
+    border-radius: var(--border-radius-section);
+}
+
+.button-transparent-white {
+    text-transform: uppercase;
+    color: white;
+    background-color: transparent;
+    border-radius: var(--border-radius);
+    border: 1px solid white;
+
+    @include hover {
+        color: black;
+        background-color: white;
+    }
+}
+
+.button-gray-no-border {
+    @include flex-center;
+    padding: 14px 40px;
+
+    text-transform: uppercase;
+    color: white;
+    background-color: var(--tm-color-almost-black);
+    border-radius: var(--border-radius);
+    border: none;
+
+    @include hover {
+        color: black;
+        background-color: white;
+    }
+}
+
+.green-circle-bordered-link {
+    text-transform: uppercase;
+    // font-size: 14px;
+    font-weight: 300;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    border-radius: var(--border-radius-section);
+    // padding: 18px 40px;
+
+    @include hover {
+        color: white;
+    }
+}
+
+.green-filled-link {
+    @include flex-center;
+
+    color: black;
+    background-color: var(--main-color);
+    border: none;
+
+    @include hover {
+        background-color: var(--main-color-accent);
+    }
+}
+
+.green-circle-filled-link {
+    @include flex-center;
+    @include square(55px);
+
+    color: black;
+    background-color: var(--main-color);
+    border: none;
+    border-radius: var(--border-radius-circle);
+
+    @include hover {
+        background-color: var(--main-color-accent);
+    }
+}
+
+.green-circle-bordered-button {
+    @include flex-center;
+    @include square(56px);
+
+    color: var(--main-color);
+    background-color: transparent;
+    border: 2px solid var(--main-color);
+    border-radius: var(--border-radius-circle);
+
+    @include hover {
+        background-color: var(--main-color);
+        color: black;
+    }
+
+    &[disabled] {
+        color: var(--tm-color-grey);
+        border-color: var(--tm-color-grey);
+
+        @include hover {
+            background-color: transparent;
+            color: var(--tm-color-grey);
+        }
+    }
+}
+
+.transparent-link-with-border {
+    @include flex-center;
+    background-color: transparent;
+    border: 1px solid var(--tm-color-dark-grey-2);
+    color: white;
+    padding: 8px 12px;
+    font-size: 13px;
+    text-transform: uppercase;
+    transition-duration: var(--transition-duration);
+
+    @include hover {
+        border: 1px solid var(--tm-color-dark-white);
+    }
+}
+
+.main-color-filled-rect-btn {
+    @include reset-button;
+    transition-duration: var(--transition-duration);
+    background-color: var(--main-color);
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-inline: 30px;
+    cursor: pointer;
+
+    @include hover {
+        background-color: var(--main-color-accent);
+    }
+}
+
+.main-color-transparent-rect-btn {
+    @include reset-button;
+    transition-duration: var(--transition-duration);
+    border: 1px solid gray;
+    color: white;
+    background-color: transparent;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding-inline: 30px;
+    cursor: pointer;
+
+    @include hover {
+        border: 1px solid white;
+    }
+}
+
+.mark {
+    font-size: 15px;
+    font-weight: 300;
+    color: black;
+    background-color: white;
+    border: none;
+    border-radius: var(--border-radius-section);
+    padding: 7px 20px;
+}
+
+.mark-bestseller {
+    background-color: var(--tm-color-green-tag);
+}
+.mark-new {
+    background-color: var(--tm-color-violet-tag);
+}
+
+.mark-gray-green {
+    background-color: var(--tm-color-dark-grey-2);
+    color: var(--main-color);
+    border-radius: var(--border-radius-section);
+    font-size: 16px;
+    font-weight: 300;
+    padding: 13px 20px;
+}
+
+.main-color-submit-btn {
+    @include reset-button;
+    cursor: pointer;
+    background-color: var(--main-color);
+    border-radius: 2px;
+    height: 45px;
+    transition-duration: var(--transition-duration);
+
+    @include hover {
+        background-color: var(--main-color-accent);
+    }
+}
+
+.horizontal_centered {
+    display: flex;
+    justify-content: center;
+}
+
+.vertical_centered {
+    display: flex;
+    align-items: center;
+}
+
+.manage-btn {
+    @include reset-button;
+    @include flex-center;
+    cursor: pointer;
+    transition-duration: var(--transition-duration);
+    width: 30px;
+
+    .light-img {
+        filter: invert(0.9);
+    }
+
+    @include hover {
+        .hover-img {
+            transition-duration: var(--transition-duration);
+            filter: invert(0.4);
+        }
+    }
+}
