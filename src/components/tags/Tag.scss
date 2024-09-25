@@ -1,0 +1,18 @@
+.tag {
+    background-color: var(--tm-color-dark-grey);
+    border-radius: var(--border-radius-section);
+    padding: 40px;
+    font-weight: 500;
+
+    &__title {
+        font-size: clamp(15px, 2vw, 18px);
+    }
+
+    &__body {
+        font-size: clamp(15px, 2vw, 32px);
+
+        &-main-value {
+            font-size: clamp(30px, 3.4vw, 64px);
+        }
+    }
+}

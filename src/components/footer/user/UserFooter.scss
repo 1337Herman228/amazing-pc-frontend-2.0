@@ -1,0 +1,90 @@
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/variables" as *;
+
+.footer {
+    margin-top: var(--section-padding-y);
+    background-color: var(--tm-color-dark-black);
+    box-shadow: 0 -0.2px 0 var(--tm-color-dark-white);
+
+    &-list {
+        padding: 40px;
+        display: grid;
+        column-gap: 40px;
+        grid-template-columns: repeat(6, 1fr);
+
+        @include tablet {
+            grid-template-columns: repeat(3, 1fr);
+            row-gap: 30px;
+        }
+
+        @include mobile {
+            grid-template-columns: repeat(2, 1fr);
+            row-gap: 30px;
+        }
+
+        &__item {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+
+            &__title {
+                font-size: 16px;
+            }
+
+            &__body {
+                display: grid;
+                grid-template-rows: auto;
+                row-gap: 10px;
+
+                &__link {
+                    text-wrap: balance;
+                    font-size: 14px;
+                    color: var(--tm-color-light-grey);
+                    font-weight: 300;
+
+                    @include hover {
+                        color: var(--main-color);
+                    }
+                }
+            }
+        }
+    }
+
+    &-social {
+        box-shadow: 0 -0.2px 0 var(--tm-color-dark-white);
+        padding: 15px;
+        padding-left: 40px;
+
+        &__list {
+            display: flex;
+            gap: 20px;
+
+            @include tablet {
+                align-items: center;
+                justify-content: center;
+            }
+
+            &__item {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 5px;
+
+                @include hover {
+                    opacity: 0.7;
+                }
+
+                &__img {
+                    width: 40px;
+                    height: 40px;
+                }
+
+                &__name {
+                    text-transform: uppercase;
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}

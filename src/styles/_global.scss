@@ -71,6 +71,19 @@ hr {
     border-top: 1px solid #2a2a2a !important;
 }
 
+.main-body {
+    --padding-top: 70px;
+
+    padding-top: var(--padding-top);
+
+    @include tablet {
+        --padding-top: 60px;
+    }
+    @include mobile {
+        --padding-top: 70px;
+    }
+}
+
 .display-none {
     display: none !important;
 }

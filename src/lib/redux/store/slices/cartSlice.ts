@@ -1,12 +1,13 @@
 "use client";
 
-import { createSlice } from "@reduxjs/toolkit";
+import { ICartItem, ICartPc } from "@/interfaces/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IinitialState {
-
+interface IInitialState {
+    items: (ICartItem | ICartPc)[];
 }
 
-const initialState = {
+const initialState: IInitialState = {
     items: [
         {
             id: 22,
@@ -129,17 +130,22 @@ export const cartSlice = createSlice({
                 (item) => item.id !== action.payload
             );
         },
-        // changeItemQuantity: (state, action) => {
-        //     state.items.find((item) => item.id === action.payload.id).quantity =
-        //         action.payload.quantity;
-        // },
+        changeItemQuantity: (
+            state,
+            action: PayloadAction<{ id: number; quantity: number }>
+        ) => {
+            const item = state.items.find(
+                (item) => item.id === action.payload.id
+            );
+            if (item !== undefined) {
+                item.quantity = action.payload.quantity;
+            }
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { getCartItems, addCartItem, deleteCartItem, 
-    // changeItemQuantity 
-} =
+export const { getCartItems, addCartItem, deleteCartItem, changeItemQuantity } =
     cartSlice.actions;
 
 export default cartSlice.reducer;

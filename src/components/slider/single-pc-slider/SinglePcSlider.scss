@@ -1,0 +1,62 @@
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/variables" as *;
+
+._slider {
+    display: grid;
+    grid-template-rows: 30% 70%;
+    gap: 10px;
+    height: 275px;
+
+    @include tablet {
+        grid-template-rows: auto;
+    }
+
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        &-info {
+            display: flex;
+        }
+
+        &-controls {
+            display: flex;
+            align-items: center;
+            // justify-content: end;
+            gap: 10px;
+
+            &__btn-left,
+            &__btn-right {
+                @include tablet {
+                    display: none !important;
+                }
+            }
+        }
+    }
+
+    &-body {
+        display: flex;
+        flex-wrap: nowrap;
+        scroll-snap-type: x mandatory;
+        height: 185px;
+
+        @include tablet {
+            height: auto;
+        }
+
+        overflow-x: scroll;
+        gap: 15px;
+
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        &::-moz-scrollbar {
+            display: none;
+        }
+    }
+}

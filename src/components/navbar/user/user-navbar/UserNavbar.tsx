@@ -1,25 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import "./Navbar.scss";
+import "./UserNavbar.scss";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import CartWindow from "./CartWindow";
-import { useSelector } from "react-redux";
+import CartWindow from "@/components/modals/cart-window/CartWindow";
+import { useAppSelector } from "@/lib/redux/store/store";
 
-export default function Navbar() {
+export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
     const [cartProductCount, setCartProductCount] = useState(0);
 
-    const cart_items = useSelector((state) => state.cart);
+    const cart_items = useAppSelector((state) => state.cart);
     useEffect(() => {
         setCartProductCount(cart_items.items?.length);
     }, [cart_items]);
 
     const openModal = () => {
-        const dialog = document.getElementById("mobileOverlay");
-        dialog.showModal();
+        const dialog: any = document.getElementById("mobileOverlay");
+        dialog && dialog.showModal();
     };
 
     const pathname = usePathname();
@@ -27,8 +27,8 @@ export default function Navbar() {
         markCurrentLink(pathname);
     }, [pathname]);
 
-    const markCurrentLink = (currentUrl) => {
-        const links = document.querySelectorAll(".link-to-check");
+    const markCurrentLink = (currentUrl: string | null) => {
+        const links: any = document.querySelectorAll(".link-to-check");
 
         for (var i = 0; i < links.length; i++) {
             links[i].classList.remove("current-link");

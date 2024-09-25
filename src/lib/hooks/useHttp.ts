@@ -1,7 +1,7 @@
-"use client";
+// "use client";
 
-import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
-import { useSession } from "next-auth/react";
+// import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
+// import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 
 interface error {
@@ -10,9 +10,11 @@ interface error {
 }
 
 const useHttp = () => {
-    const { data: session } = useSession();
-    const sessionData: ExtendedSession | null = session;
-    const token = sessionData?.user?.authenticationResponse?.token;
+    // const { data: session } = useSession();
+    // const sessionData: ExtendedSession | null = session;
+    // const token = sessionData?.user?.authenticationResponse?.token;
+
+    // console.log("token", token);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<error | null>(null);
@@ -45,6 +47,7 @@ const useHttp = () => {
 
     const requestJson = useCallback(
         async (
+            token: string,
             url: string,
             method = "GET",
             body = null,
