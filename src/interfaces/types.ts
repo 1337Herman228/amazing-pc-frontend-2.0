@@ -118,3 +118,76 @@ export interface ISingleProductConfigurations {
     description: string;
     slider_images: string[];
 }
+
+export interface IpcCatalog {
+    pcCategories: IpcCategories[];
+    pcModelGroupList: IpcModelGroupList[];
+}
+
+export interface IpcCategories {
+    pcCategoryDescription: string;
+    pcCategoryId: number;
+    pcCategoryName: string;
+}
+
+export interface IpcDesign {
+    description: string;
+    image: string;
+    pcDesignId: number;
+    title: string;
+}
+
+export interface IpcHeader {
+    pcHeaderId: number;
+    description: string;
+    image: string;
+    imageMobile: string;
+}
+
+export interface IpcPerformance {
+    pcPerformanceId: number;
+    description: string;
+    image: string;
+    image2: string;
+    title: string;
+}
+
+export interface IpcPreview {
+    pcPreviewId: number;
+    description: string;
+    mainImage: string;
+    sliderImages: string; //"["/pc/preview/slider-image-1.1","/pc/preview/slider-image-1.2","/pc/preview/slider-image-1.3"]"
+    title: string;
+}
+
+export interface IpcTypes {
+    pcTypeId: number;
+    type: string;
+}
+
+export interface IpcModelGroup {
+    pcModelGroupId: number;
+    modelGroupDescription: string;
+    modelGroupName: string;
+
+    cpuDescription: string;
+    gpuDescription: string;
+    motherboardDescription?: string;
+    psuDescription?: string;
+    ramDescription: string;
+    ssdDescription: string;
+
+    pcCategories: IpcCategories;
+    pcDesigns: IpcDesign;
+    pcHeader: IpcHeader;
+    pcPerformances: IpcPerformance;
+    pcPreview: IpcPreview;
+    pcTypes: IpcTypes;
+}
+
+export interface IpcModelGroupList {
+    configurationsCount: number;
+    image: string;
+    minPrice: number;
+    pcModelGroup: IpcModelGroup;
+}

@@ -6,6 +6,8 @@ import PcCatalog from "@/components/products-catalog/pc-catalog/PcCatalog";
 import useHttp from "@/lib/hooks/useHttp";
 import { useSession } from "next-auth/react";
 import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
+import { IpcCatalog } from "@/interfaces/types";
+import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 
 const gaming_pc_header_info = {
     title: "Игровые компьютеры",
@@ -334,9 +336,9 @@ const GamingPcPage = () => {
     const sessionData: ExtendedSession | null = session;
     const token = sessionData?.user?.authenticationResponse?.token;
 
-    const { requestJson } = useHttp();
+    const { isLoading, error, requestJson } = useHttp();
 
-    const [pcCategories, setPcCategories] = useState([]);
+    const [pcData, setPcData] = useState<IpcCatalog | null>(null);
 
     useEffect(() => {
         fetchPcCategories();
@@ -348,18 +350,20 @@ const GamingPcPage = () => {
                 token,
                 "http://localhost:8080/user/pc-categories"
             );
-            setPcCategories(categories);
+            setPcData(categories);
         }
     };
 
-    console.log("pcCategories", pcCategories);
+    console.log("pcData", pcData);
+
+    if (isLoading || !pcData) return <LoadingPage />;
 
     return (
         <>
             <CatalogHeader header_info={gaming_pc_header_info} />
             <PcCatalog
-                categories={gaming_pc_categories}
-                products_list={gaming_pc}
+                categories={pcData.pcCategories}
+                pcModelGroupList={pcData.pcModelGroupList}
             />
         </>
     );

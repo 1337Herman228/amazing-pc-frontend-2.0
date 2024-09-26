@@ -1,7 +1,3 @@
-// "use client";
-
-// import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
-// import { useSession } from "next-auth/react";
 import { useCallback, useState } from "react";
 
 interface error {
