@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 
 import "./SinglePcPage.scss";
 import Link from "next/link";
 import Tag from "@/components/tags/Tag";
 import { Image } from "antd";
-import { ISingleProductHeader, ISingleProductPc } from "@/interfaces/types";
+import { IPc, ISingleProductPc } from "@/interfaces/types";
 import PcSecondNavbar from "@/components/navbar/user/pc-second-navbar/PcSecondNavbar";
 import SinglePcHeader from "../../headers/single-product-header/single-pc-header/SinglePcHeader";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import SinglePcSlider from "@/components/slider/single-pc-slider/SinglePcSlider";
 import SinglePcConfigCard from "@/components/cards/single-pc-config-card/SinglePcConfigCard";
+import useFetch from "@/lib/hooks/useFetch";
 
 const header_info = [
     {
@@ -208,77 +209,75 @@ const products = [
 
 const os = "Microsoft Windows 11 Home OEM";
 
-const SinglePcPage = ({ product_name }: { product_name: string }) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [headerInfo, setHeaderInfo] = useState<ISingleProductHeader | null>(
-        null
-    );
-    const [productInfo, setProductInfo] = useState<ISingleProductPc | null>(
-        null
-    );
+interface SinglePcPageProps {
+    pcModelGroupName: string;
+}
+
+const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
+    const { getPcByModelGroupName, isLoading } = useFetch();
+
+    console.log("pcModelGroupName", pcModelGroupName);
+
+    const [pc, setPc] = useState<IPc[]>([]);
 
     useEffect(() => {
-        findInfo();
+        fetchPc();
     }, []);
 
-    const findInfo = () => {
-        const header = header_info.find(
-            (item) =>
-                item.title.replace(" ", "-").toLocaleLowerCase() ===
-                product_name
-        );
-        const product = products.find(
-            (item) =>
-                item.name.replace(" ", "-").toLocaleLowerCase() === product_name
-        );
-
-        if (header) setHeaderInfo(header);
-        if (product) setProductInfo(product);
-        setIsLoading(false);
+    const fetchPc = async () => {
+        const pc = await getPcByModelGroupName(pcModelGroupName);
+        setPc(pc);
     };
 
+    console.log("pc", pc);
     const pathname = usePathname();
 
-    const SliderImageItem = ({ img }: { img: string }) => {
-        return (
-            <Image.PreviewGroup items={productInfo?.preview.slider_images}>
-                <div>
-                    <Image
-                        className="slider-image-item"
-                        width={310}
-                        src={img}
-                    />
-                </div>
-            </Image.PreviewGroup>
-        );
-    };
+    // const SliderImageItem = ({ img }: { img: string }) => {
+    //     const sliderImagesArray: string[] = JSON.parse(
+    //         pc[0].pcModelGroup.pcPreview.sliderImages
+    //     );
+    //     return (
+    //         <Image.PreviewGroup items={sliderImagesArray}>
+    //             <div>
+    //                 <Image
+    //                     className="slider-image-item"
+    //                     width={310}
+    //                     src={img}
+    //                 />
+    //             </div>
+    //         </Image.PreviewGroup>
+    //     );
+    // };
 
-    if (isLoading || !productInfo || !headerInfo) return <LoadingPage />; //временно (подкрутить загрузку)
+    if (isLoading || pc.length === 0) return <LoadingPage />; //временно (подкрутить загрузку)
 
     return (
         <>
-            <PcSecondNavbar productName={productInfo.name} />
-            <SinglePcHeader header_info={headerInfo} />
+            <PcSecondNavbar productName={pc[0].pcModelGroup.modelGroupName} />
+            <SinglePcHeader
+                modelGroupName={pc[0].pcModelGroup.modelGroupName}
+                header_info={pc[0].pcModelGroup.pcHeader}
+            />
+
             <section id="design" className="design container section">
                 <img
                     className="design__img"
-                    src={productInfo?.design.img}
-                    alt={productInfo?.name + " design"}
+                    src={pc[0]?.pcModelGroup?.pcDesign?.image}
+                    alt={pc[0]?.pcModelGroup?.modelGroupName + " design"}
                     loading="lazy"
                 />
                 <div className="design__body">
                     <h2 className="design__body-title">
-                        {productInfo?.design.title}
+                        {pc[0].pcModelGroup?.pcDesign?.title}
                     </h2>
                     <div className="design__body-info">
                         <div className="design__body-info__description">
-                            <p>{productInfo?.design.description}</p>
+                            <p>{pc[0].pcModelGroup?.pcDesign?.description}</p>
                         </div>
 
                         <div className="design__body-info-footer">
                             <div className="design__body-info__price">
-                                Базовая комплектация от{" "}
-                                {productInfo?.design.min_price} BYN
+                                Базовая комплектация от {pc[0].totalPrice} BYN
                             </div>
                             <Link
                                 className="design__body-info__link green-circle-bordered-link"
@@ -291,10 +290,10 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                 </div>
             </section>
 
-            <section id="preview" className="preview container section">
+            {/* <section id="preview" className="preview container section">
                 <img
                     className="preview__img"
-                    src={productInfo?.preview.main_img}
+                    src={pc[0].pcModelGroup?.pcPreview?.mainImage}
                     alt="Preview"
                     loading="lazy"
                 />
@@ -304,27 +303,27 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                             Дизайн
                         </span>
                         <h2 className="preview-body-info__title">
-                            {productInfo?.preview.title}
+                            {pc[0].pcModelGroup?.pcPreview?.title}
                         </h2>
                         <div className="preview-body-info__description">
-                            <p>{productInfo?.preview.description}</p>
+                            <p>{pc[0].pcModelGroup?.pcPreview?.description}</p>
                         </div>
                     </div>
                     <SinglePcSlider
-                        items={productInfo?.preview.slider_images.map(
-                            (link, i) => (
-                                <SliderImageItem key={i} img={link} />
-                            )
-                        )}
+                        items={JSON.parse(
+                            pc[0]?.pcModelGroup?.pcPreview?.sliderImages
+                        ).map((link: string, i: number) => (
+                            <SliderImageItem key={i} img={link} />
+                        ))}
                     />
                 </div>
-            </section>
+            </section> */}
 
             <section id="performance" className="performance container section">
                 <div className="power">
                     <img
                         className="power__img"
-                        src={productInfo?.performance.img}
+                        src={pc[0].pcModelGroup?.pcPerformance?.image}
                         alt="Performance"
                         loading="lazy"
                     />
@@ -334,10 +333,15 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                                 Производительность
                             </span>
                             <h2 className="power-body-info__title">
-                                {productInfo?.performance.title}
+                                {pc[0]?.pcModelGroup?.pcPerformance?.title}
                             </h2>
                             <div className="power-body-info__description">
-                                <p>{productInfo?.performance.description}</p>
+                                <p>
+                                    {
+                                        pc[0]?.pcModelGroup?.pcPerformance
+                                            ?.description
+                                    }
+                                </p>
                             </div>
                         </div>
                         <div className="power-body-tags">
@@ -433,11 +437,11 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                     </div>
                 </div>
 
-                <div className="ram-and-storage">
+                {/* <div className="ram-and-storage">
                     <div className="ram-and-storage-body">
                         <img
                             className="ram-and-storage-body__img"
-                            src={productInfo?.performance.img_2}
+                            src={pc[0]?.pcModelGroup?.pcPerformances?.image2}
                             alt="Ram and Storage"
                             loading="lazy"
                         />
@@ -500,7 +504,7 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                             postfix="ТБ"
                         />
                     </div>
-                </div>
+                </div> */}
             </section>
 
             <section
@@ -513,41 +517,35 @@ const SinglePcPage = ({ product_name }: { product_name: string }) => {
                             Комплектации и цены
                         </span>
                         <h2 className="kits-and-prices__header-title">
-                            Вариации {productInfo?.name}
+                            Вариации {pc[0].pcModelGroup.modelGroupName}
                         </h2>
                     </div>
                     <div className="kits-and-prices-body">
-                        {productInfo?.configurations.map(
-                            (kit: any, index: number) => {
-                                return (
-                                    <SinglePcConfigCard
-                                        pc={{
-                                            isNotebook:
-                                                productInfo.category ===
-                                                "notebook",
-                                            key: index,
-                                            img: kit.img,
-                                            name: kit.configuration_name,
-                                            price: kit.configuration_price,
-                                            description:
-                                                kit.configuration_description,
-                                            link_to_configurator:
-                                                kit.link_to_configurator,
-                                            gpu: kit.gpu,
-                                            cpu: kit.cpu,
-                                            mb: kit.motherboard,
-                                            cpu_fan: kit.cpu_fan,
-                                            ram: kit.ram,
-                                            ssd: kit.ssd,
-                                            pow_sup: kit.power_supply,
-                                            _case: kit.case,
-                                            os: os,
-                                            display: kit.display,
-                                        }}
-                                    />
-                                );
-                            }
-                        )}
+                        {pc.map((kit, index: number) => {
+                            return (
+                                <SinglePcConfigCard
+                                    key={kit.pcId}
+                                    pc={{
+                                        isNotebook:
+                                            kit.pcType.type === "notebook",
+                                        img: kit.image,
+                                        name: kit.name,
+                                        price: kit.totalPrice,
+                                        description: kit.description,
+                                        link_to_configurator: `/configurator/${kit.name}`,
+                                        gpu: kit.gpu,
+                                        cpu: kit.cpu,
+                                        mb: kit.motherboard,
+                                        cpu_fan: kit.cpuFan,
+                                        ram: kit.ram,
+                                        ssdList: kit.ssdList,
+                                        pow_sup: kit.psu,
+                                        _case: kit.pcCase,
+                                        os: os,
+                                    }}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             </section>

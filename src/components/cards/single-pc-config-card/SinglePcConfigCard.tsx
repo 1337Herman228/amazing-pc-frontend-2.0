@@ -2,10 +2,43 @@ import Link from "next/link";
 import "./SinglePcConfigCard.scss";
 import { Rate } from "antd";
 import "../../../styles/style.scss";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ButtonToCart from "@/components/buttons/btn-to-cart/ButtonToCart";
+import {
+    ICpuPart,
+    IGpuPart,
+    IMotherboardPart,
+    ICpuAirCoolingPart,
+    ICpuLiquidCoolingPart,
+    IRamPart,
+    ISsdList,
+    IPsuPart,
+    ICasePart,
+} from "@/interfaces/types";
 
-const SinglePcConfigCard = ({ pc }: any) => {
+interface ISinglePcConfigCardPc {
+    isNotebook: boolean;
+    img: string;
+    name: string;
+    price: number;
+    description: string;
+    link_to_configurator: string;
+    gpu: IGpuPart;
+    cpu: ICpuPart;
+    mb: IMotherboardPart;
+    cpu_fan: ICpuAirCoolingPart | ICpuLiquidCoolingPart;
+    ram: IRamPart;
+    ssdList: ISsdList[] | null;
+    pow_sup: IPsuPart;
+    _case: ICasePart;
+    os: string;
+}
+
+interface SinglePcConfigCardProps {
+    pc: ISinglePcConfigCardPc;
+}
+
+const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
     const {
         img,
         name,
@@ -17,11 +50,10 @@ const SinglePcConfigCard = ({ pc }: any) => {
         mb,
         cpu_fan,
         ram,
-        ssd,
+        ssdList,
         pow_sup,
         _case,
         os,
-        display,
         isNotebook,
     } = pc;
 
@@ -148,51 +180,35 @@ const SinglePcConfigCard = ({ pc }: any) => {
                         </span>
                     </div>
                 </li>
-                <li
-                    className={
-                        isNotebook ? "components-list__item" : "display-none"
-                    }
-                >
-                    <Img src="/gaming-pc/components-svg/display.svg" />
-                    <div className="components-list__item-info">
-                        <span className="components-list__item-info-title">
-                            Дисплей:
-                        </span>
-                        <span className="components-list__item-info-name">
-                            {display?.name}
-                        </span>
-                    </div>
-                </li>
-                <li
-                    className={
-                        isNotebook ? "display-none" : "components-list__item"
-                    }
-                >
-                    <Img src="/gaming-pc/components-svg/mb.svg" />
-                    <div className="components-list__item-info">
-                        <span className="components-list__item-info-title">
-                            Материнская плата:
-                        </span>
-                        <span className="components-list__item-info-name">
-                            {mb.name}
-                        </span>
-                    </div>
-                </li>
-                <li
-                    className={
-                        isNotebook ? "display-none" : "components-list__item"
-                    }
-                >
-                    <Img src="/gaming-pc/components-svg/cpu-fan.svg" />
-                    <div className="components-list__item-info">
-                        <span className="components-list__item-info-title">
-                            Охлаждение:
-                        </span>
-                        <span className="components-list__item-info-name">
-                            {cpu_fan.name}
-                        </span>
-                    </div>
-                </li>
+
+                {!isNotebook && (
+                    <li className={"components-list__item"}>
+                        <Img src="/gaming-pc/components-svg/mb.svg" />
+                        <div className="components-list__item-info">
+                            <span className="components-list__item-info-title">
+                                Материнская плата:
+                            </span>
+                            <span className="components-list__item-info-name">
+                                {mb.name}
+                            </span>
+                        </div>
+                    </li>
+                )}
+
+                {!isNotebook && (
+                    <li className={"components-list__item"}>
+                        <Img src="/gaming-pc/components-svg/cpu-fan.svg" />
+                        <div className="components-list__item-info">
+                            <span className="components-list__item-info-title">
+                                Охлаждение:
+                            </span>
+                            <span className="components-list__item-info-name">
+                                {cpu_fan.name}
+                            </span>
+                        </div>
+                    </li>
+                )}
+
                 <li className="components-list__item">
                     <Img src="/gaming-pc/components-svg/ram.svg" />
                     <div className="components-list__item-info">
@@ -208,43 +224,57 @@ const SinglePcConfigCard = ({ pc }: any) => {
                     <Img src="/gaming-pc/components-svg/ssd.svg" />
                     <div className="components-list__item-info">
                         <span className="components-list__item-info-title">
-                            SSD накопитель:
+                            SSD накопители:
                         </span>
                         <span className="components-list__item-info-name">
-                            {ssd.name}
+                            {ssdList?.length && ssdList?.length > 0
+                                ? ssdList?.map((ssd) => (
+                                      <div
+                                          style={{
+                                              display: "flex",
+                                              flexDirection: "column",
+                                          }}
+                                      >
+                                          {ssd.quantity} x {ssd.ssd.name}
+                                      </div>
+                                  ))
+                                : "Отсутствуют"}
                         </span>
                     </div>
                 </li>
-                <li
-                    className={
-                        isNotebook ? "display-none" : "components-list__item"
-                    }
-                >
-                    <Img src="/gaming-pc/components-svg/pow-sup.svg" />
-                    <div className="components-list__item-info">
-                        <span className="components-list__item-info-title">
-                            Блок питания:
-                        </span>
-                        <span className="components-list__item-info-name">
-                            {pow_sup.name}
-                        </span>
-                    </div>
-                </li>
-                <li
-                    className={
-                        isNotebook ? "display-none" : "components-list__item"
-                    }
-                >
-                    <Img src="/gaming-pc/components-svg/case.svg" />
-                    <div className="components-list__item-info">
-                        <span className="components-list__item-info-title">
-                            Корпус:
-                        </span>
-                        <span className="components-list__item-info-name">
-                            {_case.name}
-                        </span>
-                    </div>
-                </li>
+                {!isNotebook && (
+                    <li className={"components-list__item"}>
+                        <Img src="/gaming-pc/components-svg/pow-sup.svg" />
+                        <div className="components-list__item-info">
+                            <span className="components-list__item-info-title">
+                                Блок питания:
+                            </span>
+                            <span className="components-list__item-info-name">
+                                {pow_sup.name}
+                            </span>
+                        </div>
+                    </li>
+                )}
+                {!isNotebook && (
+                    <li
+                        className={
+                            isNotebook
+                                ? "display-none"
+                                : "components-list__item"
+                        }
+                    >
+                        <Img src="/gaming-pc/components-svg/case.svg" />
+                        <div className="components-list__item-info">
+                            <span className="components-list__item-info-title">
+                                Корпус:
+                            </span>
+                            <span className="components-list__item-info-name">
+                                {_case.name}
+                            </span>
+                        </div>
+                    </li>
+                )}
+
                 <li className="components-list__item">
                     <Img src="/gaming-pc/components-svg/os.svg" />
                     <div className="components-list__item-info">

@@ -6,12 +6,6 @@ interface error {
 }
 
 const useHttp = () => {
-    // const { data: session } = useSession();
-    // const sessionData: ExtendedSession | null = session;
-    // const token = sessionData?.user?.authenticationResponse?.token;
-
-    // console.log("token", token);
-
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<error | null>(null);
 

@@ -15,8 +15,8 @@ const PcCatalog = ({
     pcModelGroupList,
     is_notebook = false,
 }: PcCatalogProps) => {
-    console.log("categories", categories);
-    console.log("products_list", pcModelGroupList);
+    // console.log("categories", categories);
+    // console.log("products_list", pcModelGroupList);
 
     return (
         <section className="_catalog">
@@ -28,7 +28,7 @@ const PcCatalog = ({
                     >
                         <div
                             className={
-                                categories.length > 1
+                                category.pcCategoryName != "Нет категории"
                                     ? "_catalog-body__header"
                                     : "display-none"
                             }

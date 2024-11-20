@@ -2,6 +2,8 @@
 
 import "@/styles/style.scss";
 import { _SessionProvider } from "@/components/providers/SessionProvider";
+import StoreProvider from "@/components/providers/StoreProvider";
+import GetSession from "@/components/providers/GetSessionProvider";
 
 export default function RootLayout({
     children,
@@ -10,9 +12,16 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <_SessionProvider>
-                <body>{children}</body>
-            </_SessionProvider>
+            <head>
+                <title>Amazing PC</title>
+            </head>
+            <StoreProvider>
+                <_SessionProvider>
+                    <body>
+                        <GetSession>{children}</GetSession>
+                    </body>
+                </_SessionProvider>
+            </StoreProvider>
         </html>
     );
 }

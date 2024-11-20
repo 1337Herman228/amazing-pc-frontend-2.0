@@ -5,28 +5,32 @@ import "./SinglePcHeader.scss";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
-import { ISingleProductHeader } from "@/interfaces/types";
+import { IpcHeader } from "@/interfaces/types";
+
+interface SinglePcHeaderProps {
+    header_info: IpcHeader;
+    modelGroupName: string;
+}
 
 const SinglePcHeader = ({
     header_info,
-}: {
-    header_info: ISingleProductHeader;
-}) => {
+    modelGroupName,
+}: SinglePcHeaderProps) => {
     const isDesktop = useMediaQuery({ query: "(min-width: 1024px)" });
     const isTablet = useMediaQuery({ query: "(max-width: 1023px)" });
     const isMobile = useMediaQuery({ query: "(max-width: 767px)" });
 
     const [bgImg, setBgImg] = useState(
         isTablet
-            ? { backgroundImage: `url(${header_info.img_mobile})` }
-            : { backgroundImage: `url(${header_info.img})` }
+            ? { backgroundImage: `url(${header_info.imageMobile})` }
+            : { backgroundImage: `url(${header_info.image})` }
     );
 
     useEffect(() => {
         setBgImg(
             isTablet
-                ? { backgroundImage: `url(${header_info.img_mobile})` }
-                : { backgroundImage: `url(${header_info.img})` }
+                ? { backgroundImage: `url(${header_info.imageMobile})` }
+                : { backgroundImage: `url(${header_info.image})` }
         );
     }, [isTablet]);
 
@@ -50,23 +54,6 @@ const SinglePcHeader = ({
                 break;
         }
 
-    // useEffect(() => {
-    //     handleResize();
-    //     return () => {
-    //         window.removeEventListener("resize", handleResize);
-    //     };
-    // }, []);
-
-    // const handleResize = () => {
-    //     window.addEventListener("resize", function () {
-    //         if (window.innerWidth < 1024) {
-    //             setBgImg({ backgroundImage: `url(${header_info.img_mobile})` });
-    //         } else {
-    //             setBgImg({ backgroundImage: `url(${header_info.img})` });
-    //         }
-    //     });
-    // };
-
     return (
         <>
             <section id="start" style={bgImg} className="single-product-header">
@@ -84,13 +71,11 @@ const SinglePcHeader = ({
                         </Link>
                         <span className="breadcrumbs__divider">/</span>
                         <span className="breadcrumbs__link current">
-                            {header_info.title}
+                            {modelGroupName}
                         </span>
                     </div>
                     <div className="information">
-                        <h1 className="information__title">
-                            {header_info.title}
-                        </h1>
+                        <h1 className="information__title">{modelGroupName}</h1>
                         <div className="information__description">
                             <p>{header_info.description}</p>
                         </div>
@@ -106,7 +91,7 @@ const SinglePcHeader = ({
                                 alt=""
                                 loading="lazy"
                             />
-                            Варианты {header_info.title}
+                            Варианты {modelGroupName}
                         </Link>
                     </div>
                 </div>

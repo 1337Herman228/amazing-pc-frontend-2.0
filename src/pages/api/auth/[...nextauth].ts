@@ -14,10 +14,6 @@ interface ExtendedUser extends User {
 
 export interface ExtendedJWT extends JWT {
     user?: ExtendedUser;
-    // name?: string | null
-    // email?: string | null
-    // picture?: string | null
-    // sub?: string
 }
 
 export interface ExtendedSession extends Session {

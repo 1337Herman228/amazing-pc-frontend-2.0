@@ -1,3 +1,14 @@
+export interface IUserSession {
+    name?: string;
+    email?: string;
+    image?: string;
+    userId?: number;
+    authenticationResponse?: {
+        token: string;
+    };
+    role?: string;
+}
+
 export interface ICartItem {
     id: number | string;
     partition: string;
@@ -72,13 +83,6 @@ export interface ICategoryPc {
     ssd_description?: string;
     power_supply_description?: string;
     amount_of_configurations: string | number; //проверка в другой таблице
-}
-
-export interface ISingleProductHeader {
-    title: string;
-    description: string;
-    img: string;
-    img_mobile: string;
 }
 
 export interface ISingleProductPc {
@@ -178,9 +182,9 @@ export interface IpcModelGroup {
     ssdDescription: string;
 
     pcCategories: IpcCategories;
-    pcDesigns: IpcDesign;
+    pcDesign: IpcDesign;
     pcHeader: IpcHeader;
-    pcPerformances: IpcPerformance;
+    pcPerformance: IpcPerformance;
     pcPreview: IpcPreview;
     pcTypes: IpcTypes;
 }
@@ -190,4 +194,243 @@ export interface IpcModelGroupList {
     image: string;
     minPrice: number;
     pcModelGroup: IpcModelGroup;
+}
+
+export interface ICpu {
+    cpuId: number;
+    socket: string;
+    maxRamCapacity: number;
+    ramType: string; //'["DDR4","DDR5"]'
+    cpuCores: number;
+    cpuThreads: number;
+    baseFrequency: number;
+    boostFrequency: number;
+    techProcess: string;
+    cacheL1: string | null;
+    cacheL2: string | null;
+    cacheL3: string | null;
+    tdp: number;
+}
+
+export interface IGpu {
+    gpuId: number; // Идентификатор GPU
+    techProcess: number; // Технологический процесс в нанометрах
+    maxDisplaysQuantity: number; // Максимальное количество подключаемых дисплеев
+    maxResolution: string; // Максимальное разрешение
+    baseFrequency: string; // Базовая частота (в МГц)
+    boostFrequency: string; // Увеличенная частота (в МГц)
+    vramCapacity: number; // Объем видеопамяти в ГБ
+    vramType: string; // Тип видеопамяти
+    busWidth: number; // Ширина шины в битах
+    hdmi: number; // Количество HDMI портов
+    displayPort: number; // Количество DisplayPort
+    cuda: number; // Количество CUDA ядер
+    powerConnector: string; // Тип разъема питания
+    minPowerUnit: number; // Минимальная мощность блока питания в Вт
+    fans: number; // Количество вентиляторов
+    extensionSlots: string; // Количество слотов расширения
+    length: number; // Длина в миллиметрах
+    width: number; // Ширина в миллиметрах
+    height: number; // Высота в миллиметрах
+}
+
+export interface IMotherboard {
+    motherboardId: number;
+    socket: string;
+    formFactor: string;
+    chipset: string;
+    ramType: string; //JSON
+    ramSlots: number;
+    maxRamCapacity: number;
+    sataQuantity: number;
+    m2Quantity: number;
+    pcie16Quantity: number;
+}
+
+export interface ICpuAirCooling {
+    cpuAirCoolingId: number;
+    sockets: string; //JSON
+    fansQuantity: number;
+    fanSize: string;
+    tdp: number;
+    backlight: string;
+    height: number;
+    fanSpeed: string;
+    airFlow: number;
+    maxNoiseLevel: number;
+    connector: string;
+}
+
+export interface ICpuLiquidCooling {
+    cpuLiquidCoolingId: number; // Используйте number для Long
+    sockets: string; // JSON, Формат: "Am4, Am5, Lga1700"
+    fansQuantity: number;
+    fanSize: string; // Пример: "120 мм"
+    tdp: number; // Ватт
+    backlight: string; // Пример: "RGB"
+    length: number; // В миллиметрах
+    width: number; // В миллиметрах
+    height: number; // В миллиметрах
+    fanSpeed: string; // Пример: "500-2000 об/мин"
+    airFlow: number; // CFM
+    maxNoiseLevel: number; // Дб
+    connector: string; // Пример: "4 pin PWM"
+}
+
+export interface IRam {
+    ramId: number;
+    type: string;
+    frequency: number;
+    capacity: number; // В ГБ
+}
+
+export interface IPsu {
+    psuId: number;
+    power: number; // Ватт
+    formFactor: string;
+    pfc: string; // Тип PFC
+    coolingSystem: string; // Описание системы охлаждения
+    mbConnector: string; // Разъем для материнской платы
+    cpu4Plus4Quantity: number; // Количество 4+4 разъемов для CPU
+    gpu6Plus2Quantity: number; // Количество 6+2 разъемов для GPU
+    sataQuantity: number; // Количество SATA разъемов
+    certificate: string; // Сертификация
+    modular: string; // Тип модульности
+}
+
+export interface ICase {
+    caseId: number;
+    maxCpuCoolerHeight: number; // В миллиметрах
+    maxGpuLength: number; // В миллиметрах
+    maxLiquidCoolingLength: number; // В миллиметрах
+    hddSlotsQuantity: number; // Количество отсеков для HDD
+    ssdSlotsQuantity: number; // Количество отсеков для SSD
+    extensionSlotsQuantity: number; // Количество слотов расширения
+    length: number; // В миллиметрах
+    width: number; // В миллиметрах
+    height: number; // В миллиметрах
+    weight: number; // В килограммах
+    possibleFormFactors: string; // JSON Массив форм-факторов
+}
+
+export interface ISsd {
+    capacity: string | null; // Пример: "512 ГБ"
+    connectionType: string | null; // Пример: "PCI-E 4.0 x4"
+    controllerType: string | null; // Пример: "Silicon Motion SM2269XT"
+    flashMemoryType: string | null; // Пример: "3D NAND"
+    formFactor: string; // Пример: "M.2 NVME"
+    maxTemperature: number | null; // Может быть числом или null
+    mtbfTime: number | null; // Может быть числом или null
+    randomWriteSpeed: number | null; // В IOPS
+    readVelocity: number | null; // В МБ/с
+    ssdId: number; // Идентификатор SSD
+    writeVelocity: number | null; // В МБ/с
+}
+
+export interface IFan {
+    fanId: number; // Идентификатор вентилятора
+    fanSize: string | null; // Пример: "120x120 мм"
+    backlight: string | null; // Пример: "ARGB"
+    fanSpeed: string | null; // Пример: "800-1800 об/мин"
+    airFlow: string | null; // Пример: "59" (можно использовать number, если требуется)
+    maxNoiseLevel: number | null; // В децибелах
+}
+
+export interface IPeriphery {
+    peripheryId: number;
+    characteristics: string; // JSON
+}
+
+export interface ICategory {
+    categoryId: number;
+    categoryName: string;
+}
+
+export interface IPartition {
+    partitionId: number;
+    partitionName: string;
+}
+
+export interface IType {
+    typeId: number;
+    typeName: string;
+    alternativeName: string;
+    typeImage: string;
+}
+
+export interface IPart {
+    partId: number;
+    name: string;
+    image: string;
+    description: string;
+    price: number;
+    remainingQuantity: number;
+    categories: ICategory;
+    partitions: IPartition;
+    types: IType;
+}
+export interface ICpuPart extends IPart {
+    cpu: ICpu;
+}
+export interface IGpuPart extends IPart {
+    gpu: IGpu;
+}
+export interface IMotherboardPart extends IPart {
+    motherboard: IMotherboard;
+}
+export interface IPsuPart extends IPart {
+    psu: IPsu;
+}
+export interface ICpuAirCoolingPart extends IPart {
+    cpuAirCooling: ICpuAirCooling;
+}
+export interface ICpuLiquidCoolingPart extends IPart {
+    cpuLiquidCooling: ICpuLiquidCooling;
+}
+export interface IRamPart extends IPart {
+    ram: IRam;
+}
+export interface ICasePart extends IPart {
+    cases: ICase;
+}
+export interface IPeripheryPart extends IPart {
+    periphery: IPeriphery;
+}
+
+export interface ISsdPart extends IPart {
+    ssd: ISsd;
+}
+
+export interface IFanPart extends IPart {
+    fan: IFan;
+}
+
+export interface ISsdList {
+    ssd: ISsdPart;
+    quantity: number;
+}
+
+export interface IFanList {
+    fan: IFanPart;
+    quantity: number;
+}
+
+export interface IPc {
+    pcId: number;
+    pcModelGroup: IpcModelGroup;
+    pcType: IpcTypes;
+    pcCategories: IpcCategories;
+    name: string;
+    description: string;
+    image: string;
+    totalPrice: number;
+    gpu: IGpuPart;
+    cpu: ICpuPart;
+    motherboard: IMotherboardPart;
+    cpuFan: ICpuAirCoolingPart | ICpuLiquidCoolingPart;
+    ram: IRamPart;
+    psu: IPsuPart;
+    pcCase: ICasePart;
+    ssdList: ISsdList[] | null;
+    fansList: IFanList[] | null;
 }

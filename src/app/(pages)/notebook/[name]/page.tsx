@@ -5,6 +5,9 @@ import { useParams } from "next/navigation";
 
 export default function Page() {
     const params = useParams();
-    const productName = typeof params?.name === "string" ? params.name : "";
-    return <SinglePcPage product_name={productName} />;
+    const encodedProductName =
+        typeof params?.name === "string" ? params.name : "";
+    const productName = decodeURIComponent(encodedProductName);
+
+    return <SinglePcPage pcModelGroupName={productName} />;
 }

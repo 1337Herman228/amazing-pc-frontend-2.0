@@ -5,6 +5,7 @@ import { _SessionProvider } from "@/components/providers/SessionProvider";
 import StoreProvider from "@/components/providers/StoreProvider";
 import UserNavbar from "@/components/navbar/user/user-navbar/UserNavbar";
 import UserFooter from "@/components/footer/user/UserFooter";
+import GetSession from "@/components/providers/GetSessionProvider";
 
 export default function RootLayout({
     children,
@@ -19,9 +20,11 @@ export default function RootLayout({
             <StoreProvider>
                 <_SessionProvider>
                     <body>
-                        <UserNavbar />
-                        <main className="main-body">{children}</main>
-                        <UserFooter />
+                        <GetSession>
+                            <UserNavbar />
+                            <main className="main-body">{children}</main>
+                            <UserFooter />
+                        </GetSession>
                     </body>
                 </_SessionProvider>
             </StoreProvider>

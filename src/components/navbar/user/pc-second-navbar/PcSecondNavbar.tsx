@@ -23,7 +23,6 @@ const PcSecondNavbar = ({ productName }: { productName: string }) => {
         var blocks = [
             document.getElementById("start"),
             document.getElementById("design"),
-            document.getElementById("preview"),
             document.getElementById("performance"),
             document.getElementById("kits-and-prices"),
         ];
@@ -55,9 +54,7 @@ const PcSecondNavbar = ({ productName }: { productName: string }) => {
                     <Link href="#start" className="nav-list__item">
                         Представление
                     </Link>
-                    <Link href="#design" className="nav-list__item">
-                        Дизайн
-                    </Link>
+
                     <Link href="#preview" className="nav-list__item">
                         Обзор
                     </Link>
