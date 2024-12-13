@@ -1,0 +1,12 @@
+@use "../../../../styles/variables" as *;
+
+.admin-navbar-header {
+    position: fixed;
+    height: 70px;
+    width: 100%;
+    z-index: 1100;
+    background-color: var(--tm-color-dark-black-2);
+    padding: 20px;
+    // box-shadow: 0 0.2px 0 var(--tm-color-dark-white);
+    border-bottom: 1px solid gray;
+}

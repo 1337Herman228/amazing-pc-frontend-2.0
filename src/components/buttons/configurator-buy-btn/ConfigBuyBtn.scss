@@ -1,0 +1,74 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+
+._buy-button {
+    background-color: var(--main-color);
+    border: none;
+    color: black;
+    padding: 8px 15px;
+    padding-left: 40px;
+    font-size: 14px;
+    text-transform: uppercase;
+    position: relative;
+    transition-duration: var(--transition-duration);
+    z-index: 400;
+    flex-shrink: 0;
+    //  overflow: hidden;
+    width: 100%;
+    height: 40px;
+    cursor: pointer;
+
+    &::after {
+        content: "";
+        position: absolute;
+        background: url("/shopping-cart-one.svg") center/contain no-repeat;
+        left: 37%;
+        top: 20%;
+        width: 20px;
+        height: 20px;
+        transition-duration: var(--transition-duration);
+    }
+
+    @include hover {
+        background-color: var(--main-color-accent);
+    }
+
+    &:hover::before {
+        width: 130%;
+    }
+
+    .buy-button__text {
+        z-index: 100;
+    }
+}
+
+.checkout-button {
+    background-color: transparent;
+    border: 1px solid var(--tm-color-dark-grey-2);
+    color: white;
+    padding: 8px 12px;
+    padding-left: 35px;
+    font-size: 14px;
+    text-transform: uppercase;
+    position: relative;
+    width: 305px;
+    height: 40px;
+    cursor: pointer;
+    transition-duration: var(--transition-duration);
+
+    @include hover {
+        border: 1px solid var(--tm-color-dark-white);
+    }
+
+    &::before {
+        content: "";
+        position: absolute;
+        background: url("/check-mark.svg") center/contain no-repeat;
+        left: 33%;
+        top: 21%;
+        width: 20px;
+        height: 20px;
+        transition-duration: var(--transition-duration);
+    }
+}

@@ -1,0 +1,14 @@
+@use "../../../styles/variables" as *;
+
+.cpu-fan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.error-message {
+    padding-block: 5px;
+    font-size: 14px;
+    color: var(--red-error-color);
+    font-weight: 300;
+}

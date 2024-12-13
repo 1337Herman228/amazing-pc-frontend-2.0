@@ -1,0 +1,64 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+
+.admin-list-item-card {
+    display: flex;
+    gap: 10px;
+
+    &__img {
+        object-fit: contain;
+        background-color: var(--tm-color-dark-black-2);
+        border-radius: 8px;
+    }
+
+    .card-content {
+        &__name {
+            font-size: 25px;
+            line-height: 1.5;
+            padding-right: 10px;
+        }
+
+        &__header {
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        &__manage {
+            display: flex;
+            gap: 3px;
+
+            // @include mobile{
+            //     flex-direction: column;
+            //     gap: 7px;
+            // }
+
+            &-btn {
+                @include reset-button;
+                @include flex-center;
+                cursor: pointer;
+                transition-duration: var(--transition-duration);
+                width: 30px;
+
+                .light-img {
+                    filter: invert(0.9);
+                }
+
+                @include hover {
+                    .hover-img {
+                        transition-duration: var(--transition-duration);
+                        filter: invert(0.4);
+                    }
+                }
+            }
+        }
+
+        &__label {
+            color: var(--text-color-grey);
+        }
+
+        &__info {
+            font-size: 16px;
+        }
+    }
+}

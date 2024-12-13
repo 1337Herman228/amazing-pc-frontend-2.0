@@ -1,0 +1,70 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/media" as *;
+
+.btn-icon {
+    filter: invert(0.8);
+}
+
+.modal-table {
+    width: 100%;
+    padding-inline: 100px;
+
+    &__header {
+        &:not(:first-child) {
+            th {
+                padding-top: 35px;
+            }
+        }
+
+        &-text {
+            padding: 16px 12px;
+            font-size: 24px;
+            font-weight: 500;
+            text-align: start;
+            border-bottom: 1px solid var(--main-color);
+        }
+    }
+
+    &__row-names {
+        &-cell {
+            padding: 15px 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: start;
+            border-bottom: 1px solid var(--main-color);
+        }
+    }
+
+    &__row {
+        &:not(:last-child) {
+            box-shadow: 0 0.3px 0 gray;
+        }
+
+        &-name {
+            display: flex;
+            gap: 10px;
+            padding: 16px 12px;
+
+            &-icon {
+                filter: invert(0.5);
+            }
+
+            &-text {
+                font-size: 14px;
+                text-transform: uppercase;
+                color: var(--text-color-grey);
+            }
+        }
+
+        &-info {
+            font-size: 16px;
+            padding: 16px 12px;
+        }
+
+        &-price {
+            font-size: 16px;
+            padding: 16px 12px;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+@import "../../../styles//style.scss";
+
+.select-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .label {
+        font-size: 16px;
+        color: var(--text-color-grey);
+    }
+
+    .select {
+        width: 100%;
+    }
+}

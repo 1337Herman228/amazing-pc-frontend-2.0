@@ -1,0 +1,29 @@
+@use "../../../styles/media" as *;
+@use "../../../styles/variables" as *;
+
+.admin-search-input {
+    &__label {
+        font-size: 14px;
+        color: var(--text-color-grey);
+    }
+
+    &__input {
+        outline: none;
+        background-color: var(--tm-color-dark-black-2);
+        border: 1px solid gray;
+        border-radius: 2px;
+        height: 38px;
+        width: 220px;
+        color: var(--text-color-grey);
+        font-size: 16px;
+        padding-inline: 11px;
+
+        @include hover {
+            border: 1px solid var(--main-color);
+        }
+
+        &:focus {
+            border: 1px solid var(--main-color);
+        }
+    }
+}

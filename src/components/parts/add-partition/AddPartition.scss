@@ -1,0 +1,22 @@
+.add-partition {
+    .form-container {
+        margin-top: 100px;
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 600px;
+
+        &-title {
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        &-submit-btn {
+            margin-top: 10px;
+        }
+    }
+}

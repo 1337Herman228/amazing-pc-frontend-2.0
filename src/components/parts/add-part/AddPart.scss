@@ -1,0 +1,84 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+
+.add-part {
+    display: flex;
+    gap: 30px;
+
+    &__form-title {
+        font-size: 30px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .manage-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 220px;
+    }
+
+    .main-form {
+        width: 70%;
+
+        &__title {
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+
+            &__general {
+                display: flex;
+                flex-direction: column;
+
+                &-img {
+                    height: 135px;
+                    margin-bottom: 20px;
+
+                    &-label {
+                        font-size: 16px;
+                        color: var(--text-color-grey);
+                        margin-bottom: 5px;
+                    }
+                }
+
+                &-part-name {
+                }
+
+                &-price {
+                }
+
+                &-select-partition {
+                    margin-bottom: 10px;
+                }
+
+                &-description {
+                }
+
+                &-quantity-left {
+                }
+
+                .error-message {
+                    padding-block: 5px;
+                    font-size: 14px;
+                    color: var(--red-error-color);
+                    font-weight: 300;
+                }
+            }
+
+            &__additional {
+            }
+
+            &__submit-btn {
+                margin-top: 20px;
+                width: 100%;
+            }
+        }
+    }
+}

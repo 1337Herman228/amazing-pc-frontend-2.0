@@ -13,6 +13,8 @@ const ButtonToCart = ({
     is_btn_pressed = false,
     product,
 }: ButtonToCartProps) => {
+    console.log("product", product);
+
     const [isBtnPressed, setIsBtnPressed] = useState(is_btn_pressed);
 
     const dispatch = useAppDispatch();

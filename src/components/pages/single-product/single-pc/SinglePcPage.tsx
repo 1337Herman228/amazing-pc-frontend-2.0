@@ -1,211 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import "./SinglePcPage.scss";
 import Link from "next/link";
 import Tag from "@/components/tags/Tag";
-import { Image } from "antd";
-import { IPc, ISingleProductPc } from "@/interfaces/types";
+import { IPc } from "@/interfaces/types";
 import PcSecondNavbar from "@/components/navbar/user/pc-second-navbar/PcSecondNavbar";
 import SinglePcHeader from "../../headers/single-product-header/single-pc-header/SinglePcHeader";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
-import SinglePcSlider from "@/components/slider/single-pc-slider/SinglePcSlider";
 import SinglePcConfigCard from "@/components/cards/single-pc-config-card/SinglePcConfigCard";
 import useFetch from "@/lib/hooks/useFetch";
-
-const header_info = [
-    {
-        title: "ONE",
-        description: "ONE – оптимальный старт в мир современного гейминга.",
-        img: "/single-product/one/hyperpc-one-banner.jpg",
-        img_mobile: "/single-product/one/hyperpc-one-mobile.jpg",
-    },
-    {
-        title: "LUMEN CORE",
-        description: "ONE – оптимальный старт в мир современного гейминга.",
-        img: "/single-product/one/hyperpc-one-banner.jpg",
-        img_mobile: "/single-product/one/hyperpc-one-mobile.jpg",
-    },
-    {
-        title: "Play 17",
-        description: "ONE – оптимальный старт в мир современного гейминга.",
-        img: "/single-product/play-17/hyperpc-play-17-idn-intro.jpg",
-        img_mobile:
-            "/single-product/play-17/hyperpc-play-17-idn-intro-mobile.jpg",
-    },
-];
-
-const products = [
-    {
-        _id: "0",
-        name: "One",
-        category: "pc",
-        design: {
-            title: "МОЩНОСТЬ И НАДЕЖНОСТЬ",
-            description:
-                "Компьютер ONE выполнен без излишеств. Каждый компонент, начиная от корпуса и заканчивая системой охлаждения, создан, чтобы обеспечить максимальную производительность, надежность и долговечность. Идеальное сочетание цены и качества делает компьютеры серии ONE самыми оптимальными игровыми системами HYPERPC. То, что нужно начинающим геймерам.",
-            min_price: "5000",
-            img: "/single-product/one/hyperpc-one-block-design.jpg",
-        },
-        preview: {
-            main_img: "/single-product/one/hyperpc-one-block-gallery.jpg",
-            title: "ГАРМОНИЯ СТИЛЯ",
-            description:
-                "ONE - это компьютер с элегантным черным корпусом, дополненным яркими A-RGB вентиляторами и изящными прямыми линиями, идеально вписывающимися в любой интерьер. Высококачественная сталь обеспечивает прочную фиксацию комплектующих, а стильная сетчатая передняя панель и прозрачное смотровое окно подчеркивают эксклюзивность и уникальность дизайна.",
-            slider_images: [
-                "/single-product/one/hyperpc-one-block-design.jpg",
-                "/single-product/one/hyperpc-one-1.jpg",
-                "/single-product/one/hyperpc-one-block-design.jpg",
-                "/single-product/one/hyperpc-one-1.jpg",
-                "/single-product/one/hyperpc-one-block-design.jpg",
-                "/single-product/one/hyperpc-one-1.jpg",
-            ],
-        },
-        performance: {
-            img: "/single-product/one/hyperpc-one-block-performance.jpg",
-            img_2: "/single-product/one/hyperpc-one-block-memory.jpg",
-            title: "ПЕРЕДОВАЯ МОЩНОСТЬ",
-            description:
-                "Компьютеры ONE построены на базе передовых компьютерных комплектующих: процессоров Intel Core 12-го и 14-го поколения, а также видеокарт NVIDIA с поддержкой последних графических технологий, таких как трассировка лучей, генерация кадров и сглаживание DLSS. Эти комплектующие гарантируют высокую производительность не только в играх, но и в сложных профессиональных программах. Неважно, чем вы будете заниматься, графическим дизайном, архитектурным проектированием или 3D моделированием. Компьютеры ONE станут надежной платформой для решения ваших творческих задач.",
-        },
-        configurations: [
-            {
-                _id: "4",
-                // configuration_id:'2',
-                configuration_name: "One Ultra",
-                configuration_description:
-                    "Платформа для гейминга в Full HD разрешении, созданная на базе центрального процессора Intel® Core™ i5-12400F [до 4.4GHz, 6 ядер] и видеокарты Palit GeForce RTX 4060 Ti Dual [8GB, 4352 CUDA].",
-                configuration_price: "6800",
-                link_to_configurator: "/one-ultra/config",
-                img: "/gaming-pc/one.jpg", //взять в другой таблице
-                gpu: {
-                    id: 11,
-                    partition: "RTX 4060",
-                    name: "Palit GeForce RTX 4060 Ti Dual [8GB, 4352 CUDA]",
-                    price: "3000",
-                    img: "/components/gpu/palit-rtx-4060-ti-dual.png",
-                },
-                cpu: {
-                    id: 11,
-                    partition: "Intel Core 12th",
-                    name: "Intel® Core™ i5-12400F [до 4.4GHz, 6 ядер]",
-                    price: "1500",
-                    img: "/components/cpu/intel-core-i5-12th.jpg",
-                },
-                motherboard: {
-                    id: 11,
-                    partition: "Intel B760",
-                    name: "MSI PRO B760M-A [DDR4, Wi-Fi]",
-                    price: "400",
-                    img: "/components/mb/msi-pro-b760m-awifi-314x177.jpg",
-                },
-                cpu_fan: {
-                    id: 11,
-                    partition: "Asus",
-                    name: "ASUS ROG RYUO III 360 White",
-                    price: "450",
-                    img: "/components/cpu-fan/asus-rog-ryuo-iii-360-argb-white-314x177.jpg",
-                },
-                ram: {
-                    id: 11,
-                    partition: "16 ГБ",
-                    name: "16GB Kingston FURY Beast RGB [DDR4, 3600MHz, 2x8GB]",
-                    price: "220",
-                    img: "/components/ram/kingston-fury-beast-ddr4-rgb-2x-314x177.jpg",
-                },
-                ssd: {
-                    id: 11,
-                    partition: "500 ГБ",
-                    name: "500GB ADATA LEGEND 800 [3500MB/s, Gen4]",
-                    price: "300",
-                    img: "/components/ssd/adata-legend-800-314x177.jpg",
-                },
-                power_supply: {
-                    id: 11,
-                    partition: "От 500W",
-                    name: "550W DeepCool PK550D [80+ Bronze]",
-                    price: "160",
-                    img: "/components/pow-sup/deepcool-pk550d-314x177.jpg",
-                },
-                case: {
-                    id: 11,
-                    partition: "Asus",
-                    name: "ASUS TUF GAMING GT502 White",
-                    price: "500",
-                    img: "/components/case/asus-tuf-gt520-white-314x177.jpg",
-                },
-            },
-            {
-                _id: "4",
-                // configuration_id:'2',
-                configuration_name: "One Ultra",
-                configuration_description:
-                    "Платформа для гейминга в Full HD разрешении, созданная на базе центрального процессора Intel® Core™ i5-12400F [до 4.4GHz, 6 ядер] и видеокарты Palit GeForce RTX 4060 Ti Dual [8GB, 4352 CUDA].",
-                configuration_price: "6800",
-                link_to_configurator: "/one-ultra/config",
-                img: "/gaming-pc/one.jpg", //взять в другой таблице
-                gpu: {
-                    id: 11,
-                    partition: "RTX 4060",
-                    name: "Palit GeForce RTX 4060 Ti Dual [8GB, 4352 CUDA]",
-                    price: "3000",
-                    img: "/components/gpu/palit-rtx-4060-ti-dual.png",
-                },
-                cpu: {
-                    id: 11,
-                    partition: "Intel Core 12th",
-                    name: "Intel® Core™ i5-12400F [до 4.4GHz, 6 ядер]",
-                    price: "1500",
-                    img: "/components/cpu/intel-core-i5-12th.jpg",
-                },
-                motherboard: {
-                    id: 11,
-                    partition: "Intel B760",
-                    name: "MSI PRO B760M-A [DDR4, Wi-Fi]",
-                    price: "400",
-                    img: "/components/mb/msi-pro-b760m-awifi-314x177.jpg",
-                },
-                cpu_fan: {
-                    id: 11,
-                    partition: "Asus",
-                    name: "ASUS ROG RYUO III 360 White",
-                    price: "450",
-                    img: "/components/cpu-fan/asus-rog-ryuo-iii-360-argb-white-314x177.jpg",
-                },
-                ram: {
-                    id: 11,
-                    partition: "16 ГБ",
-                    name: "16GB Kingston FURY Beast RGB [DDR4, 3600MHz, 2x8GB]",
-                    price: "220",
-                    img: "/components/ram/kingston-fury-beast-ddr4-rgb-2x-314x177.jpg",
-                },
-                ssd: {
-                    id: 11,
-                    partition: "500 ГБ",
-                    name: "500GB ADATA LEGEND 800 [3500MB/s, Gen4]",
-                    price: "300",
-                    img: "/components/ssd/adata-legend-800-314x177.jpg",
-                },
-                power_supply: {
-                    id: 11,
-                    partition: "От 500W",
-                    name: "550W DeepCool PK550D [80+ Bronze]",
-                    price: "160",
-                    img: "/components/pow-sup/deepcool-pk550d-314x177.jpg",
-                },
-                case: {
-                    id: 11,
-                    partition: "Asus",
-                    name: "ASUS TUF GAMING GT502 White",
-                    price: "500",
-                    img: "/components/case/asus-tuf-gt520-white-314x177.jpg",
-                },
-            },
-        ],
-    },
-];
 
 const os = "Microsoft Windows 11 Home OEM";
 
@@ -215,8 +21,6 @@ interface SinglePcPageProps {
 
 const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
     const { getPcByModelGroupName, isLoading } = useFetch();
-
-    console.log("pcModelGroupName", pcModelGroupName);
 
     const [pc, setPc] = useState<IPc[]>([]);
 
@@ -229,25 +33,7 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
         setPc(pc);
     };
 
-    console.log("pc", pc);
     const pathname = usePathname();
-
-    // const SliderImageItem = ({ img }: { img: string }) => {
-    //     const sliderImagesArray: string[] = JSON.parse(
-    //         pc[0].pcModelGroup.pcPreview.sliderImages
-    //     );
-    //     return (
-    //         <Image.PreviewGroup items={sliderImagesArray}>
-    //             <div>
-    //                 <Image
-    //                     className="slider-image-item"
-    //                     width={310}
-    //                     src={img}
-    //                 />
-    //             </div>
-    //         </Image.PreviewGroup>
-    //     );
-    // };
 
     if (isLoading || pc.length === 0) return <LoadingPage />; //временно (подкрутить загрузку)
 
@@ -289,35 +75,6 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                     </div>
                 </div>
             </section>
-
-            {/* <section id="preview" className="preview container section">
-                <img
-                    className="preview__img"
-                    src={pc[0].pcModelGroup?.pcPreview?.mainImage}
-                    alt="Preview"
-                    loading="lazy"
-                />
-                <div className="preview-body ">
-                    <div className="preview-body-info">
-                        <span className="preview-body-info__mark mark-gray-green">
-                            Дизайн
-                        </span>
-                        <h2 className="preview-body-info__title">
-                            {pc[0].pcModelGroup?.pcPreview?.title}
-                        </h2>
-                        <div className="preview-body-info__description">
-                            <p>{pc[0].pcModelGroup?.pcPreview?.description}</p>
-                        </div>
-                    </div>
-                    <SinglePcSlider
-                        items={JSON.parse(
-                            pc[0]?.pcModelGroup?.pcPreview?.sliderImages
-                        ).map((link: string, i: number) => (
-                            <SliderImageItem key={i} img={link} />
-                        ))}
-                    />
-                </div>
-            </section> */}
 
             <section id="performance" className="performance container section">
                 <div className="power">

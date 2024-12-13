@@ -1,0 +1,61 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+
+.parts-container {
+    display: flex;
+    gap: 20px;
+
+    @include tablet {
+        flex-direction: column;
+    }
+
+    .filters-sticky-block-wrapper {
+        position: sticky;
+        position: -webkit-sticky;
+        max-height: 500px;
+        top: 150px;
+
+        @include tablet {
+            position: static;
+        }
+
+        .filters {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 220px;
+
+            @include tablet {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            @include mobile {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            &__reset-btn {
+                @include reset-button;
+                cursor: pointer;
+                background-color: var(--main-color);
+                border-radius: 8px;
+                height: 38px;
+                margin-top: 10px;
+
+                @include hover {
+                    background-color: var(--main-color-accent);
+                }
+            }
+        }
+    }
+
+    .parts {
+        &__list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+}

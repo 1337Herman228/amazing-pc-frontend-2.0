@@ -1,0 +1,30 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/media" as *;
+
+.periphery-input {
+    .input-item {
+        display: grid;
+        grid-template-columns: 45% 45% 10%;
+        gap: 12px;
+
+        &__remove {
+            padding-top: 10px;
+            cursor: pointer;
+            transition-duration: var(--transition-duration);
+            zoom: 1.1;
+
+            @include hover {
+                color: var(--red-error-color);
+            }
+        }
+
+        &__add-btn {
+            margin-top: 10px;
+            width: 93%;
+
+            &-text {
+                padding-left: 7px;
+            }
+        }
+    }
+}

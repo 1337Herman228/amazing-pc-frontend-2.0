@@ -1,0 +1,14 @@
+.view-types {
+    &__table {
+        margin: 0 auto;
+        max-width: 1200px;
+
+        .btn-30-td {
+            width: 30px;
+        }
+    }
+
+    .type-svg-icon {
+        filter: invert(0.8);
+    }
+}

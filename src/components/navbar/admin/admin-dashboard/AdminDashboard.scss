@@ -1,0 +1,74 @@
+@use ".../../../../../../styles/variables" as *;
+@use ".../../../../../../styles/media" as *;
+@use ".../../../../../../styles/mixins" as *;
+
+.admin-dashboard-header {
+    overflow-y: hidden;
+    text-wrap: nowrap;
+    overflow-x: auto;
+
+    position: fixed;
+    height: 70px;
+    width: 100%;
+    z-index: 1100;
+    background-color: var(--tm-color-dark-black-2);
+    padding: 20px;
+    // box-shadow: 0 0.2px 0 var(--tm-color-dark-white);
+    border-bottom: 1px solid gray;
+}
+
+.admin-dashboard {
+    // padding: 20px 35px;
+    // box-shadow: -0.2px 0.2px 0 var(--tm-color-dark-white);
+    // margin-bottom: 10px;
+
+    .dashboard-list {
+        display: flex;
+        gap: 10px;
+
+        &__link {
+            position: relative;
+            color: var(--tm-color-dark-white);
+            text-transform: uppercase;
+            text-decoration: none;
+            transition-duration: var(--transition-duration);
+            padding: 5px;
+            font-size: 16px;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                translate: -50%;
+                width: 0;
+                height: 2px;
+                background-color: var(--main-color);
+                transition-duration: inherit;
+
+                @include tablet {
+                    height: 1px;
+                }
+            }
+
+            &.current-link {
+                &::after {
+                    width: 95%;
+                }
+
+                @include tablet {
+                    &::after {
+                        width: 95%;
+                    }
+                }
+            }
+
+            @include hover {
+                color: var(--tm-color-white);
+                &::after {
+                    width: 95%;
+                }
+            }
+        }
+    }
+}

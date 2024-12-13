@@ -35,5 +35,7 @@ export const config = {
         "/gaming-pc/:path*",
         "/notebook:path*",
         "/workstation:path*",
+        "/configurator:path*",
+        "/cart:path*",
     ],
 };

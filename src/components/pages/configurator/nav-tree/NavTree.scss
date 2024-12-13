@@ -1,0 +1,209 @@
+@use "../../../../styles/variables" as *;
+@use "../../../../styles/media" as *;
+@use "../../../../styles/mixins" as *;
+
+.aside-components-tree {
+    background-color: transparent;
+
+    .tree-list {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        // gap:8px;
+
+        &__item {
+            --animation-duration: 0.3s;
+
+            &-open-btn {
+                @include reset-button;
+                width: 100%;
+                position: relative;
+                transition-duration: var(--animation-duration);
+                font-size: 14px;
+                text-align: start;
+                padding: 5px;
+                padding-left: 45px;
+                text-transform: uppercase;
+                color: var(--text-color-grey);
+                cursor: pointer;
+
+                &::before {
+                    content: "";
+                    left: 0px;
+                    bottom: -5px;
+                    position: absolute;
+                    transition-duration: var(--animation-duration);
+                    height: 40px;
+                    width: 40px;
+                    background-image: url("/configurator-svg/green-arrow.svg");
+                }
+
+                @include hover {
+                    color: white;
+                }
+
+                &.active {
+                    color: white;
+
+                    &::before {
+                        transform: rotate(90deg);
+                    }
+                }
+            }
+
+            .tree-list__nav-list {
+                overflow: hidden;
+                max-height: 0;
+                // transition: max-height 0.3s ease-out;
+                position: relative;
+                padding-left: 55px;
+                opacity: 0;
+                visibility: hidden;
+                transition:
+                    max-height var(--animation-duration) ease-in-out,
+                    opacity var(--animation-duration) ease-in-out,
+                    visibility var(--animation-duration) ease-in-out;
+
+                padding-block: 10px;
+                // padding-top: 10px;
+
+                &.open {
+                    padding: 10px 0 10px 55px;
+                    // padding: 0px 0 0 55px;
+                    display: flex;
+                    flex-direction: column;
+                    opacity: 1;
+                    visibility: visible;
+                    transition:
+                        max-height var(--animation-duration) ease-in-out,
+                        opacity var(--animation-duration) ease-in-out,
+                        visibility var(--animation-duration) ease-in-out;
+                    // gap: 15px;
+
+                    max-height: 500px;
+                    // transition: max-height 0.3s ease-in;
+                }
+
+                &::after {
+                    content: "";
+                    position: absolute;
+                    // left: -20px;
+                    left: 20px;
+                    top: -4px;
+                    height: 23px;
+                    border-left: 1px dashed var(--nav-circle-default-color);
+                }
+
+                // &::before{
+                //      content: '';
+                //      display: block;
+                //      height: 10px; /* высота отступов */
+                //      transition: height 0.3s ease-in-out;
+                //      // margin-bottom: -10px; /* компенсируем начальный отступ */
+                // }
+
+                &-decoration-border {
+                    position: relative;
+
+                    &:not(:nth-last-child(2)) {
+                        &::before {
+                            content: "";
+                            position: absolute;
+                            left: -35px;
+                            top: 16px;
+                            width: 1px;
+                            height: 33px;
+                            // transform: rotate(90deg);
+                            z-index: 500;
+                            border-left: 1px dashed var(--nav-circle-default-color);
+                        }
+                    }
+
+                    &:first-child {
+                        &::before {
+                            top: 11px;
+                            height: 31px;
+                        }
+                    }
+                }
+
+                &-item {
+                    display: flex;
+                    gap: 10px;
+                    cursor: pointer;
+                    padding-block: 7px;
+                    position: relative;
+
+                    &::after {
+                        content: "";
+                        position: absolute;
+                        left: -20px;
+                        width: 8px;
+                        aspect-ratio: 1;
+                        background-color: var(--nav-circle-default-color);
+                        border-radius: 50%;
+                        top: 12px;
+                    }
+
+                    &::before {
+                        content: "";
+                        position: absolute;
+                        left: -34px;
+                        top: 15px;
+                        width: 18px;
+                        height: 1px;
+                        border-top: 1px dashed var(--nav-circle-default-color);
+                    }
+
+                    &:nth-child(2) {
+                        padding-top: 0;
+
+                        &::after {
+                            top: 5px;
+                        }
+
+                        &::before {
+                            top: 8px;
+                        }
+                    }
+                    &:last-child {
+                        padding-bottom: 0;
+                    }
+
+                    &-icon {
+                        transition-duration: var(--transition-duration);
+                        filter: invert(0.5);
+                    }
+
+                    &-name {
+                        transition-duration: var(--transition-duration);
+                        color: var(--text-color-grey);
+                        font-size: 14px;
+                        font-weight: 300;
+                    }
+
+                    &.active {
+                        .tree-list__nav-list-item-name {
+                            color: white;
+                        }
+                        .tree-list__nav-list-item-icon {
+                            filter: invert(1);
+                        }
+                        &::after {
+                            background-color: var(--main-color);
+                        }
+                    }
+
+                    @include hover {
+                        .tree-list__nav-list-item-name {
+                            color: white;
+                        }
+                        .tree-list__nav-list-item-icon {
+                            filter: invert(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

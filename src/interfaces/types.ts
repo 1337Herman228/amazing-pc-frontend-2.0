@@ -196,7 +196,7 @@ export interface IpcModelGroupList {
     pcModelGroup: IpcModelGroup;
 }
 
-export interface ICpu {
+export type ICpu = {
     cpuId: number;
     socket: string;
     maxRamCapacity: number;
@@ -210,9 +210,9 @@ export interface ICpu {
     cacheL2: string | null;
     cacheL3: string | null;
     tdp: number;
-}
+};
 
-export interface IGpu {
+export type IGpu = {
     gpuId: number; // Идентификатор GPU
     techProcess: number; // Технологический процесс в нанометрах
     maxDisplaysQuantity: number; // Максимальное количество подключаемых дисплеев
@@ -232,9 +232,9 @@ export interface IGpu {
     length: number; // Длина в миллиметрах
     width: number; // Ширина в миллиметрах
     height: number; // Высота в миллиметрах
-}
+};
 
-export interface IMotherboard {
+export type IMotherboard = {
     motherboardId: number;
     socket: string;
     formFactor: string;
@@ -245,9 +245,9 @@ export interface IMotherboard {
     sataQuantity: number;
     m2Quantity: number;
     pcie16Quantity: number;
-}
+};
 
-export interface ICpuAirCooling {
+export type ICpuAirCooling = {
     cpuAirCoolingId: number;
     sockets: string; //JSON
     fansQuantity: number;
@@ -259,9 +259,9 @@ export interface ICpuAirCooling {
     airFlow: number;
     maxNoiseLevel: number;
     connector: string;
-}
+};
 
-export interface ICpuLiquidCooling {
+export type ICpuLiquidCooling = {
     cpuLiquidCoolingId: number; // Используйте number для Long
     sockets: string; // JSON, Формат: "Am4, Am5, Lga1700"
     fansQuantity: number;
@@ -275,16 +275,16 @@ export interface ICpuLiquidCooling {
     airFlow: number; // CFM
     maxNoiseLevel: number; // Дб
     connector: string; // Пример: "4 pin PWM"
-}
+};
 
-export interface IRam {
+export type IRam = {
     ramId: number;
     type: string;
     frequency: number;
     capacity: number; // В ГБ
-}
+};
 
-export interface IPsu {
+export type IPsu = {
     psuId: number;
     power: number; // Ватт
     formFactor: string;
@@ -296,9 +296,9 @@ export interface IPsu {
     sataQuantity: number; // Количество SATA разъемов
     certificate: string; // Сертификация
     modular: string; // Тип модульности
-}
+};
 
-export interface ICase {
+export type ICase = {
     caseId: number;
     maxCpuCoolerHeight: number; // В миллиметрах
     maxGpuLength: number; // В миллиметрах
@@ -311,9 +311,9 @@ export interface ICase {
     height: number; // В миллиметрах
     weight: number; // В килограммах
     possibleFormFactors: string; // JSON Массив форм-факторов
-}
+};
 
-export interface ISsd {
+export type ISsd = {
     capacity: string | null; // Пример: "512 ГБ"
     connectionType: string | null; // Пример: "PCI-E 4.0 x4"
     controllerType: string | null; // Пример: "Silicon Motion SM2269XT"
@@ -325,21 +325,21 @@ export interface ISsd {
     readVelocity: number | null; // В МБ/с
     ssdId: number; // Идентификатор SSD
     writeVelocity: number | null; // В МБ/с
-}
+};
 
-export interface IFan {
+export type IFan = {
     fanId: number; // Идентификатор вентилятора
     fanSize: string | null; // Пример: "120x120 мм"
     backlight: string | null; // Пример: "ARGB"
     fanSpeed: string | null; // Пример: "800-1800 об/мин"
     airFlow: string | null; // Пример: "59" (можно использовать number, если требуется)
     maxNoiseLevel: number | null; // В децибелах
-}
+};
 
-export interface IPeriphery {
+export type IPeriphery = {
     peripheryId: number;
     characteristics: string; // JSON
-}
+};
 
 export interface ICategory {
     categoryId: number;
@@ -358,7 +358,7 @@ export interface IType {
     typeImage: string;
 }
 
-export interface IPart {
+export type IPart = {
     partId: number;
     name: string;
     image: string;
@@ -368,42 +368,45 @@ export interface IPart {
     categories: ICategory;
     partitions: IPartition;
     types: IType;
-}
-export interface ICpuPart extends IPart {
-    cpu: ICpu;
-}
-export interface IGpuPart extends IPart {
-    gpu: IGpu;
-}
-export interface IMotherboardPart extends IPart {
-    motherboard: IMotherboard;
-}
-export interface IPsuPart extends IPart {
-    psu: IPsu;
-}
-export interface ICpuAirCoolingPart extends IPart {
-    cpuAirCooling: ICpuAirCooling;
-}
-export interface ICpuLiquidCoolingPart extends IPart {
-    cpuLiquidCooling: ICpuLiquidCooling;
-}
-export interface IRamPart extends IPart {
-    ram: IRam;
-}
-export interface ICasePart extends IPart {
-    cases: ICase;
-}
-export interface IPeripheryPart extends IPart {
-    periphery: IPeriphery;
-}
+};
 
-export interface ISsdPart extends IPart {
-    ssd: ISsd;
-}
+export type ICpuPart = IPart & ICpu;
+export type IGpuPart = IPart & IGpu;
+export type IMotherboardPart = IPart & IMotherboard;
+export type IPsuPart = IPart & IPsu;
+export type ICpuAirCoolingPart = IPart & ICpuAirCooling;
+export type ICpuLiquidCoolingPart = IPart & ICpuLiquidCooling;
+export type IRamPart = IPart & IRam;
+export type ICasePart = IPart & ICase;
+export type IPeripheryPart = IPart & IPeriphery;
+export type ISsdPart = IPart & ISsd;
+export type IFanPart = IPart & IFan;
 
-export interface IFanPart extends IPart {
-    fan: IFan;
-}
+export type IExtendedPart =
+    | ICpuPart
+    | IGpuPart
+    | IMotherboardPart
+    | IPsuPart
+    | ICpuAirCoolingPart
+    | ICpuLiquidCoolingPart
+    | IRamPart
+    | ICasePart
+    | IPeripheryPart
+    | ISsdPart
+    | IFanPart;
+
+export type IJoinPart =
+    | IPeripheryPart
+    | ICpuPart
+    | IGpuPart
+    | IMotherboardPart
+    | IPsuPart
+    | ICpuAirCoolingPart
+    | ICpuLiquidCoolingPart
+    | IRamPart
+    | ICasePart
+    | ISsdPart
+    | IFanPart;
 
 export interface ISsdList {
     ssd: ISsdPart;
@@ -433,4 +436,36 @@ export interface IPc {
     pcCase: ICasePart;
     ssdList: ISsdList[] | null;
     fansList: IFanList[] | null;
+}
+
+export interface IValidatePc {
+    gpu: IGpuPart;
+    cpu: ICpuPart;
+    motherboard: IMotherboardPart;
+    cpu_fan: ICpuAirCoolingPart | ICpuLiquidCoolingPart;
+    ram: IRamPart;
+    psu: IPsuPart;
+    cases: ICasePart | null;
+    ssd: ISsdList[];
+    fan: IFanList[];
+}
+
+export interface IProduct extends IValidatePc {
+    [key: string]: any;
+}
+
+export interface IConfiguratorComponent {
+    category: ICategory;
+    partition: string[];
+    type: IType;
+    items: IJoinPart[];
+}
+
+export interface IConfiguratorComponents {
+    components: IConfiguratorComponent[];
+}
+
+export interface IOption {
+    value: string | number;
+    label: string;
 }

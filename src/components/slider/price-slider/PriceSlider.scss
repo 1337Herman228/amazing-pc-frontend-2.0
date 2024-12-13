@@ -1,0 +1,15 @@
+@import "../../../styles/style.scss";
+
+.price-slider {
+    display: flex;
+    flex-direction: column;
+
+    &__label {
+        font-size: 14px;
+        color: var(--text-color-grey);
+    }
+
+    &__slider {
+        width: 210px;
+    }
+}

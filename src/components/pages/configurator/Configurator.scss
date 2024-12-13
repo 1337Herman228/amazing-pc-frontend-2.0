@@ -1,0 +1,32 @@
+@use "../../../styles/media" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/variables" as *;
+
+.configurator {
+    padding-top: 40px;
+    display: grid;
+    grid-template-columns: 270px auto 335px;
+    gap: 15px;
+
+    @include tablet {
+        grid-template-columns: auto 335px;
+    }
+
+    @include mobile {
+        grid-template-columns: 1fr;
+    }
+
+    .components-list {
+        display: flex;
+        flex-direction: column;
+        // gap: 30px;
+    }
+}
+
+.sticky-block {
+    background-color: rgb(110, 110, 110);
+    position: sticky;
+    position: -webkit-sticky;
+    max-height: 725px;
+    top: 85px;
+}

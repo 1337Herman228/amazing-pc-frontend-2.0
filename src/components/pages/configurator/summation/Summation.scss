@@ -1,0 +1,143 @@
+@use "../../../../styles/mixins" as *;
+@use "../../../../styles/media" as *;
+@use "../../../../styles/variables" as *;
+
+.summation {
+    margin-top: 50px;
+    background-color: var(--tm-color-dark-black-2);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+
+    &__title {
+        font-size: 20px;
+        margin-inline: auto;
+        font-weight: 300;
+        text-align: center;
+    }
+
+    &__img {
+        object-fit: contain;
+        margin-block: 20px;
+    }
+
+    &__price {
+        font-size: 20px;
+        font-weight: 300;
+        margin: 0 auto;
+        margin-bottom: 10px;
+    }
+
+    &__control-btns {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        margin-top: 15px;
+        gap: 1px;
+
+        &--btn {
+            @include reset-button;
+            @include flex-center;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 8px;
+            padding-block: 10px;
+            padding-inline: 8px;
+            background-color: var(--configurator-contol-btn-bg-color);
+            color: var(--configurator-contol-btn-color);
+
+            @include hover {
+                background-color: var(--configurator-contol-btn-bg-color-hover);
+            }
+        }
+
+        &-icon {
+            filter: invert(0.65);
+        }
+
+        &-text {
+            font-size: 12px;
+            font-weight: 300;
+        }
+    }
+
+    &__configuration {
+        display: flex;
+        flex-direction: column;
+        margin-block: 15px;
+        padding-block: 10px;
+        box-shadow:
+            0 -0.3px 0 gray,
+            0 0.3px 0 gray;
+
+        &-title {
+            // align-self: center;
+            text-align: center;
+            width: 100%;
+            font-size: 20px;
+            margin-bottom: 5px;
+            position: relative;
+
+            &::after {
+                content: "";
+                position: absolute;
+                z-index: 1000;
+                height: 10px;
+                width: 100%;
+                left: 0px;
+                bottom: -15px;
+                background: linear-gradient(to top, transparent, var(--tm-color-dark-black-2));
+            }
+        }
+
+        &-all-spec {
+            @include reset-button;
+            color: var(--main-color);
+            text-align: start;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 300;
+            position: relative;
+            cursor: pointer;
+            transition-duration: var(--transition-duration);
+
+            @include hover {
+                opacity: 0.7;
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                height: 30px;
+                width: 100%;
+                left: 0px;
+                top: -30px;
+                background: linear-gradient(to bottom, transparent, var(--tm-color-dark-black-2));
+            }
+        }
+
+        .configuration-list {
+            padding-top: 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 165px;
+            overflow-y: auto;
+            position: relative;
+
+            &__item {
+                display: flex;
+                flex-direction: column;
+                font-size: 14px;
+                font-weight: 300;
+                gap: 2px;
+
+                &-name {
+                }
+
+                &-info {
+                    color: var(--tm-color-light-grey);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+@use "../../../styles/variables" as *;
+
+.delete-modal-btn {
+    height: 35px;
+
+    &.mr {
+        margin-right: 4px;
+    }
+}
+
+.delete-modal-title {
+    padding-block: 10px;
+    font-size: 18px;
+    color: var(--text-color-grey-light);
+}

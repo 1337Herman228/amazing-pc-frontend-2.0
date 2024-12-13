@@ -1,3 +1,5 @@
+"use client";
+
 import { IUserSession } from "@/interfaces/types";
 import { useAppDispatch } from "@/lib/redux/store/store";
 import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
@@ -16,8 +18,6 @@ const MemoizedProvider = memo(
         const user = session?.user as IUserSession;
 
         dispath(setState({ session, user, token }));
-
-        console.log("MemoizedProvider");
 
         return children;
     }

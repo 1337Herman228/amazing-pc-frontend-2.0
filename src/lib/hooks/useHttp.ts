@@ -40,7 +40,7 @@ const useHttp = () => {
             token: string,
             url: string,
             method = "GET",
-            body = null,
+            body: any = null,
             headers = {
                 Authorization: "Bearer " + token,
                 "Content-Type": "application/json",
@@ -70,37 +70,11 @@ const useHttp = () => {
         []
     );
 
-    // const requestPromise = useCallback(
-    //     async (
-    //         url: string,
-    //         method = "GET",
-    //         body = null,
-    //         headers = {
-    //             Authorization: "Bearer " + token,
-    //             "Content-Type": "application/json",
-    //         }
-    //     ) => {
-    //         try {
-    //             const response = await fetch(url, { method, body, headers });
-    //             if (!response.ok) {
-    //                 throw new Error(
-    //                     "Could not fetch " + url + "status " + response.status
-    //                 );
-    //             }
-    //             return response;
-    //         } catch (e) {
-    //             throw e;
-    //         }
-    //     },
-    //     []
-    // );
-
     return {
         isLoading,
         error,
         requestJson,
         authRequest,
-        // requestPromise,
     };
 };
 

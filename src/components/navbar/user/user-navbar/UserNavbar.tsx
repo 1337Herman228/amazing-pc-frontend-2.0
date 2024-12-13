@@ -7,10 +7,22 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartWindow from "@/components/modals/cart-window/CartWindow";
 import { useAppSelector } from "@/lib/redux/store/store";
+import useFetch from "@/lib/hooks/useFetch";
 
 export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
     const [cartProductCount, setCartProductCount] = useState(0);
+
+    const [cartItems, setCartItems] = useState([]);
+    const { getUserCartItems } = useFetch();
+    useEffect(() => {
+        fetchCartItems();
+    }, [isCartWindowOpen]);
+    const fetchCartItems = async () => {
+        const data = await getUserCartItems();
+        setCartItems(data);
+    };
+    console.log(cartItems);
 
     const cart_items = useAppSelector((state) => state.cart);
     useEffect(() => {
