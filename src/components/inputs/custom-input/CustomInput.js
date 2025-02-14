@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./CustomInput.scss";
 import InputMask from "react-input-mask";
 
@@ -14,9 +14,17 @@ const CustomInput = ({
     onlyPositiveDigits = false,
     require = false,
     register,
+    unregister,
     errors,
     defaultValue = "",
+    placeholder = "",
 }) => {
+    useEffect(() => {
+        return () => {
+            if (unregister) unregister(name);
+        };
+    }, []);
+
     const [isShow, setIsShow] = useState(type === "password" ? false : null);
 
     const requiredMessage = "Введите " + labelText.toLowerCase();
@@ -87,6 +95,7 @@ const CustomInput = ({
                 {isPhone == false && (
                     <>
                         <input
+                            placeholder={placeholder}
                             defaultValue={defaultValue}
                             className={`form-field__input ${
                                 errors[name]?.message ? "error" : ""

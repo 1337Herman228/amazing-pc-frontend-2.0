@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import "./AddPart.scss";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { notification } from "antd";
 import {
-    makePartEntityObject,
+    makeOptionsList,
+    makePartCollectionRecord,
     saveImg,
-    switchAdditionalForm,
 } from "@/lib/functions";
 import useFetch from "@/lib/hooks/useFetch";
 import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashboard";
@@ -16,44 +16,9 @@ import AloneSelect from "@/components/select/antd-alone-select/AloneSelect";
 import ImageUpload from "@/components/upload-image/ImageUpload";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 import Textarea from "@/components/textarea/Textarea";
-import { IOption, IPartition, IType } from "@/interfaces/types";
-
-const categories: IOption[] = [
-    {
-        value: "Комплектующие",
-        label: "Комплектующие",
-    },
-    {
-        value: "Периферия",
-        label: "Периферия",
-    },
-];
-
-const makeOptionsListFromTypes = (types: IType[]) => {
-    const newArr: IOption[] = [];
-
-    types.forEach((element) => {
-        newArr.push({
-            value: element.alternativeName,
-            label: element.alternativeName,
-        });
-    });
-
-    return newArr;
-};
-
-const makeOptionsListFromPartitions = (partitions: IPartition[]) => {
-    const newArr: IOption[] = [];
-
-    partitions.forEach((element) => {
-        newArr.push({
-            value: element.partitionName,
-            label: element.partitionName,
-        });
-    });
-
-    return newArr;
-};
+import { ICategory, IPartition, IType } from "@/interfaces/types-v2";
+import PartForm from "@/components/forms/part-forms/PartForm";
+import { NOT_SELECTED_OPTION } from "@/constants";
 
 const AddPart = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -70,7 +35,8 @@ const AddPart = () => {
         });
     };
 
-    const { getTypes, getPartitions, addPart, isLoading } = useFetch();
+    const { getTypes, getCategories, getPartitions, addPart, isLoading } =
+        useFetch();
     const {
         register,
         unregister,
@@ -81,22 +47,34 @@ const AddPart = () => {
     const [img, setImg] = useState(null);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-    const [typesOptions, setTypesOptions] = useState<IOption[]>([]);
-    const [partitionsOptions, setPartitionsOptions] = useState<IOption[]>([]);
+    const [typesOptions, setTypesOptions] = useState<IType[]>([]);
+    const [partitionsOptions, setPartitionsOptions] = useState<IPartition[]>(
+        []
+    );
+    const [categoriesOptions, setCategoriesOptions] = useState<ICategory[]>([]);
 
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [selectedType, setSelectedType] = useState("");
-    const [selectedPartition, setSelectedPartition] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<ICategory | null>(
+        null
+    );
+    const [selectedType, setSelectedType] = useState<IType | null>(null);
+    const [selectedPartition, setSelectedPartition] =
+        useState<IPartition | null>(null);
 
-    const formSubmit = async (data: any) => {
+    const formSubmit = async (data: FieldValues) => {
         try {
-            if (img && selectedPartition) {
-                const object = makePartEntityObject({
+            if (
+                img &&
+                selectedPartition?.value &&
+                selectedType &&
+                selectedCategory
+            ) {
+                const object = makePartCollectionRecord(
+                    undefined,
                     data,
                     selectedCategory,
                     selectedType,
-                    selectedPartition,
-                });
+                    selectedPartition
+                );
 
                 await addPart(object);
                 await saveImg(data.name, img);
@@ -113,20 +91,31 @@ const AddPart = () => {
     useEffect(() => {
         fetchTypes();
         fetchPartitions();
+        fetchCategories();
     }, []);
 
     const fetchTypes = async () => {
         try {
-            const data = await getTypes();
-            setTypesOptions(makeOptionsListFromTypes(data));
+            const data: IType[] = await getTypes();
+            setTypesOptions(makeOptionsList(data, [NOT_SELECTED_OPTION]));
         } catch (error) {
             console.error(error);
         }
     };
+
+    const fetchCategories = async () => {
+        try {
+            const data = await getCategories();
+            setCategoriesOptions(makeOptionsList(data, [NOT_SELECTED_OPTION]));
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const fetchPartitions = async () => {
         try {
             const data = await getPartitions();
-            setPartitionsOptions(makeOptionsListFromPartitions(data));
+            setPartitionsOptions(makeOptionsList(data, [NOT_SELECTED_OPTION]));
         } catch (error) {
             console.error(error);
         }
@@ -143,22 +132,25 @@ const AddPart = () => {
                 <div className="add-part container pt-100">
                     <aside className="manage-form">
                         <AloneSelect
+                            value={selectedCategory || categoriesOptions[0]}
                             setStateField={setSelectedCategory}
                             name="Категория"
-                            options={categories}
+                            options={categoriesOptions}
                         />
+
                         <AloneSelect
+                            value={selectedType || typesOptions[0]}
                             setStateField={setSelectedType}
                             name="Тип"
                             options={typesOptions}
                         />
                     </aside>
                     <aside className="main-form">
-                        {!selectedCategory ? (
+                        {!selectedCategory?.value ? (
                             <h1 className="main-form__title">
                                 Выберите категорию
                             </h1>
-                        ) : !selectedType ? (
+                        ) : !selectedType?.value ? (
                             <h1 className="main-form__title">Выберите тип</h1>
                         ) : (
                             <>
@@ -204,23 +196,29 @@ const AddPart = () => {
                                                     require={true}
                                                     register={register}
                                                     errors={errors}
+                                                    unregister={unregister}
                                                 />
                                             </div>
 
                                             <div className="form__general-price">
                                                 <CustomInput
                                                     onlyPositiveDigits={true}
-                                                    labelText="Цена (BYN)"
+                                                    labelText="Цена"
                                                     name="price"
                                                     minLength={0}
                                                     require={true}
                                                     register={register}
                                                     errors={errors}
+                                                    unregister={unregister}
                                                 />
                                             </div>
 
                                             <div className="form__general-select-partition">
                                                 <AloneSelect
+                                                    value={
+                                                        selectedPartition ||
+                                                        partitionsOptions[0]
+                                                    }
                                                     setStateField={
                                                         setSelectedPartition
                                                     }
@@ -255,7 +253,7 @@ const AddPart = () => {
                                                 />
                                             </div>
 
-                                            <div className="form__general-quantity-left">
+                                            {/* <div className="form__general-quantity-left">
                                                 <CustomInput
                                                     defaultValue={"0"}
                                                     type="number"
@@ -265,8 +263,9 @@ const AddPart = () => {
                                                     minLength={0}
                                                     register={register}
                                                     errors={errors}
+                                                    unregister={unregister}
                                                 />
-                                            </div>
+                                            </div> */}
 
                                             <input
                                                 onClick={() =>
@@ -279,14 +278,16 @@ const AddPart = () => {
                                         </div>
 
                                         <div className="form__additional">
-                                            {switchAdditionalForm({
-                                                selectedCategory,
-                                                isFormSubmitted,
-                                                selectedType,
-                                                register,
-                                                unregister,
-                                                errors,
-                                            })}
+                                            <PartForm
+                                                categoryValue={
+                                                    selectedCategory.value
+                                                }
+                                                typeValue={selectedType.value}
+                                                register={register}
+                                                unregister={unregister}
+                                                errors={errors}
+                                                part={null}
+                                            />
                                         </div>
                                     </form>
                                 </div>

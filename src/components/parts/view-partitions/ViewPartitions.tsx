@@ -9,7 +9,7 @@ import useFetch from "@/lib/hooks/useFetch";
 import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashboard";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import DeleteModal from "@/components/modals/delete-modal/DeleteModal";
-import { IPartition } from "@/interfaces/types";
+import { IPartition } from "@/interfaces/types-v2";
 
 const ViewPartitions = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -61,7 +61,7 @@ const ViewPartitions = () => {
 
     const handleDeletePartition = async (partition: IPartition) => {
         try {
-            await deletePartition(partition.partitionId);
+            await deletePartition(partition.id);
             succesDeleteNotification();
             fetchPartitions();
         } catch (error) {
@@ -83,7 +83,7 @@ const ViewPartitions = () => {
                             <tr className="modal-table__header">
                                 <th
                                     className="modal-table__header-text"
-                                    colSpan={3}
+                                    colSpan={4}
                                 >
                                     Разделы комплектующих
                                 </th>
@@ -91,9 +91,15 @@ const ViewPartitions = () => {
                             <tr className="modal-table__row-names">
                                 <th
                                     className="modal-table__row-names-cell"
+                                    colSpan={1}
+                                >
+                                    label
+                                </th>
+                                <th
+                                    className="modal-table__row-names-cell"
                                     colSpan={3}
                                 >
-                                    partitionName
+                                    value
                                 </th>
                             </tr>
                         </thead>
@@ -101,16 +107,20 @@ const ViewPartitions = () => {
                             {partitions.map((partition) => (
                                 <>
                                     <tr
-                                        key={partition.partitionId}
+                                        key={partition.id}
                                         className="modal-table__row"
                                     >
                                         <td className="modal-table__row-info">
-                                            {partition.partitionName}
+                                            {partition.label}
+                                        </td>
+
+                                        <td className="modal-table__row-info">
+                                            {partition.value}
                                         </td>
 
                                         <td className="modal-table__row-info btn-30-td">
                                             <Link
-                                                href={`/admin/parts/partition-edit/${partition.partitionId}`}
+                                                href={`/admin/parts/partition-edit/${partition.id}`}
                                                 className="manage-btn"
                                             >
                                                 <img

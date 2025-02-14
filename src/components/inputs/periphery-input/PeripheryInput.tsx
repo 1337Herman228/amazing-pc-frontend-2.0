@@ -1,36 +1,56 @@
-// @ts-nocheck
-
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import CustomInput from "../custom-input/CustomInput";
 import "./PeripheryInput.scss";
+import {
+    FieldErrors,
+    FieldValues,
+    UseFormRegister,
+    UseFormUnregister,
+} from "react-hook-form";
+import { ICharacteristicItem, IOptionTemplate } from "@/interfaces/types-v2";
 
-const startValue = [
+const startValue: ICharacteristicItem[] = [
     {
-        id: uuidv4(),
-        key: "",
-        value: "",
+        value: uuidv4(),
+        item: "",
+        label: "",
     },
 ];
+
+interface PeripheryInputProps {
+    register: UseFormRegister<FieldValues>;
+    unregister: UseFormUnregister<FieldValues>;
+    defaultValue: ICharacteristicItem[] | null;
+    errors: FieldErrors<FieldValues>;
+}
 
 const PeripheryInput = ({
     register,
     unregister,
     errors,
     defaultValue = null,
-}) => {
-    const [value, setValue] = useState(defaultValue || startValue);
+}: PeripheryInputProps) => {
+    const [value, setValue] = useState<ICharacteristicItem[]>(
+        defaultValue || startValue
+    );
 
     const add = () => {
-        setValue([...value, { id: uuidv4(), key: "", value: "" }]);
+        setValue([
+            ...value,
+            {
+                value: uuidv4(),
+                item: "",
+                label: "",
+            },
+        ]);
     };
 
-    const remove = (id) => {
-        const filteredValue = value.filter((item) => item.id !== id);
-        setValue(filteredValue);
-        unregister("key/" + id);
-        unregister("value/" + id);
+    const remove = (val: string) => {
+        setValue(value.filter((item) => item.value !== val));
+        unregister("label;" + val);
+        unregister("value;" + val);
     };
 
     return (
@@ -38,26 +58,32 @@ const PeripheryInput = ({
             {value.map((item) => (
                 <div className="input-item">
                     <CustomInput
-                        defaultValue={item.key}
+                        defaultValue={item.label}
                         labelText="Характеристика"
-                        name={`key/${item.id}`}
+                        name={`label;${item.value}`}
                         minLength={0}
                         require={true}
                         register={register}
                         errors={errors}
+                        unregister={unregister}
                     />
                     <CustomInput
-                        defaultValue={item.value}
+                        defaultValue={
+                            Array.isArray(item.item)
+                                ? item.item.join(", ")
+                                : item.item
+                        }
                         labelText="Значение"
-                        name={`value/${item.id}`}
+                        name={`value;${item.value}`}
                         minLength={0}
                         require={true}
                         register={register}
                         errors={errors}
+                        unregister={unregister}
                     />
                     <CloseOutlined
                         className="input-item__remove"
-                        onClick={() => remove(item.id)}
+                        onClick={() => remove(item.value)}
                     />
                 </div>
             ))}

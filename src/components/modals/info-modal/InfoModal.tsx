@@ -1,5 +1,4 @@
-// @ts-nocheck
-
+import { IPart } from "@/interfaces/types-v2";
 import "../pc-spec-modal/PcSpecModal.scss";
 import { ConfigProvider, Modal } from "antd";
 
@@ -14,12 +13,17 @@ const modalStyles = {
     },
 };
 
-const InfoModal = ({ data, isModalOpen, name, toggleModal }) => {
-    const makeObjectEntries = (data) => {
-        if (data != undefined) return Object.entries(data);
-        else return [];
-    };
+interface PartInfoModalProps {
+    part: IPart;
+    isModalOpen: boolean[];
+    toggleModal: Function;
+}
 
+const PartInfoModal = ({
+    part,
+    isModalOpen,
+    toggleModal,
+}: PartInfoModalProps) => {
     return (
         <>
             <ConfigProvider
@@ -49,21 +53,42 @@ const InfoModal = ({ data, isModalOpen, name, toggleModal }) => {
                                     className="modal-table__header-text"
                                     colSpan={2}
                                 >
-                                    Характеристики {name}
+                                    {part.name}
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {makeObjectEntries(data).map(([key, value]) => (
-                                <tr key={key} className="modal-table__row">
-                                    <td className="modal-table__row-info">
-                                        {key}
-                                    </td>
-                                    <td className="modal-table__row-price">
-                                        {value}
-                                    </td>
-                                </tr>
-                            ))}
+                            <tr className="modal-table__row">
+                                <td className="modal-table__row-info">
+                                    Категория
+                                </td>
+                                <td className="modal-table__row-price">
+                                    {part.categories.label}
+                                </td>
+                            </tr>
+                            <tr className="modal-table__row">
+                                <td className="modal-table__row-info">Тип</td>
+                                <td className="modal-table__row-price">
+                                    {part.types.label}
+                                </td>
+                            </tr>
+                            {part.characteristics.map(
+                                ({ label, value, item }) => (
+                                    <tr
+                                        key={value}
+                                        className="modal-table__row"
+                                    >
+                                        <td className="modal-table__row-info">
+                                            {label}
+                                        </td>
+                                        <td className="modal-table__row-price">
+                                            {Array.isArray(item)
+                                                ? item.join(", ")
+                                                : item}
+                                        </td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </Modal>
@@ -72,4 +97,4 @@ const InfoModal = ({ data, isModalOpen, name, toggleModal }) => {
     );
 };
 
-export default InfoModal;
+export default PartInfoModal;

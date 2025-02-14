@@ -4,18 +4,23 @@ import React, { useRef } from "react";
 import "./PriceSlider.scss";
 import { ConfigProvider, Slider } from "antd";
 
-const PriceSlider = ({ name, minMax, setMinMax }: any) => {
+interface PriceSliderProps {
+    name: string;
+    minMax: number[];
+    value: number[];
+    onChange: (value: number[]) => void;
+}
+
+const PriceSlider = ({ name, minMax, value, onChange }: PriceSliderProps) => {
     const refMin = useRef<HTMLSpanElement>(null);
     const refMax = useRef<HTMLSpanElement>(null);
 
     const handleChange = (value: any) => {
-        setTimeout(() => {
-            setMinMax(value);
-            if (refMin.current && refMax.current) {
-                refMin.current.innerHTML = value[0];
-                refMax.current.innerHTML = value[1];
-            }
-        }, 99);
+        onChange(value);
+        if (refMin.current && refMax.current) {
+            refMin.current.innerHTML = value[0];
+            refMax.current.innerHTML = value[1];
+        }
     };
 
     return (
@@ -48,6 +53,7 @@ const PriceSlider = ({ name, minMax, setMinMax }: any) => {
                     className="price-slider__slider"
                     min={minMax[0]}
                     max={minMax[1]}
+                    value={value}
                     range={{}}
                     defaultValue={minMax}
                     onChange={handleChange}

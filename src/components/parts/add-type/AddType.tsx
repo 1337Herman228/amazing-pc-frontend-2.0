@@ -9,11 +9,11 @@ import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashb
 import ImageUpload from "@/components/upload-image/ImageUpload";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 import useFetch from "@/lib/hooks/useFetch";
-import { IType } from "@/interfaces/types";
+import { IType } from "@/interfaces/types-v2";
 
 export interface ITypeFormFields {
-    typeName: string;
-    alternativeName: string;
+    value: string;
+    label: string;
 }
 
 const AddType = () => {
@@ -35,6 +35,7 @@ const AddType = () => {
 
     const {
         register,
+        unregister,
         handleSubmit,
         formState: { errors },
     } = useForm<ITypeFormFields>();
@@ -46,13 +47,14 @@ const AddType = () => {
         try {
             if (img) {
                 const typeToAdd: IType = {
-                    ...data,
-                    typeId: 0,
-                    typeImage: "/svg-icons/" + data.typeName + ".svg",
+                    id: "",
+                    value: data.value,
+                    label: data.label,
+                    image: "/svg-icons/" + data.value + ".svg",
                 };
                 await addType(typeToAdd);
                 succesNotification();
-                saveSvgIcon(data.typeName, img);
+                saveSvgIcon(data.value, img);
             } else {
                 errorNotification();
             }
@@ -96,21 +98,25 @@ const AddType = () => {
                         </div>
 
                         <CustomInput
-                            labelText='Название типа (например "cpu")'
-                            name="typeName"
+                            labelText="Название типа"
+                            name="value"
                             minLength={3}
                             require={true}
                             register={register}
                             errors={errors}
+                            unregister={unregister}
+                            placeholder="cpu"
                         />
 
                         <CustomInput
-                            labelText='Альтернативное название типа (например "Процессор")'
-                            name="alternativeName"
+                            labelText="Отображаемое название типа"
+                            name="label"
                             minLength={3}
                             require={true}
                             register={register}
                             errors={errors}
+                            unregister={unregister}
+                            placeholder="Процессор"
                         />
 
                         <input

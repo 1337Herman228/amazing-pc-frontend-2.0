@@ -1,25 +1,33 @@
 "use client";
 
 import { ConfigProvider, Select } from "antd";
-import React from "react";
 import "./AloneSelect.scss";
+import { IOptionTemplate } from "@/interfaces/types-v2";
+import { useCallback } from "react";
 
-const AloneSelect = ({
+interface AloneSelectProps<T> {
+    options: T[];
+    name: string;
+    setStateField: (value: T) => void;
+    value: T;
+    isError?: boolean;
+    defaultValue?: T;
+}
+
+const AloneSelect = <T extends IOptionTemplate>({
     options,
     name,
     setStateField,
     isError,
-    defaultValue = "",
-}: {
-    options: any[];
-    name: string;
-    setStateField: Function;
-    isError?: boolean;
-    defaultValue?: string;
-}) => {
-    const handleChange = (value: string) => {
-        setStateField(value);
-    };
+    defaultValue,
+    value,
+}: AloneSelectProps<T>) => {
+    const onChange = useCallback(
+        (value: T, option: T | T[]) => {
+            setStateField(Array.isArray(option) ? option[0] : option);
+        },
+        [setStateField]
+    );
 
     return (
         <ConfigProvider
@@ -46,13 +54,15 @@ const AloneSelect = ({
             }}
         >
             {" "}
-            <div className="select-container">
+            <div className="select-container" id={name}>
                 <div className="label">
                     <p>{name}</p>
                 </div>
                 <Select
+                    value={value}
+                    labelRender={(label) => label.label}
                     className="select"
-                    onChange={handleChange}
+                    onChange={onChange}
                     showSearch
                     notFoundContent={
                         <p style={{ color: "white", paddingBlock: "10px" }}>
@@ -62,13 +72,16 @@ const AloneSelect = ({
                     defaultValue={defaultValue}
                     popupMatchSelectWidth={false}
                     size="large"
-                    placeholder="Выбор"
                     filterOption={(input, option) =>
                         String(option?.label ?? "")
                             .toLowerCase()
                             .includes(input.toLowerCase())
                     }
                     options={options}
+                    getPopupContainer={() =>
+                        document.querySelector(`.select-container#${name}`) ||
+                        document.body
+                    }
                 />
             </div>
         </ConfigProvider>

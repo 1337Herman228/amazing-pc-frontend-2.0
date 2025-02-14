@@ -1,12 +1,13 @@
 import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
-import { IPart, IPartition, IType } from "@/interfaces/types";
+import { useCallback, useEffect } from "react";
+import { IPart, IPartition, IType } from "@/interfaces/types-v2";
 
 const useFetch = () => {
     const { requestJson, isLoading, error } = useHttp();
     const { session, token, user } = useAppSelector((state) => state.session);
 
-    const getGamingPcCatalog = async () => {
+    const getGamingPcCatalog = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
@@ -14,7 +15,7 @@ const useFetch = () => {
             );
             return data;
         }
-    };
+    }, [token]);
 
     const getNotebooksCatalog = async () => {
         if (token) {
@@ -56,35 +57,58 @@ const useFetch = () => {
         }
     };
 
-    const getParts = async () => {
+    const getParts = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/admin/parts`
+                `http://localhost:8080/user/parts`
             );
             return data;
         }
-    };
+    }, [token]);
 
-    const getTypes = async () => {
+    const getTypes = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/admin/types`
+                `http://localhost:8080/user/types`
             );
             return data;
         }
-    };
+    }, [token]);
 
-    const getPartitions = async () => {
+    const getTypeById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/types/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getCategories = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/admin/partitions`
+                `http://localhost:8080/user/categories`
             );
             return data;
         }
-    };
+    }, [token]);
+
+    const getPartitions = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/partitions`
+            );
+            return data;
+        }
+    }, [token]);
 
     const getUserCartItems = async () => {
         if (token) {
@@ -96,140 +120,157 @@ const useFetch = () => {
         }
     };
 
-    const getPartById = async (partId: string | number) => {
+    const getPartById = useCallback(async (id: string) => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/admin/get-part/${partId}`
+                `http://localhost:8080/user/parts/${id}`
             );
             return data;
         }
-    };
+    }, []);
 
-    const getTypeById = async (typeId: string | number) => {
+    const getPartitionById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/partitions/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addPartition = useCallback(
+        async (partiton: IPartition) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/partitions`,
+                    "POST",
+                    JSON.stringify(partiton)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deletePartition = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/partitions/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPartition = useCallback(
+        async (partiton: IPartition) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/partitions`,
+                    "PUT",
+                    JSON.stringify(partiton)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addType = useCallback(
+        async (type: IType) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/types`,
+                    "POST",
+                    JSON.stringify(type)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deleteType = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/types/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editType = useCallback(
+        async (type: IType) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/types`,
+                    "PUT",
+                    JSON.stringify(type)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addPart = useCallback(
+        async (part: IPart) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/parts`,
+                    "POST",
+                    JSON.stringify(part)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deletePart = useCallback(async (id: String) => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/admin/get-type/${typeId}`
-            );
-            return data;
-        }
-    };
-
-    const getPartitionById = async (id: string | number) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/get-partition/${id}`
-            );
-            return data;
-        }
-    };
-
-    const addPartition = async (partiton: IPartition) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/add-partition`,
-                "POST",
-                JSON.stringify(partiton)
-            );
-            return data;
-        }
-    };
-
-    const deletePartition = async (id: number) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/delete-partition/${id}`,
+                `http://localhost:8080/admin/parts/${id}`,
                 "DELETE"
             );
             return data;
         }
-    };
+    }, []);
 
-    const editPartition = async (partiton: IPartition) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/edit-partition`,
-                "PUT",
-                JSON.stringify(partiton)
-            );
-            return data;
-        }
-    };
-
-    const addType = async (type: IType) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/add-type`,
-                "POST",
-                JSON.stringify(type)
-            );
-            return data;
-        }
-    };
-
-    const deleteType = async (typeId: number) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/delete-type/${typeId}`,
-                "DELETE"
-            );
-            return data;
-        }
-    };
-
-    const editType = async (type: IType) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/edit-type`,
-                "PUT",
-                JSON.stringify(type)
-            );
-            return data;
-        }
-    };
-
-    const addPart = async (part: IPart) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/add-part`,
-                "POST",
-                JSON.stringify(part)
-            );
-            return data;
-        }
-    };
-
-    const deletePart = async (id: number) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/delete-part/${id}`,
-                "DELETE"
-            );
-            return data;
-        }
-    };
-
-    const editPart = async (partDto: any) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/admin/edit-part`,
-                "POST",
-                JSON.stringify(partDto)
-            );
-            return data;
-        }
-    };
+    const editPart = useCallback(
+        async (part: IPart) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/parts`,
+                    "PUT",
+                    JSON.stringify(part)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
 
     return {
         getGamingPcCatalog,
@@ -239,6 +280,7 @@ const useFetch = () => {
         getConfiguratorParts,
         getUserCartItems,
         getPartitions,
+        getCategories,
         getPartitionById,
         addPartition,
         deletePartition,

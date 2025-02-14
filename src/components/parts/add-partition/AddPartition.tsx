@@ -8,7 +8,8 @@ import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashb
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 
 export interface IPartitionFormFields {
-    partitionName: string;
+    label: string;
+    value: string;
 }
 
 const AddPartition = () => {
@@ -28,6 +29,7 @@ const AddPartition = () => {
 
     const {
         register,
+        unregister,
         handleSubmit,
         formState: { errors },
     } = useForm<IPartitionFormFields>();
@@ -37,8 +39,9 @@ const AddPartition = () => {
     const formSubmit = async (data: IPartitionFormFields) => {
         try {
             await addPartition({
-                ...data,
-                partitionId: 0,
+                id: "",
+                value: data.value,
+                label: data.label,
             });
 
             succesNotification();
@@ -62,12 +65,24 @@ const AddPartition = () => {
                             Добавление нового раздела
                         </h1>
                         <CustomInput
-                            labelText='Название раздела (например "RTX 4060")'
-                            name="partitionName"
+                            labelText="Отображаемое название раздела"
+                            name="label"
                             minLength={3}
                             require={true}
                             register={register}
                             errors={errors}
+                            unregister={unregister}
+                            placeholder="RTX 4070"
+                        />
+                        <CustomInput
+                            labelText="Название раздела"
+                            name="value"
+                            minLength={3}
+                            require={true}
+                            register={register}
+                            errors={errors}
+                            unregister={unregister}
+                            placeholder="rtx4070"
                         />
                         <input
                             className="add-partition__form-submit-btn main-color-submit-btn"

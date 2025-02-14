@@ -35,8 +35,6 @@ const SignInPage = () => {
         if (response?.status === 200 && response.ok) {
             setIsOk(true);
         }
-
-        console.log(response);
     };
 
     if (sessionData?.user?.role === "admin" && isOk) {

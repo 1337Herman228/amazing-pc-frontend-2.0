@@ -5,23 +5,18 @@ import "./AdminListItemCard.scss";
 import { notification } from "antd";
 import { Image } from "antd";
 import Link from "next/link";
-import { deleteImg, makePartInfoObject } from "@/lib/functions";
+import { deleteImg } from "@/lib/functions";
 import DeleteModal from "@/components/modals/delete-modal/DeleteModal";
-import InfoModal from "@/components/modals/info-modal/InfoModal";
 import useFetch from "@/lib/hooks/useFetch";
+import { IPart } from "@/interfaces/types-v2";
+import PartInfoModal from "@/components/modals/info-modal/InfoModal";
 
-const AdminListItemCard = ({
-    id,
-    name,
-    type,
-    category,
-    partition,
-    price,
-    remainingQuantity,
-    part,
-    img,
-    fetchParts,
-}: any) => {
+interface AdminListItemCardProps {
+    part: IPart;
+    fetchParts: () => void;
+}
+
+const AdminListItemCard = ({ part, fetchParts }: AdminListItemCardProps) => {
     const { deletePart } = useFetch();
 
     const [api, contextHolder] = notification.useNotification();
@@ -40,14 +35,14 @@ const AdminListItemCard = ({
 
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
 
-    const [partToDelete, setPartToDelete] = useState(null);
+    const [partToDelete, setPartToDelete] = useState<IPart | null>(null);
     const [open, setOpen] = useState(false);
-    const showModal = (partToDelete: any) => {
+    const showModal = (partToDelete: IPart) => {
         setOpen(true);
         setPartToDelete(partToDelete);
     };
     const handleOk = () => {
-        handleDeletePart(partToDelete);
+        if (partToDelete) handleDeletePart(partToDelete);
         setOpen(false);
     };
 
@@ -55,10 +50,10 @@ const AdminListItemCard = ({
         setOpen(false);
     };
 
-    const handleDeletePart = async (part: any) => {
+    const handleDeletePart = async (part: IPart) => {
         try {
-            await deletePart(part.partId);
-            deleteImg(name);
+            await deletePart(part.id);
+            deleteImg(part.name);
             succesDeleteNotification();
             setTimeout(() => {
                 fetchParts();
@@ -76,29 +71,19 @@ const AdminListItemCard = ({
         });
     };
 
-    const getPartObject = () => {
-        let type = part.types.typeName;
-
-        if (part.categories.categoryName === "Периферия") {
-            type = "periphery";
-        }
-
-        return [type, part];
-    };
-
     return (
-        <li key={id} className="admin-list-item-card">
+        <li key={part.id} className="admin-list-item-card">
             {contextHolder}
             <Image
                 className="admin-list-item-card__img"
-                src={img}
+                src={part.image}
                 alt=""
                 width={165}
                 height={165}
             />
             <div className="card-content">
                 <div className="card-content__header">
-                    <h2 className="card-content__name">{name}</h2>
+                    <h2 className="card-content__name">{part.name}</h2>
                     <div className="card-content__manage">
                         <button
                             onClick={() => toggleModal(1, true)}
@@ -113,15 +98,14 @@ const AdminListItemCard = ({
                             />
                         </button>
 
-                        <InfoModal
-                            data={makePartInfoObject(getPartObject())}
-                            name={name}
+                        <PartInfoModal
+                            part={part}
                             isModalOpen={isModalOpen}
                             toggleModal={toggleModal}
                         />
 
                         <Link
-                            href={`/admin/parts/edit/${part.partId}`}
+                            href={`/admin/parts/edit/${part.id}`}
                             className="card-content__manage-btn"
                         >
                             <img
@@ -148,24 +132,26 @@ const AdminListItemCard = ({
                     </div>
                 </div>
                 <div className="card-content__info">
-                    <span className="card-content__label">Цена:</span> {price}{" "}
-                    BYN
+                    <span className="card-content__label">Цена:</span>{" "}
+                    {part.price} BYN
                 </div>
                 <div className="card-content__info">
-                    <span className="card-content__label">Тип:</span> {type}
+                    <span className="card-content__label">Тип:</span>{" "}
+                    {part.types.label}
                 </div>
                 <div className="card-content__info">
                     <span className="card-content__label">Категория:</span>{" "}
-                    {category}
+                    {part.categories.label}
                 </div>
                 <div className="card-content__info">
                     <span className="card-content__label">Раздел:</span>{" "}
-                    {partition}
+                    {part.partitions.label}
                 </div>
-                <div className="card-content__info">
+                {/* Сделать логику для кол-ва потом */}
+                {/* <div className="card-content__info">
                     <span className="card-content__label">Осталось:</span>{" "}
                     {remainingQuantity} шт
-                </div>
+                </div> */}
             </div>
             <DeleteModal
                 open={open}

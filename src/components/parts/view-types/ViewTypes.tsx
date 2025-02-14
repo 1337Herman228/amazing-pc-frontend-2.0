@@ -10,7 +10,7 @@ import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashb
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import DeleteModal from "@/components/modals/delete-modal/DeleteModal";
 import useFetch from "@/lib/hooks/useFetch";
-import { IType } from "@/interfaces/types";
+import { IType } from "@/interfaces/types-v2";
 
 const ViewTypes = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -62,8 +62,8 @@ const ViewTypes = () => {
 
     const handleDeleteType = async (type: IType) => {
         try {
-            await deleteType(type.typeId);
-            deleteSvgIcon(type?.typeName);
+            await deleteType(type.id);
+            deleteSvgIcon(type?.value);
             succesDeleteNotification();
             fetchTypes();
         } catch (error) {
@@ -92,16 +92,16 @@ const ViewTypes = () => {
                             </tr>
                             <tr className="modal-table__row-names">
                                 <th className="modal-table__row-names-cell">
-                                    typeImage
+                                    SVG
                                 </th>
                                 <th className="modal-table__row-names-cell">
-                                    typeName
+                                    value
                                 </th>
                                 <th
                                     className="modal-table__row-names-cell"
                                     colSpan={3}
                                 >
-                                    alternativeTypeName
+                                    label
                                 </th>
                             </tr>
                         </thead>
@@ -109,13 +109,13 @@ const ViewTypes = () => {
                             {types.map((type) => (
                                 <>
                                     <tr
-                                        key={type.typeId}
+                                        key={type.id}
                                         className="modal-table__row"
                                     >
                                         <td className="modal-table__row-info">
                                             <img
                                                 className="type-svg-icon"
-                                                src={type.typeImage}
+                                                src={type.image}
                                                 width={30}
                                                 height={30}
                                                 alt=""
@@ -123,15 +123,15 @@ const ViewTypes = () => {
                                             />
                                         </td>
                                         <td className="modal-table__row-info">
-                                            {type.typeName}
+                                            {type.value}
                                         </td>
                                         <td className="modal-table__row-info">
-                                            {type.alternativeName}
+                                            {type.label}
                                         </td>
 
                                         <td className="modal-table__row-info btn-30-td">
                                             <Link
-                                                href={`/admin/parts/types-edit/${type.typeId}`}
+                                                href={`/admin/parts/types-edit/${type.id}`}
                                                 className="manage-btn"
                                             >
                                                 <img

@@ -10,7 +10,7 @@ import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 import useFetch from "@/lib/hooks/useFetch";
 import { IPartitionFormFields } from "../add-partition/AddPartition";
-import { IPartition } from "@/interfaces/types";
+import { IPartition } from "@/interfaces/types-v2";
 
 const EditPartition = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -30,6 +30,7 @@ const EditPartition = () => {
 
     const {
         register,
+        unregister,
         handleSubmit,
         formState: { errors },
     } = useForm<IPartitionFormFields>();
@@ -41,8 +42,9 @@ const EditPartition = () => {
     const formSubmit = async (data: IPartitionFormFields) => {
         try {
             await editPartition({
-                partitionId: partition?.partitionId || 0,
-                ...data,
+                id: id as string,
+                value: data.value,
+                label: data.label,
             });
             succesEditNotification();
         } catch {
@@ -78,13 +80,24 @@ const EditPartition = () => {
                                 Редактирование раздела
                             </h1>
                             <CustomInput
-                                defaultValue={partition?.partitionName}
-                                labelText='Название раздела (например "RTX 4060")'
-                                name="partitionName"
+                                defaultValue={partition?.label}
+                                labelText="Отображаемое название раздела"
+                                name="label"
                                 minLength={3}
                                 require={true}
                                 register={register}
                                 errors={errors}
+                                unregister={unregister}
+                            />
+                            <CustomInput
+                                defaultValue={partition?.value}
+                                labelText="Название раздела"
+                                name="value"
+                                minLength={3}
+                                require={true}
+                                register={register}
+                                errors={errors}
+                                unregister={unregister}
                             />
                             <input
                                 className="add-partition__form-submit-btn main-color-submit-btn"

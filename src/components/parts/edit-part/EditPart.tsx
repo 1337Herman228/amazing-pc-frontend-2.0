@@ -1,29 +1,35 @@
-// @ts-nocheck
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../add-part/AddPart.scss";
-import { useForm } from "react-hook-form";
-import { PlusOutlined } from "@ant-design/icons";
-import { ConfigProvider, Image, Upload, notification } from "antd";
-import { usePathname } from "next/navigation";
+import { FieldValues, useForm } from "react-hook-form";
+import { notification } from "antd";
 import ImageUpload from "@/components/upload-image/ImageUpload";
 import {
     deleteImg,
-    makePartEntityObject,
+    makeOptionsList,
+    makePartCollectionRecord,
     saveImg,
-    switchAdditionalForm,
-    transformPart,
 } from "@/lib/functions";
-import useHttp from "@/lib/hooks/useHttp";
 import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashboard";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 import AloneSelect from "@/components/select/antd-alone-select/AloneSelect";
 import Textarea from "@/components/textarea/Textarea";
 import useFetch from "@/lib/hooks/useFetch";
+import { useParams } from "next/navigation";
+import { IOptionTemplate, IPart, IPartition } from "@/interfaces/types-v2";
+import PartForm from "@/components/forms/part-forms/PartForm";
+
+export interface IPartFormFields {
+    name: number;
+    description: number;
+}
 
 const EditPart = () => {
+    const params = useParams();
+    const partId = params?.id;
+
     const { getPartitions, getPartById, editPart } = useFetch();
 
     const [api, contextHolder] = notification.useNotification();
@@ -47,31 +53,28 @@ const EditPart = () => {
         formState: { errors },
     } = useForm();
 
-    const [img, setImg] = useState(null);
+    const [img, setImg] = useState<string | null>(null);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-    const [partitions, setPartitions] = useState([]);
-    const [part, setPart] = useState(null);
+    const [partitions, setPartitions] = useState<IOptionTemplate[]>([]);
+    const [part, setPart] = useState<IPart | null>(null);
 
-    const [selectedPartition, setSelectedPartition] = useState("");
+    const [selectedPartition, setSelectedPartition] =
+        useState<IPartition | null>(null);
 
-    const formSubmit = async (data) => {
+    const formSubmit = async (data: FieldValues) => {
         try {
-            if (img && selectedPartition) {
-                const object = makePartEntityObject({
-                    data,
-                    isEditForm: true,
+            if (img && selectedPartition && part) {
+                const object = makePartCollectionRecord(
                     part,
-                    selectedCategory: part?.categories?.categoryName,
-                    selectedType: part?.types?.alternativeName,
-                    selectedPartition,
-                });
-
+                    data,
+                    part?.categories,
+                    part?.types,
+                    selectedPartition
+                );
                 await editPart(object);
-
                 await deleteImg(part?.name);
                 saveImg(data?.name, img);
-
                 succesNotification();
             } else {
                 errorNotification();
@@ -89,43 +92,33 @@ const EditPart = () => {
     const fetchPartitions = async () => {
         try {
             const data = await getPartitions();
-            setPartitions(makeOptionsListFromPartitions(data));
+            setPartitions(makeOptionsList(data));
         } catch (error) {
             console.error(error);
         }
     };
 
-    const partId = usePathname().split("/").pop();
     const fetchPart = async () => {
         try {
-            const data = await getPartById(partId);
-            setPart(transformPart(data));
-            setSelectedPartition(data?.partitions?.partitionName);
-            setImg(data?.image);
+            if (partId) {
+                const data: IPart = await getPartById(partId as string);
+                setPart(data);
+                setSelectedPartition(data?.partitions);
+                setImg(data?.image);
+            }
         } catch (error) {
             console.error(error);
         }
     };
 
-    const makeOptionsListFromPartitions = (partitions) => {
-        const newArr = [];
-
-        partitions.forEach((element) => {
-            newArr.push({
-                value: element.partitionName,
-                label: element.partitionName,
-            });
-        });
-
-        return newArr;
-    };
+    const isLoading = !partId || !partitions || !part;
 
     return (
         <>
             {contextHolder}
 
             <AdminDashboard type="parts" />
-            {!part ? (
+            {isLoading ? (
                 <LoadingPage />
             ) : (
                 <div className="add-part container pt-100">
@@ -179,12 +172,13 @@ const EditPart = () => {
                                             require={true}
                                             register={register}
                                             errors={errors}
+                                            unregister={unregister}
                                         />
                                     </div>
 
                                     <div className="form__general-price">
                                         <CustomInput
-                                            defaultValue={part?.price}
+                                            defaultValue={String(part?.price)}
                                             onlyPositiveDigits={true}
                                             labelText="Цена (BYN)"
                                             name="price"
@@ -192,25 +186,29 @@ const EditPart = () => {
                                             require={true}
                                             register={register}
                                             errors={errors}
+                                            unregister={unregister}
                                         />
                                     </div>
 
                                     <div className="form__general-select-partition">
                                         <AloneSelect
-                                            defaultValue={
-                                                part?.partitions?.partitionName
+                                            defaultValue={part?.partitions}
+                                            value={
+                                                selectedPartition ||
+                                                partitions[0]
                                             }
                                             setStateField={setSelectedPartition}
                                             name="Раздел"
                                             options={partitions}
                                             isError={
                                                 isFormSubmitted
-                                                    ? selectedPartition
-                                                        ? null
+                                                    ? !!selectedPartition
+                                                        ? false
                                                         : true
-                                                    : null
+                                                    : false
                                             }
                                         />
+
                                         <p className="error-message">
                                             {isFormSubmitted
                                                 ? selectedPartition
@@ -233,7 +231,7 @@ const EditPart = () => {
                                         />
                                     </div>
 
-                                    <div className="form__general-quantity-left">
+                                    {/* <div className="form__general-quantity-left">
                                         <CustomInput
                                             defaultValue={
                                                 part?.remainingQuantity
@@ -245,7 +243,7 @@ const EditPart = () => {
                                             register={register}
                                             errors={errors}
                                         />
-                                    </div>
+                                    </div> */}
 
                                     <input
                                         onClick={() => setIsFormSubmitted(true)}
@@ -255,19 +253,14 @@ const EditPart = () => {
                                     />
                                 </div>
 
-                                <div className="form__additional">
-                                    {switchAdditionalForm({
-                                        selectedCategory:
-                                            part?.categories?.categoryName,
-                                        selectedType:
-                                            part?.types?.alternativeName,
-                                        register,
-                                        unregister,
-                                        errors,
-                                        part,
-                                        isEditForm: true,
-                                    })}
-                                </div>
+                                <PartForm
+                                    categoryValue={part.categories.value}
+                                    typeValue={part.types.value}
+                                    register={register}
+                                    unregister={unregister}
+                                    errors={errors}
+                                    part={part}
+                                />
                             </form>
                         </div>
                     </div>

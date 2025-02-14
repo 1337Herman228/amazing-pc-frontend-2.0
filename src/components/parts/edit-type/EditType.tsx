@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import "../add-type/AddType.scss";
 import { notification } from "antd";
 import { useForm } from "react-hook-form";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { deleteSvgIcon, saveSvgIcon } from "@/lib/functions";
 import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashboard";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import ImageUpload from "@/components/upload-image/ImageUpload";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";
 import useFetch from "@/lib/hooks/useFetch";
-import { IType } from "@/interfaces/types";
+import { IType } from "@/interfaces/types-v2";
 import { ITypeFormFields } from "../add-type/AddType";
 
 const EditType = () => {
@@ -32,6 +32,7 @@ const EditType = () => {
     const {
         register,
         handleSubmit,
+        unregister,
         formState: { errors },
     } = useForm<ITypeFormFields>();
 
@@ -45,12 +46,13 @@ const EditType = () => {
         try {
             if (img) {
                 await editType({
-                    typeId: type?.typeId as number,
-                    typeImage: "/svg-icons/" + data?.typeName + ".svg",
-                    ...data,
+                    id: type?.id as string,
+                    value: data.value,
+                    label: data.label,
+                    image: "/svg-icons/" + data.value + ".svg",
                 });
 
-                await editSvg(img, data?.typeName, type?.typeName ?? "");
+                await editSvg(img, data?.value, type?.value ?? "");
 
                 succesEditNotification();
             } else {
@@ -61,10 +63,12 @@ const EditType = () => {
         }
     };
 
-    const id = usePathname()?.split("/").pop();
+    const params = useParams();
+    const id = params?.id;
+
     const fetchEditType = async () => {
         try {
-            const editType = await getTypeById(id ?? "");
+            const editType = await getTypeById(id as string);
             setType(editType);
         } catch {}
     };
@@ -106,9 +110,9 @@ const EditType = () => {
                                     defaultImg={[
                                         {
                                             uid: "1",
-                                            name: type?.typeName,
+                                            name: type?.value,
                                             status: "done",
-                                            url: type?.typeImage,
+                                            url: type?.image,
                                         },
                                     ]}
                                     accept=".svg"
@@ -127,22 +131,26 @@ const EditType = () => {
                             </div>
 
                             <CustomInput
-                                defaultValue={type?.typeName}
-                                labelText='Название типа (например "cpu")'
-                                name="typeName"
+                                defaultValue={type?.value}
+                                labelText="Название типа"
+                                name="value"
                                 minLength={3}
                                 require={true}
                                 register={register}
                                 errors={errors}
+                                unregister={unregister}
+                                placeholder="cpu"
                             />
                             <CustomInput
-                                defaultValue={type?.alternativeName}
-                                labelText='Альтернативное название типа (например "Процессор")'
-                                name="alternativeName"
+                                defaultValue={type?.label}
+                                labelText="Видимое название типа"
+                                name="label"
                                 minLength={3}
                                 require={true}
                                 register={register}
                                 errors={errors}
+                                unregister={unregister}
+                                placeholder="Процессор"
                             />
                             <input
                                 onClick={() => setIsFormSubmitted(true)}
