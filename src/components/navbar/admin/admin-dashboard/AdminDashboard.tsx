@@ -39,6 +39,18 @@ const data = {
             link: "/admin/parts/partition-add",
         },
     ],
+    accounts: [
+        {
+            id: 1,
+            title: "Просмотр уч.записей",
+            link: "/admin/accounts/view",
+        },
+        {
+            id: 2,
+            title: "Добавить уч.запись",
+            link: "/admin/accounts/add",
+        },
+    ],
     pc: [],
 };
 

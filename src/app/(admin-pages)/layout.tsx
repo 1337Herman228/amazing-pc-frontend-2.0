@@ -6,6 +6,7 @@ import StoreProvider from "@/components/providers/StoreProvider";
 import GetSession from "@/components/providers/GetSessionProvider";
 import AdminNavbar from "@/components/navbar/admin/admin-navbar/AdminNavbar";
 import AntdConfigProvider from "@/components/providers/AntdConfigProvider";
+import "@/app/global.css";
 
 export default function RootLayout({
     children,

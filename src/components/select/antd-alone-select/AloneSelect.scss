@@ -13,4 +13,11 @@
     .select {
         width: 100%;
     }
+
+    .form-field__error {
+        padding-block: 3px;
+        font-size: 14px;
+        color: var(--red-error-color);
+        font-weight: 300;
+    }
 }

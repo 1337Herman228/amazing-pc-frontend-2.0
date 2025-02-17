@@ -40,7 +40,7 @@ const DeleteModal = ({
                             Отмена
                         </button>
                         <button
-                            className="delete-modal-btn main-color-filled-rect-btn"
+                            className="delete-modal-btn main-color-filled-rect-btn text-gray-800"
                             onClick={handleOk}
                         >
                             Да

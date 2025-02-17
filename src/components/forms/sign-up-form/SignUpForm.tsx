@@ -29,17 +29,6 @@ const SignUpForm = ({
     unregister,
     errors,
 }: SignUpFormProps) => {
-    useEffect(() => {
-        return () => {
-            unregister("login");
-            unregister("password");
-            unregister("name");
-            unregister("surname");
-            unregister("email");
-            unregister("phone");
-        };
-    }, []);
-
     return (
         <section className="auth-section centered-container">
             <div className="form-container">
@@ -77,6 +66,7 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
                         <CustomInput
                             labelText="Пароль"
@@ -87,6 +77,7 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
                         <CustomInput
                             labelText="Имя"
@@ -96,6 +87,7 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
                         <CustomInput
                             labelText="Фамилия"
@@ -105,6 +97,7 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
                         <CustomInput
                             labelText="Email"
@@ -115,6 +108,7 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
                         <CustomInput
                             labelText="Телефон"
@@ -123,10 +117,11 @@ const SignUpForm = ({
                             register={register}
                             require
                             errors={errors}
+                            unregister={unregister}
                         />
 
                         <input
-                            className="auth-form__submit-btn"
+                            className="auth-form__submit-btn  text-gray-800"
                             type="submit"
                             value="Подтвердить"
                         />

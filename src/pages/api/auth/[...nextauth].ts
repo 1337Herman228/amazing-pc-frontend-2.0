@@ -30,6 +30,9 @@ export interface ExtendedSession extends Session {
 }
 
 const options: NextAuthOptions = {
+    session: {
+        maxAge: 1 * 23 * 60 * 60,
+    },
     providers: [
         CredentialsProvider({
             name: "Credentials",

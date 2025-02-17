@@ -7,6 +7,7 @@ import UserNavbar from "@/components/navbar/user/user-navbar/UserNavbar";
 import UserFooter from "@/components/footer/user/UserFooter";
 import GetSession from "@/components/providers/GetSessionProvider";
 import AntdConfigProvider from "@/components/providers/AntdConfigProvider";
+import "@/app/global.css";
 
 export default function RootLayout({
     children,

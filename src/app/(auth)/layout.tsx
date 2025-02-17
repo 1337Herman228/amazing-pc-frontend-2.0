@@ -1,6 +1,7 @@
 "use client";
 
 import "@/styles/style.scss";
+import "@/app/global.css";
 import { _SessionProvider } from "@/components/providers/SessionProvider";
 
 export default function Layout({

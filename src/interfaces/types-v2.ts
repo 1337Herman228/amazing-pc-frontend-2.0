@@ -1,3 +1,10 @@
+import {
+    FieldErrors,
+    FieldValues,
+    UseFormRegister,
+    UseFormUnregister,
+} from "react-hook-form";
+
 export type TProductType = "PART" | "PC";
 
 export interface IProduct {
@@ -17,6 +24,7 @@ export interface IOptionTemplate {
 
 export interface ICategory extends IOptionTemplate {}
 export interface IPartition extends IOptionTemplate {}
+export interface IRole extends IOptionTemplate {}
 export interface IType extends IOptionTemplate {
     image?: string;
 }
@@ -32,4 +40,32 @@ export interface IPart extends IProduct {
     partitions: IPartition;
     types: IType;
     characteristics: ICharacteristicItem[];
+}
+
+export interface IUser {
+    id: string;
+    login: string;
+    password: string;
+    roles: IRole;
+    name: string;
+    surname: string;
+    phone: string;
+    email: string;
+}
+
+export interface INewUser {
+    id: string;
+    login: string;
+    password: string;
+    roleId: string;
+    name: string;
+    surname: string;
+    phone: string;
+    email: string;
+}
+
+export interface IFormProps {
+    register: UseFormRegister<any>;
+    unregister: UseFormUnregister<any>;
+    errors: FieldErrors<any>;
 }

@@ -271,7 +271,7 @@ const AddPart = () => {
                                                 onClick={() =>
                                                     setIsFormSubmitted(true)
                                                 }
-                                                className="form__submit-btn main-color-submit-btn"
+                                                className="form__submit-btn main-color-submit-btn text-gray-800"
                                                 type="submit"
                                                 value="Подтвердить"
                                             />

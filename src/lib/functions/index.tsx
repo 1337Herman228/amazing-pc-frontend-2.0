@@ -15,9 +15,7 @@ export const makeOptionsList = <T extends IOptionTemplate>(
     array: T[],
     extraChoices?: IOptionTemplate[]
 ): IOptionTemplate[] => {
-    const newArr: IOptionTemplate[] = extraChoices
-        ? [...extraChoices]
-        : [GENERAL_CHOICE_OPTION];
+    const newArr: IOptionTemplate[] = extraChoices ? [...extraChoices] : [];
 
     array.forEach((element) => {
         newArr.push({

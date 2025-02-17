@@ -1,7 +1,13 @@
 import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
 import { useCallback, useEffect } from "react";
-import { IPart, IPartition, IType } from "@/interfaces/types-v2";
+import {
+    INewUser,
+    IPart,
+    IPartition,
+    IType,
+    IUser,
+} from "@/interfaces/types-v2";
 
 const useFetch = () => {
     const { requestJson, isLoading, error } = useHttp();
@@ -67,6 +73,16 @@ const useFetch = () => {
         }
     }, [token]);
 
+    const getAccounts = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/users`
+            );
+            return data;
+        }
+    }, [token]);
+
     const getTypes = useCallback(async () => {
         if (token) {
             const data = await requestJson(
@@ -83,6 +99,34 @@ const useFetch = () => {
                 const data = await requestJson(
                     token,
                     `http://localhost:8080/user/types/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getUserById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/users/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editUser = useCallback(
+        async (user: INewUser) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/users`,
+                    "PUT",
+                    JSON.stringify(user)
                 );
                 return data;
             }
@@ -130,6 +174,16 @@ const useFetch = () => {
         }
     }, []);
 
+    const getRoles = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/roles`
+            );
+            return data;
+        }
+    }, []);
+
     const getPartitionById = useCallback(
         async (id: string) => {
             if (token) {
@@ -151,6 +205,21 @@ const useFetch = () => {
                     `http://localhost:8080/admin/partitions`,
                     "POST",
                     JSON.stringify(partiton)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addUser = useCallback(
+        async (user: INewUser) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/users`,
+                    "POST",
+                    JSON.stringify(user)
                 );
                 return data;
             }
@@ -257,6 +326,17 @@ const useFetch = () => {
         }
     }, []);
 
+    const deleteUser = useCallback(async (id: String) => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/users/${id}`,
+                "DELETE"
+            );
+            return data;
+        }
+    }, []);
+
     const editPart = useCallback(
         async (part: IPart) => {
             if (token) {
@@ -273,12 +353,18 @@ const useFetch = () => {
     );
 
     return {
+        getUserById,
+        editUser,
+        deleteUser,
+        addUser,
+        getAccounts,
         getGamingPcCatalog,
         getNotebooksCatalog,
         getWorkstationsCatalog,
         getPcByModelGroupName,
         getConfiguratorParts,
         getUserCartItems,
+        getRoles,
         getPartitions,
         getCategories,
         getPartitionById,

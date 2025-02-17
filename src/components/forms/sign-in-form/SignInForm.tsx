@@ -31,13 +31,6 @@ const SignInForm = ({
     unregister,
     errors,
 }: SignInFormProps) => {
-    useEffect(() => {
-        return () => {
-            unregister("login");
-            unregister("password");
-        };
-    }, []);
-
     return (
         <div className="form-container">
             <aside className="image-container">
@@ -74,6 +67,7 @@ const SignInForm = ({
                         require={true}
                         register={register}
                         errors={errors}
+                        unregister={unregister}
                     />
                     <CustomInput
                         labelText="Пароль"
@@ -85,9 +79,10 @@ const SignInForm = ({
                         require={true}
                         register={register}
                         errors={errors}
+                        unregister={unregister}
                     />
                     <input
-                        className="auth-form__submit-btn"
+                        className="auth-form__submit-btn  text-gray-800"
                         type="submit"
                         value="Подтвердить"
                     />

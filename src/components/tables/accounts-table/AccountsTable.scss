@@ -1,0 +1,66 @@
+@use "../../../styles/variables" as *;
+@use "../../../styles/mixins" as *;
+@use "../../../styles/media" as *;
+
+.accounts-table {
+    margin: auto;
+    max-width: 1400px;
+
+    .ant-pagination-item {
+        border-color: var(--tm-color-white) !important;
+
+        &.ant-pagination-item-active {
+            border-color: var(--main-color) !important;
+        }
+
+        a {
+            color: var(--tm-color-white) !important;
+        }
+    }
+
+    .manage-buttons {
+        justify-content: center;
+        display: flex;
+        gap: 15px;
+
+        .manage-button {
+            @include reset-button;
+            cursor: pointer;
+            transition-duration: var(--transition-duration);
+
+            @include hover {
+                opacity: 0.5;
+            }
+        }
+
+        .manage-buttons__edit {
+            filter: invert(0.9);
+        }
+    }
+}
+
+.ant-table-filter-dropdown {
+    .ant-input {
+        border-color: var(--tm-color-dark-white) !important;
+        color: var(--tm-color-dark-white) !important;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    .ant-btn {
+        border-color: var(--tm-color-dark-white) !important;
+        color: var(--tm-color-dark-white) !important;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    .ant-btn-link {
+        color: var(--tm-color-dark-white) !important;
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

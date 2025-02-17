@@ -20,6 +20,7 @@ import useFetch from "@/lib/hooks/useFetch";
 import { useParams } from "next/navigation";
 import { IOptionTemplate, IPart, IPartition } from "@/interfaces/types-v2";
 import PartForm from "@/components/forms/part-forms/PartForm";
+import { GENERAL_CHOICE_OPTION } from "@/constants";
 
 export interface IPartFormFields {
     name: number;
@@ -92,7 +93,7 @@ const EditPart = () => {
     const fetchPartitions = async () => {
         try {
             const data = await getPartitions();
-            setPartitions(makeOptionsList(data));
+            setPartitions(makeOptionsList(data, [GENERAL_CHOICE_OPTION]));
         } catch (error) {
             console.error(error);
         }
@@ -247,7 +248,7 @@ const EditPart = () => {
 
                                     <input
                                         onClick={() => setIsFormSubmitted(true)}
-                                        className="form__submit-btn main-color-submit-btn"
+                                        className="form__submit-btn main-color-submit-btn text-gray-800"
                                         type="submit"
                                         value="Подтвердить"
                                     />

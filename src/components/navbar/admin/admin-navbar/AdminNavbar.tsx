@@ -67,9 +67,17 @@ export default function AdminNavbar() {
                             <li className="header__menu-item">
                                 <Link
                                     className="header__menu-link link-to-check uppercase-text"
+                                    href="/admin/accounts/view"
+                                >
+                                    Учётные записи
+                                </Link>
+                            </li>
+                            <li className="header__menu-item">
+                                <Link
+                                    className="header__menu-link link-to-check uppercase-text"
                                     href="/admin/pc"
                                 >
-                                    ПК
+                                    Компьютеры
                                 </Link>
                             </li>
                         </ul>

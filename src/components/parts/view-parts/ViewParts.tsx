@@ -11,6 +11,7 @@ import useFetch from "@/lib/hooks/useFetch";
 import AdminListItemCard from "@/components/cards/admin-list-item-card/AdminListItemCard";
 import { ICategory, IPart, IPartition, IType } from "@/interfaces/types-v2";
 import { makeOptionsList } from "@/lib/functions";
+import { GENERAL_CHOICE_OPTION } from "@/constants";
 
 const ViewParts = () => {
     const { getParts, getTypes, getCategories, getPartitions } = useFetch();
@@ -53,17 +54,17 @@ const ViewParts = () => {
 
     const fetchTypes = async () => {
         const data = await getTypes();
-        setTypesOptions(makeOptionsList(data));
+        setTypesOptions(makeOptionsList(data, [GENERAL_CHOICE_OPTION]));
     };
 
     const fetchCategories = async () => {
         const data = await getCategories();
-        setCategoriesOptions(makeOptionsList(data));
+        setCategoriesOptions(makeOptionsList(data, [GENERAL_CHOICE_OPTION]));
     };
 
     const fetchPartitions = async () => {
         const data = await getPartitions();
-        setPartitionsOptions(makeOptionsList(data));
+        setPartitionsOptions(makeOptionsList(data, [GENERAL_CHOICE_OPTION]));
     };
 
     const priceRange = useMemo(() => {
@@ -97,18 +98,18 @@ const ViewParts = () => {
 
         if (type)
             filteredData =
-                filteredData?.filter(
-                    (part) => part.types.value === type.value
+                filteredData?.filter((part) =>
+                    part.types.value.includes(type.value)
                 ) || null;
         if (category)
             filteredData =
-                filteredData?.filter(
-                    (part) => part.categories.value === category.value
+                filteredData?.filter((part) =>
+                    part.categories.value.includes(category.value)
                 ) || null;
         if (partition)
             filteredData =
-                filteredData?.filter(
-                    (part) => part.partitions.value === partition.value
+                filteredData?.filter((part) =>
+                    part.partitions.value.includes(partition.value)
                 ) || null;
         if (name)
             filteredData =
@@ -200,7 +201,7 @@ const ViewParts = () => {
                                 className="filters__reset-btn"
                                 onClick={resetFilters}
                             >
-                                Сбросить
+                                <span className="text-gray-800">Сбросить</span>
                             </button>
                         </div>
                     </aside>
