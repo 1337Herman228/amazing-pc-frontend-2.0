@@ -76,34 +76,33 @@ const NavTree = ({ uniqueCategories, allItems }: NavTreeProps) => {
                             {allItems
                                 .filter((el) => el.category === item)
                                 .map((item, index) => (
-                                    <>
-                                        <div
-                                            key={item.name}
-                                            className=" tree-list__nav-list-decoration-border"
-                                        />
-                                        <Link
-                                            key={index}
-                                            href={`#${item.name}`}
-                                            className="tree-list__nav-list-item"
-                                        >
-                                            <img
-                                                className="tree-list__nav-list-item-icon"
-                                                src={item.icon}
-                                                width={20}
-                                                height={20}
-                                                alt=""
-                                                loading="lazy"
-                                            />
-                                            <span className="tree-list__nav-list-item-name">
-                                                {item.name}
-                                            </span>
-                                        </Link>
-                                    </>
+                                    <NavTreeLeaf key={item.name} {...item} />
                                 ))}
                         </ul>
                     </li>
                 ))}
             </ul>
+        </>
+    );
+};
+
+const NavTreeLeaf = (item: NavTreeItem) => {
+    return (
+        <>
+            <div className=" tree-list__nav-list-decoration-border" />
+            <Link href={`#${item.name}`} className="tree-list__nav-list-item">
+                <img
+                    className="tree-list__nav-list-item-icon"
+                    src={item.icon}
+                    width={20}
+                    height={20}
+                    alt=""
+                    loading="lazy"
+                />
+                <span className="tree-list__nav-list-item-name">
+                    {item.name}
+                </span>
+            </Link>
         </>
     );
 };

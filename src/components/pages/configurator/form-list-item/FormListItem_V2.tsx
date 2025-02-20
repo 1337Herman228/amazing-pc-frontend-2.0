@@ -1,126 +1,59 @@
-// @ts-nocheck
 "use client";
 
 import { useEffect, useState } from "react";
 import "./FormListItem.scss";
-import { ICategory, IExtendedPart, IJoinPart, IType } from "@/interfaces/types";
-import FormListItemCard from "./form-list-item-card/FormListItemCard";
-import FormGridItemCard from "./form-list-item-card/FormGridItemCard";
+import { ICategory, IPart, IType } from "@/interfaces/types-v2";
+import FormListItemCardV2 from "./form-list-item-card/FormListItemCard_V2";
+import FormGridItemCardV2 from "./form-list-item-card/FormGridItemCard_V2";
+import { ConfiguratorFieldValues } from "../Configurator_V2";
+import { Control } from "react-hook-form";
+import { alignGridItemWidth, filterItems } from "../common";
 
-interface FormListItemProps {
+interface FormListItemV2Props {
     type: IType;
     partition: string[];
     category: ICategory;
-    items: IJoinPart[];
-    multiselect?: boolean | null;
+    parts: IPart[];
     default_checked?: boolean;
-    max_quantity?: number;
-    addItemToProduct: Function;
+    products: ConfiguratorFieldValues;
+    control: Control<ConfiguratorFieldValues>;
 }
 
-const FormListItem = ({
-    // name,
+const FormListItemV2 = ({
     type,
     partition,
-    items,
-    addItemToProduct,
-    multiselect = null,
+    parts,
+    products,
+    control,
     default_checked = true,
-    max_quantity = 0,
-}: FormListItemProps) => {
+}: FormListItemV2Props) => {
+    const typeName = parts[0].types.value;
+    const selectedPart = products?.[typeName] as IPart;
+
     const [displayAppearance, setDisplayAppearance] = useState<"list" | "grid">(
         "list"
     );
-    const [filteredItems, setFilteredItems] = useState<typeof items>(items);
-    const [selectedItem, setSelectedItem] = useState<
-        IExtendedPart | IExtendedPart[] | null
-    >(
-        multiselect
-            ? default_checked
-                ? [items[0]]
-                : []
-            : default_checked
-            ? items[0]
-            : null
-    );
-
-    const alignGridItemWidth = () => {
-        const items: NodeListOf<HTMLUListElement> =
-            document.querySelectorAll("ul");
-        items.forEach((item) => {
-            const labels = item.querySelectorAll("label");
-            labels.forEach((label) => {
-                const footer = label?.parentElement
-                    ?.nextElementSibling as HTMLElement;
-                if (footer) {
-                    const gridLabelWidth = label.offsetWidth; // Получаем ширину label
-                    footer.style.width = `${gridLabelWidth}px`; // Устанавливаем ширину для footer
-                }
-            });
-        });
-    };
+    const [filteredItems, setFilteredItems] = useState<typeof parts>(parts);
 
     useEffect(() => {
         alignGridItemWidth();
     }, [displayAppearance, filteredItems]);
 
-    useEffect(() => {
-        addItemToProduct(type.typeName, selectedItem);
-    }, [selectedItem]);
-
-    const filterItems = (e: any) => {
-        const btn = e.target;
-        const part_name = btn.id;
-
-        part_name === "all"
-            ? setFilteredItems(items)
-            : setFilteredItems(
-                  items.filter(
-                      (item) => item.partitions.partitionName === part_name
-                  )
-              );
-
-        const allBtns: NodeListOf<HTMLButtonElement> =
-            btn.parentElement.querySelectorAll(
-                ".item-body__dashboard-filter-button"
-            );
-        allBtns.forEach((btn) => btn.classList.remove("active"));
-        btn.classList.add("active");
-    };
-
-    const OnRadioBtnImageClick = (e: any) => {
-        const img = e.target;
-        const input = img.nextElementSibling.querySelector("input");
-        input.click();
-    };
-
-    const onCheckboxClick = (item: IJoinPart) => {
-        if (selectedItem?.includes(item))
-            setSelectedItem(selectedItem.filter((i) => i !== item));
-        else setSelectedItem([...selectedItem, item]);
-    };
-
-    const onSelectQuantity = (e: any, item) => {
-        const quantity = +e.target.value;
-        selectedItem[selectedItem.indexOf(item)].quantity = quantity;
-        setSelectedItem([...selectedItem]);
-    };
-
     return (
         <>
-            <li id={type.alternativeName} className="managed-component-item">
+            <li id={type.value} className="managed-component-item">
                 <div className="managed-component-item__header">
                     <div className="managed-component-item__header-left">
                         <img
                             className="managed-component-item__header-left-icon"
-                            src={type.typeImage}
+                            src={type.image}
                             width={40}
                             height={40}
                             alt=""
                             loading="lazy"
                         />
                         <span className="managed-component-item__header-left-title">
-                            {type.alternativeName}
+                            {type.label}
                         </span>
                     </div>
                 </div>
@@ -129,7 +62,9 @@ const FormListItem = ({
                         <ul className="item-body__dashboard-filter">
                             <button
                                 id="all"
-                                onClick={(e) => filterItems(e)}
+                                onClick={(e) =>
+                                    filterItems(e, parts, setFilteredItems)
+                                }
                                 className="item-body__dashboard-filter-button active"
                             >
                                 Все
@@ -140,7 +75,13 @@ const FormListItem = ({
                                         id={partitionName}
                                         key={index}
                                         className="item-body__dashboard-filter-button"
-                                        onClick={(e) => filterItems(e)}
+                                        onClick={(e) =>
+                                            filterItems(
+                                                e,
+                                                parts,
+                                                setFilteredItems
+                                            )
+                                        }
                                     >
                                         {partitionName}
                                     </button>
@@ -187,13 +128,8 @@ const FormListItem = ({
                             <img
                                 className="image-container__img"
                                 src={
-                                    multiselect
-                                        ? selectedItem?.[
-                                              selectedItem.length - 1
-                                          ]?.image ||
-                                          "/components/nothing-selected.jpg"
-                                        : selectedItem?.image ||
-                                          "/components/nothing-selected.jpg"
+                                    selectedPart?.image ||
+                                    "/components/nothing-selected.jpg"
                                 }
                                 width={314}
                                 height={176}
@@ -203,17 +139,13 @@ const FormListItem = ({
                         </div>
                         <ul className="list-display__form">
                             {filteredItems.map((item, index: number) => (
-                                <FormListItemCard
-                                    selectedItem={selectedItem}
-                                    onSelectQuantity={onSelectQuantity}
-                                    onCheckboxClick={onCheckboxClick}
-                                    setSelectedItem={setSelectedItem}
-                                    multiselect={multiselect}
+                                <FormListItemCardV2
                                     default_checked={default_checked}
-                                    max_quantity={max_quantity}
-                                    item={item}
+                                    selectedPart={selectedPart}
+                                    part={item}
                                     key={index}
                                     type={type}
+                                    control={control}
                                 />
                             ))}
                         </ul>
@@ -224,18 +156,13 @@ const FormListItem = ({
                         }`}
                     >
                         {filteredItems.map((item, index: number) => (
-                            <FormGridItemCard
-                                selectedItem={selectedItem}
-                                onSelectQuantity={onSelectQuantity}
-                                onCheckboxClick={onCheckboxClick}
-                                setSelectedItem={setSelectedItem}
-                                multiselect={multiselect}
+                            <FormGridItemCardV2
                                 default_checked={default_checked}
-                                max_quantity={max_quantity}
-                                item={item}
+                                selectedPart={selectedPart}
+                                part={item}
                                 key={index}
                                 type={type}
-                                OnRadioBtnImageClick={OnRadioBtnImageClick}
+                                control={control}
                             />
                         ))}
                     </ul>
@@ -245,4 +172,4 @@ const FormListItem = ({
     );
 };
 
-export default FormListItem;
+export default FormListItemV2;

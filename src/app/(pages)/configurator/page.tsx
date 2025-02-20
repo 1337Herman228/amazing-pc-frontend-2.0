@@ -1,5 +1,5 @@
-import Configurator from "@/components/pages/configurator/Configurator";
+import Configurator_V2 from "@/components/pages/configurator/Configurator_V2";
 
 export default function Page() {
-    return <Configurator />;
+    return <Configurator_V2 />;
 }

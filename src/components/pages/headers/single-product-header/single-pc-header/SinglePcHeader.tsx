@@ -8,7 +8,11 @@ import { useMediaQuery } from "react-responsive";
 import { IpcHeader } from "@/interfaces/types";
 
 interface SinglePcHeaderProps {
-    header_info: IpcHeader;
+    header_info: {
+        description: string;
+        image: string;
+        imageMobile: string;
+    };
     modelGroupName: string;
 }
 

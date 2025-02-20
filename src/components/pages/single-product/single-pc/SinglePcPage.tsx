@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 import "./SinglePcPage.scss";
 import Link from "next/link";
 import Tag from "@/components/tags/Tag";
-import { IPc } from "@/interfaces/types";
 import PcSecondNavbar from "@/components/navbar/user/pc-second-navbar/PcSecondNavbar";
 import SinglePcHeader from "../../headers/single-product-header/single-pc-header/SinglePcHeader";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import SinglePcConfigCard from "@/components/cards/single-pc-config-card/SinglePcConfigCard";
 import useFetch from "@/lib/hooks/useFetch";
+import { IPc } from "@/interfaces/types-v2";
 
 const os = "Microsoft Windows 11 Home OEM";
 
@@ -20,9 +20,9 @@ interface SinglePcPageProps {
 }
 
 const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
-    const { getPcByModelGroupName, isLoading } = useFetch();
+    const { getPcByModelGroupName } = useFetch();
 
-    const [pc, setPc] = useState<IPc[]>([]);
+    const [pc, setPc] = useState<IPc[] | null>(null);
 
     useEffect(() => {
         fetchPc();
@@ -35,35 +35,41 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
 
     const pathname = usePathname();
 
-    if (isLoading || pc.length === 0) return <LoadingPage />; //временно (подкрутить загрузку)
+    const isLoading = !pc;
+
+    if (isLoading) return <LoadingPage />;
 
     return (
         <>
             <PcSecondNavbar productName={pc[0].pcModelGroup.modelGroupName} />
             <SinglePcHeader
                 modelGroupName={pc[0].pcModelGroup.modelGroupName}
-                header_info={pc[0].pcModelGroup.pcHeader}
+                header_info={{
+                    image: pc[0].pcModelGroup.headerImage,
+                    imageMobile: pc[0].pcModelGroup.headerImageMobile,
+                    description: pc[0].pcModelGroup.headerDescription,
+                }}
             />
 
             <section id="design" className="design container section">
                 <img
                     className="design__img"
-                    src={pc[0]?.pcModelGroup?.pcDesign?.image}
+                    src={pc[0]?.pcModelGroup?.designImage}
                     alt={pc[0]?.pcModelGroup?.modelGroupName + " design"}
                     loading="lazy"
                 />
                 <div className="design__body">
                     <h2 className="design__body-title">
-                        {pc[0].pcModelGroup?.pcDesign?.title}
+                        {pc[0].pcModelGroup?.designTitle}
                     </h2>
                     <div className="design__body-info">
                         <div className="design__body-info__description">
-                            <p>{pc[0].pcModelGroup?.pcDesign?.description}</p>
+                            <p>{pc[0].pcModelGroup?.designDescription}</p>
                         </div>
 
                         <div className="design__body-info-footer">
                             <div className="design__body-info__price">
-                                Базовая комплектация от {pc[0].totalPrice} BYN
+                                Базовая комплектация от {pc[0].price} BYN
                             </div>
                             <Link
                                 className="design__body-info__link green-circle-bordered-link"
@@ -80,7 +86,7 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                 <div className="power">
                     <img
                         className="power__img"
-                        src={pc[0].pcModelGroup?.pcPerformance?.image}
+                        src={pc[0].pcModelGroup?.performanceImage}
                         alt="Performance"
                         loading="lazy"
                     />
@@ -90,13 +96,13 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                                 Производительность
                             </span>
                             <h2 className="power-body-info__title">
-                                {pc[0]?.pcModelGroup?.pcPerformance?.title}
+                                {pc[0]?.pcModelGroup?.performanceTitle}
                             </h2>
                             <div className="power-body-info__description">
                                 <p>
                                     {
-                                        pc[0]?.pcModelGroup?.pcPerformance
-                                            ?.description
+                                        pc[0]?.pcModelGroup
+                                            ?.performanceDescription
                                     }
                                 </p>
                             </div>
@@ -281,13 +287,13 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                         {pc.map((kit, index: number) => {
                             return (
                                 <SinglePcConfigCard
-                                    key={kit.pcId}
+                                    key={kit.id}
                                     pc={{
                                         isNotebook:
-                                            kit.pcType.type === "notebook",
+                                            kit.pcType.value === "notebook",
                                         img: kit.image,
                                         name: kit.name,
-                                        price: kit.totalPrice,
+                                        price: kit.price,
                                         description: kit.description,
                                         link_to_configurator: `/configurator/${kit.name}`,
                                         gpu: kit.gpu,
@@ -295,7 +301,7 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                                         mb: kit.motherboard,
                                         cpu_fan: kit.cpuFan,
                                         ram: kit.ram,
-                                        ssdList: kit.ssdList,
+                                        ssdList: kit.ssd,
                                         pow_sup: kit.psu,
                                         _case: kit.pcCase,
                                         os: os,

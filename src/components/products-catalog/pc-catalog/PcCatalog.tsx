@@ -1,75 +1,75 @@
 "use client";
 
-import { IpcCategories, IpcModelGroupList } from "@/interfaces/types";
+import { IPcCategory, IPcModelGroup } from "@/interfaces/types-v2";
 import "./PcCatalog.scss";
 import PcCatalogCard from "@/components/cards/pc-catalog-card/PcCatalogCard";
 
 interface PcCatalogProps {
-    categories: IpcCategories[];
-    pcModelGroupList: IpcModelGroupList[];
-    is_notebook?: boolean;
+    categories: IPcCategory[];
+    pcModelGroupList: IPcModelGroup[];
+    isNotebook?: boolean;
 }
 
 const PcCatalog = ({
     categories,
     pcModelGroupList,
-    is_notebook = false,
+    isNotebook = false,
 }: PcCatalogProps) => {
-    // console.log("categories", categories);
-    // console.log("products_list", pcModelGroupList);
-
     return (
         <section className="_catalog">
             {categories.map((category) => {
-                return (
-                    <div
-                        key={category.pcCategoryId}
-                        className="_catalog-body container section"
-                    >
+                if (
+                    pcModelGroupList.find(
+                        (item) => item.pcCategories.id === category.id
+                    )
+                )
+                    return (
                         <div
-                            className={
-                                category.pcCategoryName != "Нет категории"
-                                    ? "_catalog-body__header"
-                                    : "display-none"
-                            }
+                            key={category.id}
+                            className="_catalog-body container section"
                         >
-                            <div className="header-top">
-                                <h2 className="header-top__title">
-                                    <div>{category.pcCategoryName}</div>
-                                </h2>
-                                <div>
-                                    <img
-                                        className="header-top__arrow"
-                                        src="/arrow-top-right.svg"
-                                        width={40}
-                                        height={40}
-                                        alt=""
-                                        loading="lazy"
-                                    />
+                            <div
+                                className={
+                                    category.value !== "none"
+                                        ? "_catalog-body__header"
+                                        : "display-none"
+                                }
+                            >
+                                <div className="header-top">
+                                    <h2 className="header-top__title">
+                                        <div>{category.label}</div>
+                                    </h2>
+                                    <div>
+                                        <img
+                                            className="header-top__arrow"
+                                            src="/arrow-top-right.svg"
+                                            width={40}
+                                            height={40}
+                                            alt=""
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="header-bottom">
+                                    <p>{category.description}</p>
                                 </div>
                             </div>
-                            <div className="header-bottom">
-                                <p>{category.pcCategoryDescription}</p>
-                            </div>
+                            <main className="_catalog-body__main">
+                                {pcModelGroupList
+                                    .filter(
+                                        (item) =>
+                                            item.pcCategories.id === category.id
+                                    )
+                                    .map((item) => (
+                                        <PcCatalogCard
+                                            key={item.id}
+                                            pcModelGroup={item}
+                                            isNotebook={isNotebook}
+                                        />
+                                    ))}
+                            </main>
                         </div>
-                        <main className="_catalog-body__main">
-                            {pcModelGroupList
-                                .filter(
-                                    (item) =>
-                                        item.pcModelGroup.pcCategories
-                                            .pcCategoryId ===
-                                        category.pcCategoryId
-                                )
-                                .map((item) => (
-                                    <PcCatalogCard
-                                        key={item.pcModelGroup.pcModelGroupId}
-                                        pcModelGroup={item}
-                                        isNotebook={is_notebook}
-                                    />
-                                ))}
-                        </main>
-                    </div>
-                );
+                    );
             })}
         </section>
     );

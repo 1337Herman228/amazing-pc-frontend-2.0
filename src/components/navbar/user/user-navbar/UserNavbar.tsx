@@ -22,7 +22,6 @@ export default function UserNavbar() {
         const data = await getUserCartItems();
         setCartItems(data);
     };
-    console.log(cartItems);
 
     const cart_items = useAppSelector((state) => state.cart);
     useEffect(() => {
@@ -127,7 +126,7 @@ export default function UserNavbar() {
                             />
                         </button>
                         <button
-                            className="header__side-button-menu-btn btn--count-mark"
+                            className="header__side-button-menu-btn btn--count-mark text-gray-800"
                             data-custom="0"
                         >
                             <img
@@ -140,7 +139,7 @@ export default function UserNavbar() {
                             />
                         </button>
                         <button
-                            className={`header__side-button-menu-btn ${
+                            className={`header__side-button-menu-btn text-gray-800 text- ${
                                 cartProductCount > 0 && "btn--count-mark"
                             }`}
                             data-custom={cartProductCount}

@@ -1,7 +1,8 @@
-// @ts-nocheck
 import { ConfigProvider, Modal } from "antd";
 import "./PcSpecModal.scss";
-import { getCategories, makeProductArray, selectIcon } from "@/lib/functions";
+import { getCategories, makeProductArray } from "@/lib/functions";
+import { ConfiguratorFieldValues } from "@/components/pages/configurator/Configurator_V2";
+import { IPart, IPartWithQuantity } from "@/interfaces/types-v2";
 
 const bg_color = "#111";
 const modalStyles = {
@@ -14,7 +15,17 @@ const modalStyles = {
     },
 };
 
-const PcSpecModal = ({ product, isModalOpen, toggleModal }) => {
+interface PcSpecModalProps {
+    product: ConfiguratorFieldValues;
+    isModalOpen: boolean[];
+    toggleModal: (idx: any, target: any) => void;
+}
+
+const PcSpecModal = ({
+    product,
+    isModalOpen,
+    toggleModal,
+}: PcSpecModalProps) => {
     return (
         <>
             <ConfigProvider
@@ -38,117 +49,132 @@ const PcSpecModal = ({ product, isModalOpen, toggleModal }) => {
                 >
                     <table className="modal-table">
                         <tbody>
-                            {getCategories(product).map((item, i) => {
-                                const _category = item;
-                                return (
-                                    <>
-                                        <tr
-                                            key={item + i}
-                                            className="modal-table__header"
-                                        >
-                                            <th
-                                                className="modal-table__header-text"
-                                                colSpan={3}
+                            {Array.from(getCategories(product)).map(
+                                (item, i) => {
+                                    const _category = item;
+                                    return (
+                                        <>
+                                            <tr
+                                                key={item + i}
+                                                className="modal-table__header"
                                             >
-                                                {item}
-                                            </th>
-                                        </tr>
+                                                <th
+                                                    className="modal-table__header-text"
+                                                    colSpan={3}
+                                                >
+                                                    {item}
+                                                </th>
+                                            </tr>
 
-                                        {makeProductArray(product).map(
-                                            (item, index) => {
-                                                if (
-                                                    item.category === _category
-                                                ) {
-                                                    const name = item.title;
-                                                    const info =
-                                                        item?.length > 0 &&
-                                                        Array.isArray(item)
-                                                            ? item.map(
-                                                                  (item) => (
-                                                                      <>
-                                                                          {
-                                                                              item.name
-                                                                          }{" "}
-                                                                          (
-                                                                          {item?.quantity ||
-                                                                              1}{" "}
-                                                                          шт.)
-                                                                          <br />
-                                                                      </>
-                                                                  )
-                                                              )
-                                                            : item.name;
-                                                    const price =
-                                                        item?.length > 0 &&
-                                                        Array.isArray(item)
-                                                            ? item.map(
-                                                                  (item) => (
-                                                                      <>
-                                                                          {item.price *
-                                                                              (item?.quantity ||
-                                                                                  1)}{" "}
-                                                                          BYN
-                                                                          <br />
-                                                                      </>
-                                                                  )
-                                                              )
-                                                            : item.price +
-                                                              " BYN";
-                                                    return (
-                                                        <>
-                                                            <tr
+                                            {makeProductArray(product).map(
+                                                (part) => {
+                                                    const isArray =
+                                                        Array.isArray(part);
+                                                    if (
+                                                        isArray &&
+                                                        part.length > 0 &&
+                                                        part[0]?.part
+                                                            ?.categories
+                                                            ?.label ===
+                                                            _category
+                                                    )
+                                                        return (
+                                                            <TableRowArray
                                                                 key={
-                                                                    item.name +
-                                                                    index
+                                                                    part[0].part
+                                                                        .id
                                                                 }
-                                                                className="modal-table__row"
-                                                            >
-                                                                <td className="modal-table__row-name">
-                                                                    <img
-                                                                        className="modal-table__row-name-icon"
-                                                                        src={
-                                                                            Array.isArray(
-                                                                                item
-                                                                            )
-                                                                                ? item[0]
-                                                                                      .types
-                                                                                      .typeImage
-                                                                                : item
-                                                                                      .types
-                                                                                      .typeImage
-                                                                        }
-                                                                        width={
-                                                                            20
-                                                                        }
-                                                                        height={
-                                                                            20
-                                                                        }
-                                                                        alt=""
-                                                                        loading="lazy"
-                                                                    />
-                                                                    <span className="modal-table__row-name-text">
-                                                                        {name}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="modal-table__row-info">
-                                                                    {info}
-                                                                </td>
-                                                                <td className="modal-table__row-price">
-                                                                    {price}
-                                                                </td>
-                                                            </tr>
-                                                        </>
-                                                    );
+                                                                item={
+                                                                    part as IPartWithQuantity[]
+                                                                }
+                                                            />
+                                                        );
+                                                    else if (
+                                                        !isArray &&
+                                                        part?.categories
+                                                            ?.label ===
+                                                            _category
+                                                    )
+                                                        return (
+                                                            <TableRow
+                                                                key={part.id}
+                                                                item={
+                                                                    part as IPart
+                                                                }
+                                                            />
+                                                        );
                                                 }
-                                            }
-                                        )}
-                                    </>
-                                );
-                            })}
+                                            )}
+                                        </>
+                                    );
+                                }
+                            )}
                         </tbody>
                     </table>
                 </Modal>
             </ConfigProvider>
+        </>
+    );
+};
+
+const TableRowArray = ({ item }: { item: IPartWithQuantity[] }) => {
+    return (
+        <>
+            <tr className="modal-table__row">
+                <td className="modal-table__row-name">
+                    <img
+                        className="modal-table__row-name-icon"
+                        src={item[0].part.types.image}
+                        width={20}
+                        height={20}
+                        alt=""
+                        loading="lazy"
+                    />
+                    <span className="modal-table__row-name-text">
+                        {item[0].part.types.label}
+                    </span>
+                </td>
+                <td className="modal-table__row-info">
+                    {item.map((item) => (
+                        <div key={item.part.name + "-" + item.part.id}>
+                            {item.part.name} x {item.quantity}
+                            <br />
+                        </div>
+                    ))}
+                </td>
+                <td className="modal-table__row-price">
+                    {item.map((item) => (
+                        <div key={item.part.id}>
+                            {item.part.price} BYN
+                            <br />
+                        </div>
+                    ))}
+                </td>
+            </tr>
+        </>
+    );
+};
+
+const TableRow = ({ item }: { item: IPart }) => {
+    return (
+        <>
+            <tr className="modal-table__row">
+                <td className="modal-table__row-name">
+                    <img
+                        className="modal-table__row-name-icon"
+                        src={item?.types?.image}
+                        width={20}
+                        height={20}
+                        alt=""
+                        loading="lazy"
+                    />
+                    <span className="modal-table__row-name-text">
+                        {item?.types?.label}
+                    </span>
+                </td>
+                <td className="modal-table__row-info">{item.name}</td>
+                <td className="modal-table__row-price">{item.price} BYN</td>
+            </tr>
         </>
     );
 };

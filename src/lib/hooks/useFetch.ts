@@ -23,7 +23,17 @@ const useFetch = () => {
         }
     }, [token]);
 
-    const getNotebooksCatalog = async () => {
+    const getPcCategories = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                "http://localhost:8080/user/pc-categories"
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getNotebooksCatalog = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
@@ -31,9 +41,9 @@ const useFetch = () => {
             );
             return data;
         }
-    };
+    }, [token]);
 
-    const getWorkstationsCatalog = async () => {
+    const getWorkstationsCatalog = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
@@ -41,19 +51,22 @@ const useFetch = () => {
             );
             return data;
         }
-    };
+    }, [token]);
 
-    const getPcByModelGroupName = async (modelGroupName: string) => {
-        if (token) {
-            const data = await requestJson(
-                token,
-                `http://localhost:8080/user/get-pc-by-model-group-name/${modelGroupName}`
-            );
-            return data;
-        }
-    };
+    const getPcByModelGroupName = useCallback(
+        async (modelGroupName: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/get-pc-by-model-group-name/${modelGroupName}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
 
-    const getConfiguratorParts = async () => {
+    const getConfiguratorParts = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
@@ -61,7 +74,7 @@ const useFetch = () => {
             );
             return data;
         }
-    };
+    }, [token]);
 
     const getParts = useCallback(async () => {
         if (token) {
@@ -144,6 +157,16 @@ const useFetch = () => {
         }
     }, [token]);
 
+    const getNotEmptyPcCategories = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/not-empty-pc-categories`
+            );
+            return data;
+        }
+    }, [token]);
+
     const getPartitions = useCallback(async () => {
         if (token) {
             const data = await requestJson(
@@ -154,15 +177,15 @@ const useFetch = () => {
         }
     }, [token]);
 
-    const getUserCartItems = async () => {
+    const getUserCartItems = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
-                `http://localhost:8080/user/get-user-cart-items/${user?.userId}`
+                `http://localhost:8080/user/user-cart/${user?.userId}`
             );
             return data;
         }
-    };
+    }, [token]);
 
     const getPartById = useCallback(async (id: string) => {
         if (token) {
@@ -353,6 +376,8 @@ const useFetch = () => {
     );
 
     return {
+        getNotEmptyPcCategories,
+        getPcCategories,
         getUserById,
         editUser,
         deleteUser,

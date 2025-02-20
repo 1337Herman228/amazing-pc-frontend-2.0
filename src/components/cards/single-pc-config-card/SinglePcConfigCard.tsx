@@ -4,17 +4,7 @@ import { Rate } from "antd";
 import "../../../styles/style.scss";
 import { useEffect, useState } from "react";
 import ButtonToCart from "@/components/buttons/btn-to-cart/ButtonToCart";
-import {
-    ICpuPart,
-    IGpuPart,
-    IMotherboardPart,
-    ICpuAirCoolingPart,
-    ICpuLiquidCoolingPart,
-    IRamPart,
-    ISsdList,
-    IPsuPart,
-    ICasePart,
-} from "@/interfaces/types";
+import { IPart, IPartWithQuantity } from "@/interfaces/types-v2";
 
 interface ISinglePcConfigCardPc {
     isNotebook: boolean;
@@ -23,14 +13,14 @@ interface ISinglePcConfigCardPc {
     price: number;
     description: string;
     link_to_configurator: string;
-    gpu: IGpuPart;
-    cpu: ICpuPart;
-    mb: IMotherboardPart;
-    cpu_fan: ICpuAirCoolingPart | ICpuLiquidCoolingPart;
-    ram: IRamPart;
-    ssdList: ISsdList[] | null;
-    pow_sup: IPsuPart;
-    _case: ICasePart;
+    gpu: IPart;
+    cpu: IPart;
+    mb: IPart;
+    cpu_fan: IPart;
+    ram: IPart;
+    ssdList: IPartWithQuantity[];
+    pow_sup: IPart;
+    _case: IPart;
     os: string;
 }
 
@@ -235,7 +225,7 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                                               flexDirection: "column",
                                           }}
                                       >
-                                          {ssd.quantity} x {ssd.ssd.name}
+                                          {ssd.quantity} x {ssd.part.name}
                                       </div>
                                   ))
                                 : "Отсутствуют"}

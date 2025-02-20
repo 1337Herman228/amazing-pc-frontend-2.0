@@ -21,15 +21,15 @@ export async function middleware(req: NextRequest) {
         const secret = process.env.NEXTAUTH_SECRET;
         const token: ExtendedJWT | null = await getToken({ req, secret });
 
-        const decodedToken = decodeJWT(
-            token?.user?.authenticationResponse?.token as string
-        );
-        const expirationDate = new Date(decodedToken.exp * 1000); // Преобразуем в милисекунды
-
         // Если токена нет или он просрочен, то редиректим на страницу авторизации
         if (!token) {
             return NextResponse.redirect(new URL("/sign-in", req.url));
         }
+
+        const decodedToken = decodeJWT(
+            token?.user?.authenticationResponse?.token as string
+        );
+        const expirationDate = new Date(decodedToken.exp * 1000); // Преобразуем в милисекунды
         if (isTokenExpired(expirationDate)) {
             return NextResponse.redirect(new URL("/sign-in", req.url));
         }

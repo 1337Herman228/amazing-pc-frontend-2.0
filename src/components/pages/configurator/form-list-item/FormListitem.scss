@@ -188,7 +188,9 @@
 
                         &:focus {
                             outline: none;
-                            background-color: var(--select-block-bg-color-focus);
+                            background-color: var(
+                                --select-block-bg-color-focus
+                            );
                             border: 1px solid gray;
                         }
 
