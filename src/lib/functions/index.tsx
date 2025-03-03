@@ -1,11 +1,11 @@
-import { ConfiguratorFieldValues } from "@/components/pages/configurator/Configurator_V2";
-import { GENERAL_CHOICE_OPTION } from "@/constants";
 import {
+    ConfiguratorFieldValues,
     ICategory,
     IOptionTemplate,
     IPart,
     IPartition,
     IPartWithQuantity,
+    IPc,
     IType,
 } from "@/interfaces/types-v2";
 import { FieldValues } from "react-hook-form";
@@ -196,3 +196,55 @@ export const getCategories = (product: ConfiguratorFieldValues) => {
     }
     return titles;
 };
+
+export const mapPcToConfiguratorFieldValues = (obj: IPc) => {
+    return {
+        gpu: obj.gpu,
+        cpu: obj.cpu,
+        motherboard: obj.motherboard,
+        cpu_fan: obj.cpuFan,
+        ram: obj.ram,
+        psu: obj.psu,
+        cases: obj.pcCase,
+        ssd: obj.ssd,
+        fan: obj.fans,
+    } as ConfiguratorFieldValues;
+};
+
+export function calculateTotalPrice(data: any): number {
+    if (Array.isArray(data)) {
+        // Если data — массив, рекурсивно суммируем элементы массива
+        return data.reduce(
+            (total, item) => total + calculateTotalPrice(item),
+            0
+        );
+    }
+
+    if (data && typeof data === "object") {
+        // Если data — объект, проверяем наличие поля `price`
+        const price = data.price ?? 0; // Если `price` отсутствует, берем 0
+        const nestedSum = Object.values(data).reduce(
+            (total: number, value) => total + calculateTotalPrice(value),
+            0
+        );
+        return price + nestedSum;
+    }
+
+    // Если data — не объект и не массив, возвращаем 0
+    return 0;
+}
+
+export function declension(number: number): string {
+    const word = "Комплектация";
+    if (number % 10 === 1 && number % 100 !== 11) {
+        return number + " " + word.replace(/я$/, "я");
+    } else if (
+        number % 10 >= 2 &&
+        number % 10 <= 4 &&
+        (number % 100 < 10 || number % 100 >= 20)
+    ) {
+        return number + " " + word.replace(/я$/, "и");
+    } else {
+        return number + " " + word + "й";
+    }
+}

@@ -1,25 +1,88 @@
 "use client";
 
+import LoadingPage from "@/components/loading/loading-page/LoadingPage";
+import { IPurchaseItem } from "@/interfaces/types-v2";
 import useFetch from "@/lib/hooks/useFetch";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import "./CartPage.scss";
+import CartTableItem from "./CartTableItem";
+import { useAppDispatch } from "@/lib/redux/store/store";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
 
 const CartPage = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState<IPurchaseItem[] | null>(null);
 
     const { getUserCartItems } = useFetch();
 
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
         fetchCartItems();
+        styleBody();
+
+        return () => {
+            unstyleBody();
+        };
     }, []);
 
     const fetchCartItems = async () => {
-        const data = await getUserCartItems();
+        const data: IPurchaseItem[] = await getUserCartItems();
         setCartItems(data);
+        dispatch(setCartState(data));
     };
 
-    // console.log(cartItems);
+    const styleBody = () => {
+        document.body.style.backgroundColor = "var(--tm-color-dark-black-2)";
+    };
+    const unstyleBody = () => {
+        document.body.style.backgroundColor = "var(--background-main-color)";
+    };
 
-    return <div></div>;
+    const isLoading = !cartItems;
+
+    if (isLoading) return <LoadingPage />;
+
+    return (
+        <section className="cart container section">
+            <h1 className="cart__main-title">Корзина</h1>
+            {cartItems.length === 0 ? (
+                <div className="cart-is-empty">Ваша корзина пуста</div>
+            ) : (
+                <table className="cart__products-table">
+                    <thead className="cart__products-table-header hidden-tablet">
+                        <tr className="table-row-header">
+                            <th
+                                className="table-row-header__cell text-align-left"
+                                colSpan={2}
+                            >
+                                Товар
+                            </th>
+                            <th className="table-row-header__cell text-align-center">
+                                Наличие
+                            </th>
+                            <th className="table-row-header__cell text-align-center">
+                                Количество
+                            </th>
+                            <th className="table-row-header__cell text-align-center">
+                                Цена
+                            </th>
+                            <th className="table-row-header__cell"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {cartItems.map((item, i) => (
+                            <CartTableItem
+                                key={i}
+                                item={item}
+                                fetchCartItems={fetchCartItems}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            )}
+        </section>
+    );
 };
 
 export default CartPage;

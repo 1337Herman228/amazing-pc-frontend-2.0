@@ -1,0 +1,286 @@
+@use "../../../styles/mixins" as *;
+@use "../../../styles/media" as *;
+@use "../../../styles/variables" as *;
+
+// body {
+//     background-color: var(--tm-color-dark-black-2) !important;
+// }
+
+.cart {
+    .cart-is-empty {
+        text-align: start;
+        font-size: 16px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: var(--main-color);
+        color: black;
+        padding: 15px 15px;
+    }
+
+    &__main-title {
+        padding: 20px 20px;
+        font-size: 42px;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    &__products-table {
+        max-width: 1200px;
+        margin: 0 auto;
+
+        @include tablet {
+            width: 100%;
+            margin: 0;
+        }
+
+        &-header {
+            background-color: var(--cart-table-header-color);
+            height: 53px;
+            box-shadow: 0 0.3px 0 0 var(--tm-color-grey);
+
+            .table-row-header {
+                &__cell {
+                    color: var(--text-color-grey);
+                    text-transform: uppercase;
+                    font-size: 14px;
+                    font-weight: 300;
+                    border: none;
+                    padding: 16px;
+
+                    &.text-align-left {
+                        text-align: start;
+                    }
+                }
+            }
+        }
+
+        .product-item-row {
+            box-shadow: 0 0.3px 0 0 var(--tm-color-grey);
+
+            &__main-image {
+                object-fit: contain;
+                min-width: 320px;
+                user-select: none;
+                pointer-events: none;
+            }
+
+            &__cell {
+                padding: 16px;
+                font-weight: 300;
+
+                .grid-cell {
+                    display: grid;
+                    gap: 5px;
+                    grid-template-areas:
+                        "main-image info info info del-btn"
+                        "main-image quantity available price del-btn";
+                    grid-template-columns: auto auto auto auto 60px;
+                    // grid-template-rows: auto 30px;
+
+                    @include mobile {
+                        grid-template-areas:
+                            "main-image info del-btn"
+                            "main-image quantity  del-btn"
+                            "main-image available del-btn"
+                            "main-image price del-btn";
+                        grid-template-columns: 300px auto 20px;
+                    }
+
+                    &__main-image {
+                        grid-area: main-image;
+
+                        img {
+                            object-fit: contain;
+                            width: 320px;
+                            height: 200px;
+                        }
+                    }
+
+                    &__info {
+                        grid-area: info;
+                        align-self: center;
+                    }
+
+                    &__del-btn {
+                        grid-area: del-btn;
+                        justify-self: end;
+                    }
+
+                    &__quantity {
+                        grid-area: quantity;
+                    }
+
+                    &__available {
+                        font-size: 17px;
+                        color: var(--text-color-grey-light);
+                        grid-area: available;
+                        padding-top: 7px;
+                        @include mobile {
+                            padding-top: 0px;
+                        }
+                    }
+
+                    &__price {
+                        font-size: 16px;
+                        grid-area: price;
+                        padding-top: 7px;
+                        @include mobile {
+                            padding-top: 0px;
+                        }
+                    }
+                }
+
+                &.price {
+                    font-size: 16px;
+                    text-align: center;
+                }
+
+                &.quantity {
+                    margin: 0 auto;
+                }
+
+                &.available {
+                    min-width: 150px;
+                    text-align: center;
+                    font-size: 16px;
+                    color: var(--text-color-grey-light);
+                }
+
+                .title-div {
+                    display: flex;
+                    justify-content: center;
+                    flex-direction: column;
+                    gap: 2px;
+
+                    &--pc-name {
+                        font-size: 20px;
+                        // text-transform: uppercase;
+                        // font-weight: 400;
+                    }
+                    &--pc-id {
+                        font-size: 15px;
+                        color: var(--main-color);
+                    }
+                    &--product-type {
+                        color: var(--text-color-grey);
+                    }
+                    &--product-name {
+                    }
+                }
+
+                .pc-info {
+                    display: flex;
+                    justify-content: center;
+                    flex-direction: column;
+                    gap: 10px;
+                    // min-width: 370px;
+
+                    &__title {
+                    }
+                }
+                .pc-dashboard {
+                    display: flex;
+                    gap: 5px;
+                    flex-direction: row;
+
+                    @media (max-width: 1150px) {
+                        display: block;
+                    }
+
+                    @include tablet {
+                        display: flex;
+                    }
+
+                    &__btn {
+                        font-size: 13px;
+                        padding-block: 9px;
+                        padding-inline: 18px;
+
+                        @media (max-width: 1150px) {
+                            margin-bottom: 10px;
+                        }
+
+                        @include tablet {
+                            margin-bottom: 0px;
+                        }
+                    }
+                }
+
+                .btn-delete {
+                    @include reset-button;
+                    cursor: pointer;
+                    min-width: 20px;
+
+                    @include hover {
+                        img {
+                            transition-duration: var(--transition-duration);
+                            opacity: 0.5;
+                        }
+                    }
+                }
+
+                .quantity {
+                    display: grid;
+                    grid-template-columns: 28px 34px 28px;
+                    border-radius: 2px;
+                    border: 1px solid #313131;
+                    background: #222;
+                    max-width: 92px;
+
+                    &__btn-change-count {
+                        @include reset-button;
+                        @include flex-center;
+                        cursor: pointer;
+                        transition-duration: var(--transition-duration);
+
+                        @include hover {
+                            svg {
+                                fill: var(--main-color);
+                            }
+                        }
+
+                        svg {
+                            fill: white;
+                        }
+
+                        &.disabled {
+                            cursor: default;
+                            svg {
+                                fill: gray;
+                            }
+                        }
+                    }
+
+                    &__input {
+                        width: 34px;
+                        aspect-ratio: 1;
+                        background: #1c1c1c;
+                        color: #ccc;
+                        border-left: 1px solid #2a2a2a;
+                        border-right: 1px solid #2a2a2a;
+                        border-bottom: none;
+                        border-top: none;
+                        text-align: center;
+                        font-size: 16px;
+                        font-weight: 300;
+
+                        &:focus {
+                            outline: none;
+                            border: 1px solid var(--main-color);
+                        }
+
+                        &[type="number"] {
+                            appearance: textfield;
+                        }
+
+                        &::-webkit-inner-spin-button,
+                        &::-webkit-outer-spin-button {
+                            -webkit-appearance: none;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

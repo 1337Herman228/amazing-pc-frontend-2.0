@@ -1,17 +1,20 @@
 import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import {
     INewUser,
     IPart,
     IPartition,
+    IPc,
     IType,
-    IUser,
+    NewPcConfigurationDto,
 } from "@/interfaces/types-v2";
 
 const useFetch = () => {
     const { requestJson, isLoading, error } = useHttp();
     const { session, token, user } = useAppSelector((state) => state.session);
+
+    // console.log(token);
 
     const getGamingPcCatalog = useCallback(async () => {
         if (token) {
@@ -132,6 +135,19 @@ const useFetch = () => {
         [token]
     );
 
+    const getConfigurationById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/configurations/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const editUser = useCallback(
         async (user: INewUser) => {
             if (token) {
@@ -140,6 +156,24 @@ const useFetch = () => {
                     `http://localhost:8080/admin/users`,
                     "PUT",
                     JSON.stringify(user)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPurchaseItemQuantity = useCallback(
+        async (id: string, quantity: number) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/edit-purchase-item-quantity`,
+                    "PUT",
+                    JSON.stringify({
+                        id,
+                        quantity,
+                    })
                 );
                 return data;
             }
@@ -235,6 +269,21 @@ const useFetch = () => {
         [token]
     );
 
+    const saveConfiguration = useCallback(
+        async (configuration: NewPcConfigurationDto) => {
+            if (token) {
+                const id = await requestJson(
+                    token,
+                    `http://localhost:8080/user/configurations`,
+                    "POST",
+                    JSON.stringify(configuration)
+                );
+                return id;
+            }
+        },
+        [token]
+    );
+
     const addUser = useCallback(
         async (user: INewUser) => {
             if (token) {
@@ -300,6 +349,20 @@ const useFetch = () => {
                 const data = await requestJson(
                     token,
                     `http://localhost:8080/admin/types/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deletePurchaseItem = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/purchase-items/${id}`,
                     "DELETE"
                 );
                 return data;
@@ -376,7 +439,11 @@ const useFetch = () => {
     );
 
     return {
+        getConfigurationById,
+        saveConfiguration,
+        editPurchaseItemQuantity,
         getNotEmptyPcCategories,
+        deletePurchaseItem,
         getPcCategories,
         getUserById,
         editUser,

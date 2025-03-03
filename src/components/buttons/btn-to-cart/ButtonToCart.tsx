@@ -2,7 +2,6 @@ import Link from "next/link";
 import "./ButtonToCart.scss";
 import { useState } from "react";
 import { useAppDispatch } from "@/lib/redux/store/store";
-import { addCartItem } from "@/lib/redux/store/slices/cartSlice";
 
 interface ButtonToCartProps {
     is_btn_pressed?: boolean;

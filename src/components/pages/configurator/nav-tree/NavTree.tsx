@@ -1,18 +1,18 @@
 import Link from "next/link";
 import "./NavTree.scss";
 import { useEffect } from "react";
-import { NavTreeItem } from "../Configurator";
+import useFetch from "@/lib/hooks/useFetch";
+import { ICategory, NavTreeItem } from "@/interfaces/types-v2";
 
 interface NavTreeProps {
-    uniqueCategories: string[];
+    categories: ICategory[];
     allItems: NavTreeItem[];
 }
 
-const NavTree = ({ uniqueCategories, allItems }: NavTreeProps) => {
+const NavTree = ({ categories, allItems }: NavTreeProps) => {
     useEffect(() => {
         window.addEventListener("scroll", dynamicSecondNavLinks);
         dynamicSecondNavLinks();
-
         return () => {
             window.removeEventListener("scroll", dynamicSecondNavLinks);
         };
@@ -64,19 +64,19 @@ const NavTree = ({ uniqueCategories, allItems }: NavTreeProps) => {
     return (
         <>
             <ul className="tree-list">
-                {uniqueCategories.map((item) => (
-                    <li key={item} className="tree-list__item">
+                {categories.map((item) => (
+                    <li key={item.id} className="tree-list__item">
                         <button
                             onClick={(e) => onCategoryClick(e)}
                             className="tree-list__item-open-btn active"
                         >
-                            {item}
+                            {item.label}
                         </button>
                         <ul className="tree-list__nav-list open">
                             {allItems
-                                .filter((el) => el.category === item)
+                                .filter((el) => el.category === item.label)
                                 .map((item, index) => (
-                                    <NavTreeLeaf key={item.name} {...item} />
+                                    <NavTreeLeaf key={item.id} {...item} />
                                 ))}
                         </ul>
                     </li>
@@ -90,7 +90,7 @@ const NavTreeLeaf = (item: NavTreeItem) => {
     return (
         <>
             <div className=" tree-list__nav-list-decoration-border" />
-            <Link href={`#${item.name}`} className="tree-list__nav-list-item">
+            <Link href={`#${item.value}`} className="tree-list__nav-list-item">
                 <img
                     className="tree-list__nav-list-item-icon"
                     src={item.icon}
@@ -100,7 +100,7 @@ const NavTreeLeaf = (item: NavTreeItem) => {
                     loading="lazy"
                 />
                 <span className="tree-list__nav-list-item-name">
-                    {item.name}
+                    {item.label}
                 </span>
             </Link>
         </>

@@ -1,8 +1,9 @@
 "use client";
 
-import { IPcModelGroup } from "@/interfaces/types-v2";
+import { ICatalog } from "@/interfaces/types-v2";
 import "./PcCatalogCard.scss";
 import Link from "next/link";
+import { declension } from "@/lib/functions";
 
 const Img = ({ src }: { src: string }) => {
     return (
@@ -18,57 +19,41 @@ const Img = ({ src }: { src: string }) => {
 };
 
 interface PcCatalogCardProps {
-    pcModelGroup: IPcModelGroup;
+    catalog: ICatalog;
     isNotebook: boolean;
 }
 
-const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
-    function declension(number: number): string {
-        const word = "Комплектация";
-        if (number % 10 === 1 && number % 100 !== 11) {
-            return number + " " + word.replace(/я$/, "я");
-        } else if (
-            number % 10 >= 2 &&
-            number % 10 <= 4 &&
-            (number % 100 < 10 || number % 100 >= 20)
-        ) {
-            return number + " " + word.replace(/я$/, "и");
-        } else {
-            return number + " " + word + "й";
-        }
-    }
-
+const PcCatalogCard = ({ catalog, isNotebook }: PcCatalogCardProps) => {
     return (
         <div className="pc-card-container">
             <Link
-                href={`/${pcModelGroup.pcTypes.value}/${pcModelGroup.modelGroupName}`}
+                href={`/${catalog.pcModelGroup.pcTypes.value}/${catalog.pcModelGroup.modelGroupName}`}
             >
                 <div className="pc-card">
-                    {/* <div className="pc-card__mark-div">
+                    <div className="pc-card__mark-div">
                         <span className="pc-card__mark mark">
-                            {declension(pcModelGroup.configurationsCount)}
+                            {declension(catalog.configurationsCount)}
                         </span>
-                    </div> */}
+                    </div>
                     <img
                         className="pc-card__img"
-                        src={pcModelGroup.modelGroupImage}
+                        src={catalog.pcModelGroup.modelGroupImage}
                         width={200}
                         height={300}
-                        alt={pcModelGroup.modelGroupName}
+                        alt={catalog.pcModelGroup.modelGroupName}
                         loading="lazy"
                     />
                     <div className="pc-card__info">
                         <div className="pc-card__info-title-and-price">
                             <h3 className="pc-card__info-title">
-                                {pcModelGroup.modelGroupName}
+                                {catalog.pcModelGroup.modelGroupName}
                             </h3>
                             <div className="pc-card__info-price">
-                                От
-                                {/* {pcModelGroup.minPrice} */} XXX BYN
+                                От {catalog.minPrice} BYN
                             </div>
                         </div>
                         <span className="pc-card__info-description">
-                            {pcModelGroup.modelGroupDescription}
+                            {catalog.pcModelGroup.modelGroupDescription}
                         </span>
                     </div>
                     <hr />
@@ -76,13 +61,13 @@ const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
                         <li className="component">
                             <Img src="/gaming-pc/components-svg/gpu.svg" />
                             <div className="component__name">
-                                {pcModelGroup.gpuDescription}
+                                {catalog.pcModelGroup.gpuDescription}
                             </div>
                         </li>
                         <li className="component">
                             <Img src="/gaming-pc/components-svg/cpu.svg" />
                             <div className="component__name">
-                                {pcModelGroup.cpuDescription}
+                                {catalog.pcModelGroup.cpuDescription}
                             </div>
                         </li>
                         <li
@@ -92,19 +77,19 @@ const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
                         >
                             <Img src="/gaming-pc/components-svg/mb.svg" />
                             <div className="component__name">
-                                {pcModelGroup.motherboardDescription}
+                                {catalog.pcModelGroup.motherboardDescription}
                             </div>
                         </li>
                         <li className="component">
                             <Img src="/gaming-pc/components-svg/ram.svg" />
                             <div className="component__name">
-                                {pcModelGroup.ramDescription}
+                                {catalog.pcModelGroup.ramDescription}
                             </div>
                         </li>
                         <li className="component">
                             <Img src="/gaming-pc/components-svg/ssd.svg" />
                             <div className="component__name">
-                                {pcModelGroup.ssdDescription}
+                                {catalog.pcModelGroup.ssdDescription}
                             </div>
                         </li>
                         <li
@@ -114,7 +99,7 @@ const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
                         >
                             <Img src="/gaming-pc/components-svg/pow-sup.svg" />
                             <div className="component__name">
-                                {pcModelGroup.psuDescription}
+                                {catalog.pcModelGroup.psuDescription}
                             </div>
                         </li>
                     </ul>
@@ -128,7 +113,7 @@ const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
                             ? " card-buttons__link--more-info-notebook"
                             : "card-buttons__link--more-info")
                     }
-                    href={`/${pcModelGroup.pcTypes.value}/${pcModelGroup.modelGroupName}`}
+                    href={`/${catalog.pcModelGroup.pcTypes.value}/${catalog.pcModelGroup.modelGroupName}`}
                 >
                     {isNotebook ? "Подробнее" : "Подробнее о модели"}
                 </Link>
@@ -137,7 +122,7 @@ const PcCatalogCard = ({ pcModelGroup, isNotebook }: PcCatalogCardProps) => {
                         `card-buttons__link card-buttons__link--configurator green-filled-link ` +
                         (isNotebook ? "display-none" : "")
                     }
-                    href={`/configurator/${pcModelGroup.modelGroupName}`}
+                    href={`/configurator/${catalog.pc.id}`}
                 >
                     <img
                         className="card-buttons__link__svg"

@@ -6,27 +6,27 @@ import "./UserNavbar.scss";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import CartWindow from "@/components/modals/cart-window/CartWindow";
-import { useAppSelector } from "@/lib/redux/store/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import useFetch from "@/lib/hooks/useFetch";
+import { IPurchaseItem } from "@/interfaces/types-v2";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
 
 export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
-    const [cartProductCount, setCartProductCount] = useState(0);
 
-    const [cartItems, setCartItems] = useState([]);
     const { getUserCartItems } = useFetch();
+
+    const cart = useAppSelector((state) => state.cart);
+    const dispatch = useAppDispatch();
+
     useEffect(() => {
         fetchCartItems();
-    }, [isCartWindowOpen]);
-    const fetchCartItems = async () => {
-        const data = await getUserCartItems();
-        setCartItems(data);
-    };
+    }, []);
 
-    const cart_items = useAppSelector((state) => state.cart);
-    useEffect(() => {
-        setCartProductCount(cart_items.items?.length);
-    }, [cart_items]);
+    const fetchCartItems = async () => {
+        const data: IPurchaseItem[] = await getUserCartItems();
+        dispatch(setCartState(data));
+    };
 
     const openModal = () => {
         const dialog: any = document.getElementById("mobileOverlay");
@@ -56,14 +56,6 @@ export default function UserNavbar() {
             <header className="header">
                 <div className="header__inner container">
                     <Link className="header__logo logo link-to-check" href="/">
-                        {/* <img 
-                    className="logo__img" 
-                    src="/logo.svg"
-                    alt="Amazing PC" 
-                    width={60} 
-                    height={60} 
-                    loading="lazy"
-                /> */}
                         <span className="logo__text uppercase-text">
                             Amazing PC
                         </span>
@@ -103,14 +95,6 @@ export default function UserNavbar() {
                                     Конфигуратор
                                 </Link>
                             </li>
-                            <li className="header__menu-item">
-                                <Link
-                                    className="header__menu-link link-to-check uppercase-text"
-                                    href="/assistance"
-                                >
-                                    Услуги
-                                </Link>
-                            </li>
                         </ul>
                     </nav>
 
@@ -120,8 +104,8 @@ export default function UserNavbar() {
                                 className="btn-icon"
                                 src="/search-icon.svg"
                                 alt="Search"
-                                width={22}
-                                height={22}
+                                width={26}
+                                height={26}
                                 loading="lazy"
                             />
                         </button>
@@ -133,16 +117,18 @@ export default function UserNavbar() {
                                 className="btn-icon"
                                 src="/compare-icon-nav.svg"
                                 alt="Compare"
-                                width={22}
-                                height={22}
+                                width={26}
+                                height={26}
                                 loading="lazy"
                             />
                         </button>
                         <button
                             className={`header__side-button-menu-btn text-gray-800 text- ${
-                                cartProductCount > 0 && "btn--count-mark"
+                                cart?.items &&
+                                cart.items.length > 0 &&
+                                "btn--count-mark"
                             }`}
-                            data-custom={cartProductCount}
+                            data-custom={cart?.items?.length}
                             onClick={() =>
                                 setIsCartWindowOpen(!isCartWindowOpen)
                             }
@@ -151,8 +137,8 @@ export default function UserNavbar() {
                                 className="btn-icon"
                                 src="/cart-icon.svg"
                                 alt="Cart"
-                                width={22}
-                                height={22}
+                                width={26}
+                                height={26}
                                 loading="lazy"
                             />
                         </button>
@@ -160,6 +146,7 @@ export default function UserNavbar() {
                         <CartWindow
                             isCartWindowOpen={isCartWindowOpen}
                             setIsCartWindowOpen={setIsCartWindowOpen}
+                            cartItems={cart.items}
                         />
 
                         <button
@@ -223,14 +210,6 @@ export default function UserNavbar() {
                                 href="/configurator"
                             >
                                 Конфигуратор
-                            </Link>
-                        </li>
-                        <li className="mobile-overlay__item">
-                            <Link
-                                className="mobile-overlay__link uppercase-text"
-                                href="/assistance"
-                            >
-                                Услуги
                             </Link>
                         </li>
                     </ul>

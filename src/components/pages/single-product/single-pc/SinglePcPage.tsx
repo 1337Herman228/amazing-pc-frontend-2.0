@@ -295,7 +295,7 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                                         name: kit.name,
                                         price: kit.price,
                                         description: kit.description,
-                                        link_to_configurator: `/configurator/${kit.name}`,
+                                        link_to_configurator: `/configurator/${kit.id}`,
                                         gpu: kit.gpu,
                                         cpu: kit.cpu,
                                         mb: kit.motherboard,

@@ -2,25 +2,21 @@
 
 import Link from "next/link";
 import "./CartWindow.scss";
-import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useAppSelector } from "@/lib/redux/store/store";
-import { ICartItem, ICartPc } from "@/interfaces/types";
+import { useCallback, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import { IPurchaseItem } from "@/interfaces/types-v2";
 
 interface CartWindowProps {
     isCartWindowOpen: boolean;
     setIsCartWindowOpen: (value: boolean) => void;
+    cartItems: IPurchaseItem[] | null;
 }
 
 const CartWindow = ({
     isCartWindowOpen,
     setIsCartWindowOpen,
+    cartItems,
 }: CartWindowProps) => {
-    const [cartItems, setCartItems] = useState<(ICartItem | ICartPc)[]>();
-
-    const cart_items = useAppSelector((state) => state.cart);
-
     useEffect(() => {
         document.addEventListener("click", addClickOutOfWindowListener);
         return () => {
@@ -39,12 +35,6 @@ const CartWindow = ({
         },
         [isCartWindowOpen]
     );
-
-    useEffect(() => {
-        setCartItems(cart_items.items);
-    }, [cart_items]);
-
-    // console.log(cartItems);
 
     return (
         <div className={`_cart-window ${isCartWindowOpen ? "open" : ""}`}>
@@ -71,14 +61,14 @@ const CartWindow = ({
                             >
                                 <img
                                     className="cart-list__item-img"
-                                    src={item.img}
+                                    src={item.product.image}
                                     alt=""
                                     width={100}
                                     height={100}
                                 />
-                                <span className="cart-list__item-name">
-                                    {item.name}
-                                </span>
+                                <div className="cart-list__item-name">
+                                    {item.product.name}
+                                </div>
                             </Link>
                         ))
                     ) : (

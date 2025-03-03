@@ -65,12 +65,21 @@
 
                 &-img {
                     object-fit: contain;
+                    width: 100px;
+                    height: 100px;
                 }
 
                 &-name {
                     font-size: 18px;
                     text-transform: uppercase;
                     margin-right: 10px;
+                    overflow: hidden; /* Скрыть переполнение */
+                    display: -webkit-box; /* Для поддержки многократного отображения строк */
+                    -webkit-line-clamp: 3; /* Ограничение на 3 строки */
+                    -webkit-box-orient: vertical; /* Установить вертикальную ориентацию */
+                    text-overflow: ellipsis; /* Добавить многоточие */
+                    max-height: 3.9em; /* Высота для 3 строк (примерно 1.5em на строку) */
+                    padding-block: 10px;
                 }
             }
 

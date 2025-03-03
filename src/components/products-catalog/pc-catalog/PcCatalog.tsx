@@ -1,26 +1,27 @@
 "use client";
 
-import { IPcCategory, IPcModelGroup } from "@/interfaces/types-v2";
+import { ICatalog, IPcCategory } from "@/interfaces/types-v2";
 import "./PcCatalog.scss";
 import PcCatalogCard from "@/components/cards/pc-catalog-card/PcCatalogCard";
 
 interface PcCatalogProps {
     categories: IPcCategory[];
-    pcModelGroupList: IPcModelGroup[];
+    catalogs: ICatalog[];
     isNotebook?: boolean;
 }
 
 const PcCatalog = ({
     categories,
-    pcModelGroupList,
+    catalogs,
     isNotebook = false,
 }: PcCatalogProps) => {
     return (
         <section className="_catalog">
             {categories.map((category) => {
                 if (
-                    pcModelGroupList.find(
-                        (item) => item.pcCategories.id === category.id
+                    catalogs.find(
+                        (item) =>
+                            item.pcModelGroup.pcCategories.id === category.id
                     )
                 )
                     return (
@@ -55,15 +56,16 @@ const PcCatalog = ({
                                 </div>
                             </div>
                             <main className="_catalog-body__main">
-                                {pcModelGroupList
+                                {catalogs
                                     .filter(
                                         (item) =>
-                                            item.pcCategories.id === category.id
+                                            item.pcModelGroup.pcCategories
+                                                .id === category.id
                                     )
                                     .map((item) => (
                                         <PcCatalogCard
-                                            key={item.id}
-                                            pcModelGroup={item}
+                                            key={item.pcModelGroup.id}
+                                            catalog={item}
                                             isNotebook={isNotebook}
                                         />
                                     ))}

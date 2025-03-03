@@ -1,8 +1,11 @@
 import { ConfigProvider, Modal } from "antd";
 import "./PcSpecModal.scss";
 import { getCategories, makeProductArray } from "@/lib/functions";
-import { ConfiguratorFieldValues } from "@/components/pages/configurator/Configurator_V2";
-import { IPart, IPartWithQuantity } from "@/interfaces/types-v2";
+import {
+    ConfiguratorFieldValues,
+    IPart,
+    IPartWithQuantity,
+} from "@/interfaces/types-v2";
 
 const bg_color = "#111";
 const modalStyles = {
@@ -49,8 +52,9 @@ const PcSpecModal = ({
                 >
                     <table className="modal-table">
                         <tbody>
-                            {Array.from(getCategories(product)).map(
-                                (item, i) => {
+                            {Array.from(getCategories(product))
+                                .filter((item) => !!item)
+                                .map((item, i) => {
                                     const _category = item;
                                     return (
                                         <>
@@ -107,8 +111,7 @@ const PcSpecModal = ({
                                             )}
                                         </>
                                     );
-                                }
-                            )}
+                                })}
                         </tbody>
                     </table>
                 </Modal>

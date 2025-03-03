@@ -5,7 +5,7 @@ import CatalogHeader from "../headers/catalog-header/CatalogHeader";
 import useFetch from "@/lib/hooks/useFetch";
 import { useEffect, useState } from "react";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
-import { IPcCategory, IPcModelGroup } from "@/interfaces/types-v2";
+import { ICatalog, IPcCategory } from "@/interfaces/types-v2";
 
 const workstation_header_info = {
     title: "РАБОЧИЕ СТАНЦИИ",
@@ -19,9 +19,7 @@ const workstation_header_info = {
 const WorkstationPage = () => {
     const { getWorkstationsCatalog, getNotEmptyPcCategories } = useFetch();
 
-    const [pcModelGroups, setPcModelGroups] = useState<IPcModelGroup[] | null>(
-        null
-    );
+    const [catalogs, setCatalogs] = useState<ICatalog[] | null>(null);
     const [pcCategories, setPcCategories] = useState<IPcCategory[] | null>(
         null
     );
@@ -32,7 +30,7 @@ const WorkstationPage = () => {
 
     const fetchWorkstation = async () => {
         const data = await getWorkstationsCatalog();
-        setPcModelGroups(data);
+        setCatalogs(data);
     };
 
     const fetchPcCategories = async () => {
@@ -40,15 +38,12 @@ const WorkstationPage = () => {
         setPcCategories(data);
     };
 
-    if (!pcModelGroups || !pcCategories) return <LoadingPage />;
+    if (!catalogs || !pcCategories) return <LoadingPage />;
 
     return (
         <>
             <CatalogHeader header_info={workstation_header_info} />
-            <PcCatalog
-                categories={pcCategories}
-                pcModelGroupList={pcModelGroups}
-            />
+            <PcCatalog categories={pcCategories} catalogs={catalogs} />
         </>
     );
 };

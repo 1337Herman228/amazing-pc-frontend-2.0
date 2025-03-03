@@ -1,6 +1,6 @@
 "use client";
 
-import { IUserSession } from "@/interfaces/types";
+import { IUserSession } from "@/interfaces/types-v2";
 import { ExtendedSession } from "@/pages/api/auth/[...nextauth]";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 

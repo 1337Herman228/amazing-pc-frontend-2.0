@@ -1,40 +1,71 @@
+"use client";
+
 import { useState } from "react";
 import "./Summation.scss";
 import PcSpecModal from "../../../modals/pc-spec-modal/PcSpecModal";
-import { makeProductArray } from "@/lib/functions";
-import { ConfiguratorFieldValues } from "../Configurator_V2";
-import { IPart, IPartWithQuantity } from "@/interfaces/types-v2";
-
-function calculateTotalPrice(data: any): number {
-    if (Array.isArray(data)) {
-        // Если data — массив, рекурсивно суммируем элементы массива
-        return data.reduce(
-            (total, item) => total + calculateTotalPrice(item),
-            0
-        );
-    }
-
-    if (data && typeof data === "object") {
-        // Если data — объект, проверяем наличие поля `price`
-        const price = data.price ?? 0; // Если `price` отсутствует, берем 0
-        const nestedSum = Object.values(data).reduce(
-            (total: number, value) => total + calculateTotalPrice(value),
-            0
-        );
-        return price + nestedSum;
-    }
-
-    // Если data — не объект и не массив, возвращаем 0
-    return 0;
-}
+import { calculateTotalPrice, makeProductArray } from "@/lib/functions";
+import {
+    ConfiguratorFieldValues,
+    IConfiguration,
+    IPart,
+    IPartWithQuantity,
+} from "@/interfaces/types-v2";
+import SaveConfigurationModal from "@/components/modals/save-configuration-modal/SaveConfigurationModal";
+import ResetModal from "@/components/modals/reset-modal/ResetModal";
+import LoadConfigurationModal from "@/components/modals/load-configuration/LoadConfigurationModal";
+import { useRouter } from "next/navigation";
+import CloseConfiguratorModal from "@/components/modals/close-configurator-modal/CloseConfiguratorModal";
+import ConfigBuyBtn from "@/components/buttons/configurator-buy-btn/ConfigBuyBtn";
+import { useAppSelector } from "@/lib/redux/store/store";
 
 interface SummationProps {
     products: ConfiguratorFieldValues;
     reset: () => void;
+    saveConfiguration: (name: string, needAddToCart?: boolean) => void;
+    config?: IConfiguration;
 }
 
-const Summation = ({ products, reset }: SummationProps) => {
+const Summation = ({
+    products,
+    reset,
+    saveConfiguration,
+    config,
+}: SummationProps) => {
+    const router = useRouter();
+
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
+    const [saveModalOpen, setSaveModalOpen] = useState(false);
+    const [resetModalOpen, setResetModalOpen] = useState(false);
+    const [loadModalOpen, setLoadModalOpen] = useState(false);
+    const [closeModalOpen, setCloseModalOpen] = useState(false);
+    const [needAddToCart, setNeedAddToCart] = useState(false);
+
+    const cart = useAppSelector((state) => state.cart);
+
+    const handleSaveConfiguration = (name: string) => {
+        saveConfiguration(name, needAddToCart);
+        setSaveModalOpen(false);
+        setNeedAddToCart(false);
+    };
+
+    const handleAddConfigurationToCart = () => {
+        setSaveModalOpen(true);
+        setNeedAddToCart(true);
+    };
+
+    const handleResetConfiguration = () => {
+        reset();
+        setResetModalOpen(false);
+    };
+
+    const handleLoadConfiguration = (id: string) => {
+        router.replace(`/configurator/${id}`);
+    };
+
+    const handleCloseConfigurator = () => {
+        router.replace(`/`);
+    };
+
     const toggleModal = (idx: any, target: any) => {
         setIsModalOpen((p) => {
             p[idx] = target;
@@ -42,64 +73,14 @@ const Summation = ({ products, reset }: SummationProps) => {
         });
     };
 
-    // console.log("product", product);
-
-    // const makeCartItemfromProduct = () => {
-    //     const productsArray = [];
-    //     const pc = {};
-    //     pc.name = "Конфигурация";
-    //     pc.id = uuidv4();
-    //     pc.price = calculateTotalPrice(product);
-    //     pc.isPc = true;
-    //     pc.isConfiguration = true;
-
-    //     if (product?.case !== null) {
-    //         pc.img = product?.case?.img;
-    //     } else pc.img = "/components/case/no-case.jpg";
-
-    //     for (let key in product) {
-    //         if (product[key] && product[key]?.length != 0) {
-    //             if (
-    //                 product[key]?.category === "Комплектующие" &&
-    //                 !Array.isArray(product[key])
-    //             ) {
-    //                 pc[key] = { ...product[key] };
-    //             } else if (
-    //                 Array.isArray(product[key]) &&
-    //                 product[key].length != 0 &&
-    //                 product[key]?.category === "Комплектующие"
-    //             ) {
-    //                 pc[key] = [...product[key]];
-    //                 pc[key].category = product[key].category;
-    //                 pc[key].title = product[key].title;
-    //             } else {
-    //                 if (Array.isArray(product[key])) {
-    //                     product[key].forEach((element) => {
-    //                         // console.log('el', element)
-    //                         productsArray.push({
-    //                             ...element,
-    //                             category: product[key].category,
-    //                             title: product[key].title,
-    //                         });
-    //                     });
-    //                 } else {
-    //                     productsArray.push({ ...product[key] });
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     productsArray.push(pc);
-    //     return productsArray;
-    // };
-
-    // console.log("makeCartItemfromProduct", makeCartItemfromProduct());
-    // console.log("product", product);
-
     return (
         <>
             <h1 className="summation__title">
                 Конфигуратор
-                <br /> AMAZING PC UNLIMITED
+                <br />{" "}
+                <div className="max-w-3xs text-ellipsis overflow-hidden">
+                    {config?.name || "AMAZING PC UNLIMITED"}
+                </div>
             </h1>
             <img
                 className="summation__img "
@@ -114,13 +95,18 @@ const Summation = ({ products, reset }: SummationProps) => {
                 Цена {calculateTotalPrice(products)} BYN
             </div>
 
-            {/* <ConfigBuyBtn
-                product={makeCartItemfromProduct()}
-                is_btn_pressed={false}
-            /> */}
+            <ConfigBuyBtn
+                onClick={handleAddConfigurationToCart}
+                isPressed={
+                    !!cart.items?.find((el) => el.product.id === config?.id)
+                }
+            />
 
             <div className="summation__control-btns">
-                <button className="summation__control-btns-save summation__control-btns--btn">
+                <button
+                    onClick={() => setSaveModalOpen(true)}
+                    className="summation__control-btns-save summation__control-btns--btn"
+                >
                     <img
                         className="summation__control-btns-icon"
                         src="/configurator-svg/save.svg"
@@ -134,7 +120,7 @@ const Summation = ({ products, reset }: SummationProps) => {
                     </span>
                 </button>
                 <button
-                    onClick={reset}
+                    onClick={() => setResetModalOpen(true)}
                     className="summation__control-btns-reset summation__control-btns--btn"
                 >
                     <img
@@ -149,7 +135,10 @@ const Summation = ({ products, reset }: SummationProps) => {
                         Сбросить
                     </span>
                 </button>
-                <button className="summation__control-btns-load summation__control-btns--btn">
+                <button
+                    onClick={() => setLoadModalOpen(true)}
+                    className="summation__control-btns-load summation__control-btns--btn"
+                >
                     <img
                         className="summation__control-btns-icon"
                         src="/configurator-svg/load.svg"
@@ -162,7 +151,10 @@ const Summation = ({ products, reset }: SummationProps) => {
                         Загрузить
                     </span>
                 </button>
-                <button className="summation__control-btns-close summation__control-btns--btn">
+                <button
+                    onClick={() => setCloseModalOpen(true)}
+                    className="summation__control-btns-close summation__control-btns--btn"
+                >
                     <img
                         className="summation__control-btns-icon"
                         src="/configurator-svg/close.svg"
@@ -205,10 +197,7 @@ const Summation = ({ products, reset }: SummationProps) => {
                                     <span className="configuration-list__item-name">
                                         {name}
                                     </span>
-                                    <span
-                                        key={index}
-                                        className="configuration-list__item-info"
-                                    >
+                                    <span className="configuration-list__item-info">
                                         {Array.isArray(info)
                                             ? info.map((el) => (
                                                   <>
@@ -234,6 +223,32 @@ const Summation = ({ products, reset }: SummationProps) => {
                     product={products}
                     isModalOpen={isModalOpen}
                     toggleModal={toggleModal}
+                />
+                <SaveConfigurationModal
+                    open={saveModalOpen}
+                    handleOk={handleSaveConfiguration}
+                    handleCancel={() => setSaveModalOpen(false)}
+                    defaultName={config?.name}
+                />
+                <ResetModal
+                    open={resetModalOpen}
+                    handleOk={handleResetConfiguration}
+                    handleCancel={() => setResetModalOpen(false)}
+                    message={
+                        !!config
+                            ? "Вернуть изначальную конфигурацию?"
+                            : "Сбросить текущую конфигурацию?"
+                    }
+                />
+                <LoadConfigurationModal
+                    open={loadModalOpen}
+                    handleOk={handleLoadConfiguration}
+                    handleCancel={() => setLoadModalOpen(false)}
+                />
+                <CloseConfiguratorModal
+                    open={closeModalOpen}
+                    handleOk={handleCloseConfigurator}
+                    handleCancel={() => setCloseModalOpen(false)}
                 />
             </div>
         </>

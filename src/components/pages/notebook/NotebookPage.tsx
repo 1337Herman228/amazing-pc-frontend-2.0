@@ -5,7 +5,7 @@ import CatalogHeader from "../headers/catalog-header/CatalogHeader";
 import useFetch from "@/lib/hooks/useFetch";
 import { useEffect, useState } from "react";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
-import { IPcCategory, IPcModelGroup } from "@/interfaces/types-v2";
+import { ICatalog, IPcCategory } from "@/interfaces/types-v2";
 
 const notebook_header_info = {
     title: "ИГРОВЫЕ НОУТБУКИ",
@@ -19,9 +19,7 @@ const notebook_header_info = {
 const NotebookPage = () => {
     const { getNotebooksCatalog, getNotEmptyPcCategories } = useFetch();
 
-    const [pcModelGroups, setPcModelGroups] = useState<IPcModelGroup[] | null>(
-        null
-    );
+    const [catalogs, setCatalogs] = useState<ICatalog[] | null>(null);
     const [pcCategories, setPcCategories] = useState<IPcCategory[] | null>(
         null
     );
@@ -32,7 +30,7 @@ const NotebookPage = () => {
 
     const fetchNotebooks = async () => {
         const data = await getNotebooksCatalog();
-        setPcModelGroups(data);
+        setCatalogs(data);
     };
 
     const fetchPcCategories = async () => {
@@ -40,14 +38,14 @@ const NotebookPage = () => {
         setPcCategories(data);
     };
 
-    if (!pcModelGroups || !pcCategories) return <LoadingPage />;
+    if (!catalogs || !pcCategories) return <LoadingPage />;
 
     return (
         <>
             <CatalogHeader header_info={notebook_header_info} />
             <PcCatalog
                 categories={pcCategories}
-                pcModelGroupList={pcModelGroups}
+                catalogs={catalogs}
                 isNotebook
             />
         </>

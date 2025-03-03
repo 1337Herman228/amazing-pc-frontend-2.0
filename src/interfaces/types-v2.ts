@@ -4,6 +4,29 @@ import {
     UseFormUnregister,
 } from "react-hook-form";
 
+export interface IIdDto {
+    id: string;
+}
+
+export interface IUserSession {
+    name?: string;
+    email?: string;
+    image?: string;
+    userId?: string;
+    authenticationResponse?: {
+        token: string;
+    };
+    role?: string;
+}
+
+export interface NavTreeItem {
+    id: string;
+    category: string;
+    label: string;
+    value: string;
+    icon: string;
+}
+
 export type TProductType = "PART" | "PC";
 
 export interface IProduct {
@@ -46,6 +69,19 @@ export interface IPartWithQuantity {
     part: IPart;
 }
 
+export type ICartItem = IPc | IPart;
+
+export interface IPurchaseItem {
+    id: string;
+    quantity: number;
+    product: ICartItem;
+}
+
+export interface IPurchaseItemDto {
+    quantity: number;
+    productId: string;
+}
+
 export interface IPc extends IProduct {
     pcModelGroup: IPcModelGroup;
     pcType: IPcType;
@@ -59,6 +95,26 @@ export interface IPc extends IProduct {
     pcCase: IPart;
     ssd: IPartWithQuantity[];
     fans: IPartWithQuantity[];
+    userCreated?: IUser;
+}
+
+export interface ConfiguratorFieldValues {
+    gpu: IPart;
+    cpu: IPart;
+    motherboard: IPart;
+    cpu_fan: IPart;
+    ram: IPart;
+    psu: IPart;
+    cases?: IPart;
+    ssd: IPartWithQuantity[];
+    fan: IPartWithQuantity[];
+    [key: string]: IPartWithQuantity[] | IPart | undefined;
+}
+
+export interface IConfiguration {
+    id: string;
+    name: string;
+    configuration: ConfiguratorFieldValues;
 }
 
 export interface IAssemblyPC {
@@ -130,6 +186,13 @@ export interface IPcModelGroup {
     performanceImage: string;
 }
 
+export interface ICatalog {
+    configurationsCount: number;
+    minPrice: number;
+    pc: IPc;
+    pcModelGroup: IPcModelGroup;
+}
+
 export interface IConfiguratorComponent {
     category: ICategory;
     partition: string[];
@@ -139,4 +202,23 @@ export interface IConfiguratorComponent {
 
 export interface IConfiguratorComponents {
     components: IConfiguratorComponent[];
+}
+
+export interface PartIdWithQuantity {
+    partId: string;
+    quantity: number;
+}
+
+export interface NewPcConfigurationDto {
+    name: string;
+    gpuId: string;
+    cpuId: string;
+    motherboardId: string;
+    cpuFanId: string;
+    ramId: string;
+    psuId: string;
+    pcCaseId: string | null;
+    ssd: PartIdWithQuantity[];
+    fans: PartIdWithQuantity[];
+    userId?: string;
 }

@@ -1,14 +1,3 @@
-export interface IUserSession {
-    name?: string;
-    email?: string;
-    image?: string;
-    userId?: number;
-    authenticationResponse?: {
-        token: string;
-    };
-    role?: string;
-}
-
 export interface ICartItem {
     id: number | string;
     partition: string;

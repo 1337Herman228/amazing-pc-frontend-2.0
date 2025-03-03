@@ -17,6 +17,11 @@ export enum PART_CATEGORIES {
     PERIPHERY = "periphery",
 }
 
+export enum PRODUCT_TYPE {
+    PART = "PART",
+    PC = "PC",
+}
+
 export const GENERAL_CHOICE_OPTION = {
     value: "",
     label: "Все",
@@ -28,3 +33,10 @@ export const NOT_SELECTED_OPTION = {
     label: "Не выбрано",
     id: "not_selected",
 } as IOptionTemplate;
+
+export enum PC_TYPES {
+    GAMING_PC = "gaming-pc",
+    NOTEBOOK = "notebook",
+    WORKSTATION = "workstation",
+    CONFIGURATION = "configuration",
+}
