@@ -114,6 +114,7 @@ export interface ConfiguratorFieldValues {
 export interface IConfiguration {
     id: string;
     name: string;
+    userCreated?: IUser;
     configuration: ConfiguratorFieldValues;
 }
 
@@ -209,7 +210,19 @@ export interface PartIdWithQuantity {
     quantity: number;
 }
 
-export interface NewPcConfigurationDto {
+export interface PcIdWithQuantity {
+    pcId: string;
+    quantity: number;
+}
+
+export interface IConfiguratorProductsDto {
+    userId: string;
+    pc: PcIdWithQuantity;
+    parts: PartIdWithQuantity[];
+}
+
+export interface PcConfigurationDto {
+    id?: string;
     name: string;
     gpuId: string;
     cpuId: string;
@@ -221,4 +234,10 @@ export interface NewPcConfigurationDto {
     ssd: PartIdWithQuantity[];
     fans: PartIdWithQuantity[];
     userId?: string;
+}
+
+export interface PcToCartDto {
+    userId: string;
+    pcId: string;
+    quantity: number;
 }

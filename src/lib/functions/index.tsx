@@ -1,14 +1,20 @@
+import { PART_CATEGORIES } from "@/constants";
 import {
     ConfiguratorFieldValues,
     ICategory,
+    IConfiguration,
+    IConfiguratorComponents,
     IOptionTemplate,
     IPart,
     IPartition,
     IPartWithQuantity,
     IPc,
     IType,
+    NavTreeItem,
+    PartIdWithQuantity,
 } from "@/interfaces/types-v2";
 import { FieldValues } from "react-hook-form";
+import { CATEGORIES, TYPES } from "../constants";
 
 export const stringifyName = (name: string) =>
     name.toLowerCase().replace(/\s/g, "-");
@@ -248,3 +254,138 @@ export function declension(number: number): string {
         return number + " " + word + "й";
     }
 }
+
+export const selectSettings = (typeName: string, category: string) => {
+    let multiselect: boolean | null = null;
+    let default_checked = true;
+    let max_quantity = 0;
+
+    switch (typeName) {
+        case TYPES.CASE: {
+            default_checked = false;
+            break;
+        }
+        case TYPES.FAN: {
+            default_checked = false;
+            multiselect = true;
+            max_quantity = 20;
+            break;
+        }
+        case TYPES.SSD: {
+            default_checked = false;
+            multiselect = true;
+            max_quantity = 5;
+            break;
+        }
+    }
+
+    if (category === CATEGORIES.PERIPHERY) {
+        default_checked = false;
+        multiselect = true;
+        max_quantity = 5;
+    }
+
+    return { multiselect, default_checked, max_quantity };
+};
+
+export const makeDefaultConfiguration = (data: IConfiguratorComponents) => {
+    return {
+        id: "",
+        name: "",
+        configuration: {
+            gpu: data?.components.find((el) => el.type.value === TYPES.GPU)
+                ?.items[0] as IPart,
+            cpu: data?.components.find((el) => el.type.value === TYPES.CPU)
+                ?.items[0] as IPart,
+            motherboard: data?.components.find(
+                (el) => el.type.value === TYPES.MOTHERBOARD
+            )?.items[0] as IPart,
+            cpu_fan: data?.components.find(
+                (el) => el.type.value === TYPES.CPU_FAN
+            )?.items[0] as IPart,
+            ram: data?.components.find((el) => el.type.value === TYPES.RAM)
+                ?.items[0] as IPart,
+            psu: data?.components.find((el) => el.type.value === TYPES.PSU)
+                ?.items[0] as IPart,
+            cases: undefined,
+            ssd: [],
+            fan: [],
+        },
+    } as IConfiguration;
+};
+
+export const makeDefaultExistingConfiguration = (config: IPc) => {
+    return {
+        id: config.id,
+        name: config.name,
+        userCreated: config?.userCreated,
+        configuration: {
+            gpu: config.gpu,
+            cpu: config.cpu,
+            motherboard: config.motherboard,
+            cpu_fan: config.cpuFan,
+            ram: config.ram,
+            psu: config.psu,
+            ssd: config.ssd ?? [],
+            fan: config.fans ?? [],
+            cases: config.pcCase,
+        },
+    } as IConfiguration;
+};
+
+export const makeNavTreeInfoArray = (
+    componentsList?: IConfiguratorComponents
+) => {
+    let allItems: NavTreeItem[] = [];
+
+    componentsList &&
+        componentsList.components.forEach((el) => {
+            allItems.push({
+                id: el.type.id,
+                category: el.category.label,
+                label: el.type.label,
+                value: el.type.value,
+                icon: el.type.image as string,
+            });
+        });
+    return { allItems };
+};
+
+export const getPartsPurchaseItemsFromConfiguration = (
+    configuration: ConfiguratorFieldValues
+) => {
+    const parts: PartIdWithQuantity[] = [];
+
+    Object.keys(configuration)
+        .filter((k) => !!configuration?.[k])
+        .forEach((key) => {
+            if (
+                Array.isArray(configuration?.[key]) &&
+                configuration?.[key].length > 0 &&
+                configuration?.[key]?.[0]?.part?.categories?.value !==
+                    PART_CATEGORIES.COMPONENTS
+            ) {
+                configuration[key].forEach((part) => {
+                    parts.push({
+                        partId: part.part.id,
+                        quantity: part.quantity,
+                    });
+                });
+            }
+            // else {
+            //     if (
+            //         configuration?.[key] &&
+            //         // @ts-ignore
+            //         configuration?.[key]?.categories?.value !==
+            //             PART_CATEGORIES.COMPONENTS
+            //     )
+            //         parts.push({
+            //             // @ts-ignore
+            //             productId: configuration[key]?.id as string,
+            //             quantity: 1,
+            //         });
+            // }
+        });
+
+    return parts;
+};

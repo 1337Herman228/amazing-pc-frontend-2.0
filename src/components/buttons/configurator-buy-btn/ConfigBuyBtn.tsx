@@ -1,7 +1,5 @@
 import Link from "next/link";
 import "./ConfigBuyBtn.scss";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 interface ConfigBuyBtnProps {
     isPressed: boolean;

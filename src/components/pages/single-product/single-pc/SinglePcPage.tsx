@@ -289,6 +289,7 @@ const SinglePcPage = ({ pcModelGroupName }: SinglePcPageProps) => {
                                 <SinglePcConfigCard
                                     key={kit.id}
                                     pc={{
+                                        id: kit.id,
                                         isNotebook:
                                             kit.pcType.value === "notebook",
                                         img: kit.image,

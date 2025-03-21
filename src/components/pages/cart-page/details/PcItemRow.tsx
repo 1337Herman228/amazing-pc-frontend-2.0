@@ -41,7 +41,7 @@ const PcItemRow = ({
                     <PcInfo
                         name={pc.name}
                         isConfiguration={
-                            pc?.pcType.value === PC_TYPES.CONFIGURATION
+                            pc?.pcType?.value === PC_TYPES.CONFIGURATION
                         }
                         id={pc.id}
                         toggleModal={toggleModal}
@@ -93,7 +93,7 @@ const PcItemRow = ({
                             <PcInfo
                                 name={pc.name}
                                 isConfiguration={
-                                    pc?.pcType.value === PC_TYPES.CONFIGURATION
+                                    pc?.pcType?.value === PC_TYPES.CONFIGURATION
                                 }
                                 id={pc.id}
                                 toggleModal={toggleModal}

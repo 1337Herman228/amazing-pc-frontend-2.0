@@ -2,12 +2,14 @@ import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
 import { useCallback } from "react";
 import {
+    IConfiguratorProductsDto,
     INewUser,
     IPart,
     IPartition,
     IPc,
     IType,
-    NewPcConfigurationDto,
+    PcConfigurationDto,
+    PcToCartDto,
 } from "@/interfaces/types-v2";
 
 const useFetch = () => {
@@ -269,8 +271,23 @@ const useFetch = () => {
         [token]
     );
 
+    const configuratorProductsToCard = useCallback(
+        async (dto: IConfiguratorProductsDto) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/configurator-products-to-cart`,
+                    "POST",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const saveConfiguration = useCallback(
-        async (configuration: NewPcConfigurationDto) => {
+        async (configuration: PcConfigurationDto) => {
             if (token) {
                 const id = await requestJson(
                     token,
@@ -279,6 +296,21 @@ const useFetch = () => {
                     JSON.stringify(configuration)
                 );
                 return id;
+            }
+        },
+        [token]
+    );
+
+    const editConfiguration = useCallback(
+        async (configuration: PcConfigurationDto) => {
+            if (token) {
+                const response = await requestJson(
+                    token,
+                    `http://localhost:8080/user/configurations`,
+                    "PUT",
+                    JSON.stringify(configuration)
+                );
+                return response;
             }
         },
         [token]
@@ -401,6 +433,21 @@ const useFetch = () => {
         [token]
     );
 
+    const addPcToCard = useCallback(
+        async (pc: PcToCartDto) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/pc-to-cart`,
+                    "POST",
+                    JSON.stringify(pc)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const deletePart = useCallback(async (id: String) => {
         if (token) {
             const data = await requestJson(
@@ -439,6 +486,9 @@ const useFetch = () => {
     );
 
     return {
+        addPcToCard,
+        editConfiguration,
+        configuratorProductsToCard,
         getConfigurationById,
         saveConfiguration,
         editPurchaseItemQuantity,

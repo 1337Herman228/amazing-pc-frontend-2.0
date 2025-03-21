@@ -4,9 +4,13 @@ import { Rate } from "antd";
 import "../../../styles/style.scss";
 import { useEffect, useState } from "react";
 import ButtonToCart from "@/components/buttons/btn-to-cart/ButtonToCart";
-import { IPart, IPartWithQuantity } from "@/interfaces/types-v2";
+import { IPart, IPartWithQuantity, IPurchaseItem } from "@/interfaces/types-v2";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
+import useFetch from "@/lib/hooks/useFetch";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
 
 interface ISinglePcConfigCardPc {
+    id: string;
     isNotebook: boolean;
     img: string;
     name: string;
@@ -30,6 +34,7 @@ interface SinglePcConfigCardProps {
 
 const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
     const {
+        id,
         img,
         name,
         price,
@@ -60,7 +65,24 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
         );
     };
 
+    const cart = useAppSelector((state) => state.cart);
+    const { user } = useAppSelector((state) => state.session);
+
+    const dispatch = useAppDispatch();
+
+    const { addPcToCard, getUserCartItems } = useFetch();
+
     const [maxHeight, setMaxHeight] = useState(0);
+
+    const handleAddPcToCard = async () => {
+        await addPcToCard({
+            pcId: id,
+            quantity: 1,
+            userId: user?.userId as string,
+        });
+        const data: IPurchaseItem[] = await getUserCartItems();
+        dispatch(setCartState(data));
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -111,7 +133,14 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                         Цена {price} BYN
                     </span>
                     <span className="configuration-card__buy-btn">
-                        <ButtonToCart product={pc} />
+                        <ButtonToCart
+                            isPressed={
+                                !!cart.items?.find(
+                                    (el) => el.product.id === pc.id
+                                )
+                            }
+                            onClick={handleAddPcToCard}
+                        />
                     </span>
                 </div>
                 <hr />

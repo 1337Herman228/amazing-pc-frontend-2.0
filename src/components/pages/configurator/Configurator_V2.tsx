@@ -1,32 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Configurator.scss";
 import useFetch from "@/lib/hooks/useFetch";
 import LoadingPage from "@/components/loading/loading-page/LoadingPage";
 import NavTree from "./nav-tree/NavTree";
 import Summation from "./summation/Summation";
-import { CATEGORIES, TYPES } from "@/lib/constants";
 import {
     ConfiguratorFieldValues,
     ICategory,
     IConfiguration,
     IConfiguratorComponents,
+    IConfiguratorProductsDto,
     IPart,
     IPartWithQuantity,
     IPc,
     IPurchaseItem,
     IPurchaseItemDto,
     NavTreeItem,
-    NewPcConfigurationDto,
+    PcConfigurationDto,
+    PartIdWithQuantity,
+    PcIdWithQuantity,
 } from "@/interfaces/types-v2";
 import { useForm } from "react-hook-form";
 import FormListItemV2 from "./form-list-item/FormListItem_V2";
 import MultiSelectFormListItemV2 from "./form-list-item/MultiSelectFormListItemV2";
-import { useAppSelector } from "@/lib/redux/store/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import { notification } from "antd";
 import { useParams } from "next/navigation";
-import { PART_CATEGORIES } from "@/constants";
+import { PART_COMPONENTS_TYPES } from "@/constants";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
+import {
+    getPartsPurchaseItemsFromConfiguration,
+    makeDefaultConfiguration,
+    makeDefaultExistingConfiguration,
+    makeNavTreeInfoArray,
+    selectSettings,
+} from "@/lib/functions";
 
 // default_checked - checked по умолчанию (по дефолту стоит в true, даже если поля в объекте нет)
 // когда это значение стоит в false и элемент радиокнопка, то при выборе появляется красный крестик, нажатие на который уюирает выбор кнопки
@@ -34,151 +44,14 @@ import { PART_CATEGORIES } from "@/constants";
 // max_quantity:5 - количество в select'e чекбокса
 // category - отвечает за название раздела, в который будет помещен товар в навигационном дереве
 
-const selectSettings = (typeName: string, category: string) => {
-    let multiselect: boolean | null = null;
-    let default_checked = true;
-    let max_quantity = 0;
-
-    switch (typeName) {
-        case TYPES.CASE: {
-            default_checked = false;
-            break;
-        }
-        case TYPES.FAN: {
-            default_checked = false;
-            multiselect = true;
-            max_quantity = 20;
-            break;
-        }
-        case TYPES.SSD: {
-            default_checked = false;
-            multiselect = true;
-            max_quantity = 5;
-            break;
-        }
-    }
-
-    if (category === CATEGORIES.PERIPHERY) {
-        default_checked = false;
-        multiselect = true;
-        max_quantity = 5;
-    }
-
-    return { multiselect, default_checked, max_quantity };
-};
-
-const makeDefaultConfiguration = (data: IConfiguratorComponents) => {
-    return {
-        id: "",
-        name: "",
-        configuration: {
-            gpu: data?.components.find((el) => el.type.value === TYPES.GPU)
-                ?.items[0] as IPart,
-            cpu: data?.components.find((el) => el.type.value === TYPES.CPU)
-                ?.items[0] as IPart,
-            motherboard: data?.components.find(
-                (el) => el.type.value === TYPES.MOTHERBOARD
-            )?.items[0] as IPart,
-            cpu_fan: data?.components.find(
-                (el) => el.type.value === TYPES.CPU_FAN
-            )?.items[0] as IPart,
-            ram: data?.components.find((el) => el.type.value === TYPES.RAM)
-                ?.items[0] as IPart,
-            psu: data?.components.find((el) => el.type.value === TYPES.PSU)
-                ?.items[0] as IPart,
-            cases: undefined,
-            ssd: [],
-            fan: [],
-        },
-    } as IConfiguration;
-};
-
-const makeDefaultExistingConfiguration = (config: IPc) => {
-    return {
-        id: config.id,
-        name: config.name,
-        configuration: {
-            gpu: config.gpu,
-            cpu: config.cpu,
-            motherboard: config.motherboard,
-            cpu_fan: config.cpuFan,
-            ram: config.ram,
-            psu: config.psu,
-            ssd: config.ssd ?? [],
-            fan: config.fans ?? [],
-            cases: config.pcCase,
-        },
-    } as IConfiguration;
-};
-
-const makeNavTreeInfoArray = (componentsList?: IConfiguratorComponents) => {
-    let allItems: NavTreeItem[] = [];
-
-    componentsList &&
-        componentsList.components.forEach((el) => {
-            allItems.push({
-                id: el.type.id,
-                category: el.category.label,
-                label: el.type.label,
-                value: el.type.value,
-                icon: el.type.image as string,
-            });
-        });
-    return { allItems };
-};
-
-const getPartsPurchaseItemsFromConfiguration = (
-    configuration: ConfiguratorFieldValues
-) => {
-    const parts: IPurchaseItemDto[] = [];
-
-    console.log(
-        "configuration",
-        Object.keys(configuration).filter((k) => configuration?.[k])
-    );
-
-    //TODO: Ошибка в консоли
-    // Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'value')
-    // at eval (Configurator_V2.tsx:159:51)
-    // at Array.forEach (<anonymous>)
-    // at getPartsPurchaseItemsFromConfiguration (Configurator_V2.tsx:142:10)
-    // at addToCart (Configurator_V2.tsx:226:21)
-    // at handleSaveConfiguration (Configurator_V2.tsx:270:17)
-
-    Object.keys(configuration)
-        .filter((k) => configuration?.[k])
-        .forEach((key) => {
-            if (
-                Array.isArray(configuration[key]) &&
-                configuration[key].length > 0 &&
-                configuration[key][0].part.categories.value !==
-                    PART_CATEGORIES.COMPONENTS
-            ) {
-                configuration[key].forEach((part) => {
-                    parts.push({
-                        productId: part.part.id,
-                        quantity: part.quantity,
-                    });
-                });
-            } else {
-                if (
-                    configuration[key] &&
-                    // @ts-ignore
-                    configuration[key].categories.value !==
-                        PART_CATEGORIES.COMPONENTS
-                )
-                    parts.push({
-                        // @ts-ignore
-                        productId: configuration[key]?.id as string,
-                        quantity: 1,
-                    });
-            }
-        });
-
-    console.log("parts", parts);
-
-    return parts;
-};
+interface ICheck {
+    dominant: keyof ConfiguratorFieldValues;
+    omnissive: string;
+    reason: string;
+    characteristicToCheck: string;
+    checkRule: "equal" | "include" | "lt" | "gt";
+    toCheck?: string[];
+}
 
 const Configurator = () => {
     const {
@@ -186,7 +59,12 @@ const Configurator = () => {
         getCategories,
         saveConfiguration,
         getConfigurationById,
+        configuratorProductsToCard,
+        getUserCartItems,
+        editConfiguration,
     } = useFetch();
+
+    const dispatch = useAppDispatch();
 
     const { user } = useAppSelector((state) => state.session);
     const [categories, setCategories] = useState<ICategory[] | null>(null);
@@ -201,40 +79,267 @@ const Configurator = () => {
 
     const products = watch();
 
-    const [api, contextHolder] = notification.useNotification();
+    const [api, contextHolder] = notification.useNotification({
+        stack: false,
+    });
     const Notification = (
-        type: "success" | "error",
+        type: "success" | "error" | "warning",
         message: string,
-        description: string
+        description: string,
+        duration?: number,
+        placement?:
+            | "topRight"
+            | "top"
+            | "topLeft"
+            | "bottom"
+            | "bottomLeft"
+            | "bottomRight"
+            | undefined
     ) => {
         api[type]({
-            message: message,
-            description: description,
+            message,
+            description,
+            duration,
+            placement: placement || "topRight",
         });
     };
 
     const params = useParams();
     const id = params?.id;
 
-    // const checkSocket = (pc: IValidatePc) =>
-    //     pc?.cpu?.socket != pc?.motherboard?.socket
-    //         ? "Процессор и материнская плата физически несовместимы"
-    //         : "";
+    const errors: any = {};
 
-    // const checkOnError = (pc: IValidatePc) => {
-    //     return checkSocket(pc);
-    // };
+    console.log(errors);
 
-    // const validatePcAssembly = (pc: IValidatePc) => {
-    //     let error = checkOnError(pc);
-    //     if (error) console.log(error);
-    // };
-
-    const addToCart = async () => {
-        console.log(getPartsPurchaseItemsFromConfiguration(products));
+    const checkList: Record<string, ICheck> = {
+        socket_cpu_mb: {
+            dominant: PART_COMPONENTS_TYPES.CPU,
+            omnissive: PART_COMPONENTS_TYPES.MOTHERBOARD,
+            reason: "Процессор и материнская плата физически несовместимы",
+            characteristicToCheck: "socket",
+            checkRule: "equal",
+            toCheck: [],
+        },
+        socket_mb_fan: {
+            dominant: PART_COMPONENTS_TYPES.MOTHERBOARD,
+            omnissive: PART_COMPONENTS_TYPES.CPU_FAN,
+            reason: "Охлаждение процессора не поддерживает выбранную материнскую плату",
+            characteristicToCheck: "socket",
+            checkRule: "include",
+            toCheck: [],
+        },
+        ram_type_mb_cpu: {
+            dominant: PART_COMPONENTS_TYPES.MOTHERBOARD,
+            omnissive: PART_COMPONENTS_TYPES.CPU,
+            reason: "Несовместимость типов памяти материнской платы и процессора",
+            characteristicToCheck: "ram_type",
+            checkRule: "include",
+            toCheck: [],
+        },
+        extensions_slots_gpu_case: {
+            dominant: PART_COMPONENTS_TYPES.GPU,
+            omnissive: PART_COMPONENTS_TYPES.CASES,
+            reason: "В корпусе недостаточно слотов расширения для вмещения видекарты",
+            characteristicToCheck: "extension_slots",
+            checkRule: "gt",
+            toCheck: [],
+        },
     };
 
-    console.log(products);
+    const findCharacteristic = (part: IPart, value: string) => {
+        const characteristic = part.characteristics.find(
+            (c) => c.value === value
+        );
+        return characteristic;
+    };
+
+    // const findCorrectPart = (
+    //     type: string,
+    //     searchedPart: IPart,
+    //     characteristicName: string
+    // ) => {
+    //     const partsArray = componentsList?.components.find(
+    //         (component) => component.type.value === type
+    //     );
+    //     return partsArray?.items.find(
+    //         (part) =>
+    //             findCharacteristic(part, characteristicName)?.item ===
+    //             findCharacteristic(searchedPart, characteristicName)?.item
+    //     );
+    // };
+
+    // const validateSocket = (products: ConfiguratorFieldValues) => {
+    //     const correctMB = findCorrectPart(
+    //         PART_COMPONENTS_TYPES.MOTHERBOARD,
+    //         products.cpu,
+    //         "socket"
+    //     );
+    //     const newProducts = products;
+    //     newProducts.motherboard = correctMB as IPart;
+    //     reset(newProducts);
+    // };
+
+    const equalCheck = (
+        key: string,
+        { dominant, omnissive, characteristicToCheck, reason }: ICheck
+    ) => {
+        try {
+            const isEq =
+                String(
+                    findCharacteristic(
+                        products[dominant] as IPart,
+                        characteristicToCheck
+                    )?.item
+                ) !=
+                String(
+                    findCharacteristic(
+                        products[omnissive] as IPart,
+                        characteristicToCheck
+                    )?.item
+                );
+
+            if (isEq) {
+                errors[key] = reason;
+            }
+        } catch {}
+    };
+
+    const includeCheck = (
+        key: string,
+        {
+            dominant,
+            omnissive, // will include array with dominant
+            characteristicToCheck,
+            reason,
+        }: ICheck
+    ) => {
+        try {
+            const arr = findCharacteristic(
+                products[omnissive] as IPart,
+                characteristicToCheck
+            )?.item as string[];
+
+            const searchChar = findCharacteristic(
+                products[dominant] as IPart,
+                characteristicToCheck
+            )?.item;
+
+            arr?.find((value) => value === searchChar)
+                ? null
+                : (errors[key] = reason);
+        } catch {}
+    };
+
+    const numberCheck = (
+        method: "lt" | "gt",
+        key: string,
+        { dominant, omnissive, characteristicToCheck, reason }: ICheck
+    ) => {
+        try {
+            const num1 = Number(
+                String(
+                    findCharacteristic(
+                        products[dominant] as IPart,
+                        characteristicToCheck
+                    )?.item
+                ).match(/-?\d+(\.\d+)?/g)?.[0]
+            );
+
+            const num2 = Number(
+                String(
+                    findCharacteristic(
+                        products[omnissive] as IPart,
+                        characteristicToCheck
+                    )?.item
+                ).match(/-?\d+(\.\d+)?/g)?.[0]
+            );
+
+            if (method == "lt") {
+                if (num1 && num2 && num1 < num2) errors[key] = reason;
+            }
+            if (method == "gt") {
+                if (num1 && num2 && num1 > num2) errors[key] = reason;
+            }
+        } catch {}
+    };
+
+    const validate = (products: ConfiguratorFieldValues) => {
+        for (const key in checkList) {
+            const {
+                dominant,
+                omnissive,
+                characteristicToCheck,
+                reason,
+                checkRule,
+            } = checkList[key];
+            switch (checkRule) {
+                case "equal":
+                    equalCheck(key, {
+                        dominant,
+                        omnissive,
+                        characteristicToCheck,
+                        reason,
+                    } as ICheck);
+                    break;
+                case "include":
+                    includeCheck(key, {
+                        dominant,
+                        omnissive,
+                        characteristicToCheck,
+                        reason,
+                    } as ICheck);
+                    break;
+                case "lt":
+                    numberCheck("lt", key, {
+                        dominant,
+                        omnissive,
+                        characteristicToCheck,
+                        reason,
+                    } as ICheck);
+                    break;
+                case "gt":
+                    numberCheck("gt", key, {
+                        dominant,
+                        omnissive,
+                        characteristicToCheck,
+                        reason,
+                    } as ICheck);
+                    break;
+            }
+        }
+        // return checkSocket(products);
+    };
+
+    const showAssemblyErrors = () => {
+        api.destroy();
+        for (let key in errors) {
+            Notification(
+                "warning",
+                "Ошибка конфигурации",
+                errors[key],
+                9999,
+                "topRight"
+            );
+        }
+    };
+
+    useEffect(() => {
+        if (defaultConfiguration) {
+            validate(products);
+            // if (errors) showAssemblyErrors();
+            // console.log("errors", errors.current);
+        }
+    }, [products]);
+
+    useEffect(() => {
+        showAssemblyErrors();
+    }, [errors]);
+
+    const addToCart = async (dto: IConfiguratorProductsDto) => {
+        await configuratorProductsToCard(dto);
+        const data: IPurchaseItem[] = await getUserCartItems();
+        dispatch(setCartState(data));
+    };
 
     const handleSaveConfiguration = async (
         configurationName: string,
@@ -244,7 +349,7 @@ const Configurator = () => {
             const ssdList = (products?.ssd as IPartWithQuantity[]) ?? [];
             const fansList = (products?.fan as IPartWithQuantity[]) ?? [];
 
-            const configuration: NewPcConfigurationDto = {
+            const configuration: PcConfigurationDto = {
                 name: configurationName || "Без названия",
                 gpuId: products.gpu?.id as string,
                 cpuId: products.cpu?.id as string,
@@ -264,18 +369,58 @@ const Configurator = () => {
                 userId: user?.userId as string,
             };
 
-            const configID = await saveConfiguration(configuration);
-            console.log("configID", configID);
+            // edit configuration
+            if (id && defaultConfiguration?.userCreated?.id === user?.userId) {
+                try {
+                    configuration.id = id as string;
+                    await editConfiguration(configuration);
 
-            Notification(
-                "success",
-                "Успешно",
-                "Конфигурация успешно сохранена"
-            );
+                    const data: IPurchaseItem[] = await getUserCartItems();
+                    dispatch(setCartState(data));
 
-            if (needAddToCart) {
-                alert("Конфигурация успешно добавлена в корзину");
-                addToCart();
+                    Notification(
+                        "success",
+                        "Успешно",
+                        "Конфигурация успешно изменена"
+                    );
+                } catch {
+                    Notification(
+                        "error",
+                        "Ошибка",
+                        "Не удалось изменить конфигурацию"
+                    );
+                }
+            }
+            // add new configuration
+            else {
+                const configID = await saveConfiguration(configuration);
+
+                // if need to save and add to cart
+                if (needAddToCart) {
+                    const dto: IConfiguratorProductsDto = {
+                        userId: user?.userId as string,
+                        pc: {
+                            pcId: configID?.id,
+                            quantity: 1,
+                        } as PcIdWithQuantity,
+                        parts: getPartsPurchaseItemsFromConfiguration(products),
+                    };
+
+                    addToCart(dto);
+
+                    Notification(
+                        "success",
+                        "Успешно",
+                        "Конфигурация успешно добавлена в корзину"
+                    );
+                    // just save
+                } else {
+                    Notification(
+                        "success",
+                        "Успешно",
+                        "Конфигурация успешно сохранена"
+                    );
+                }
             }
         } catch (error) {
             Notification(
@@ -339,6 +484,7 @@ const Configurator = () => {
     return (
         <>
             {contextHolder}
+            {/* <ActionModal open={validateModalOpen} /> */}
             <section className="configurator container section-decreased">
                 <aside className="aside-components-tree hidden-tablet sticky-block">
                     <NavTree categories={categories} allItems={allItems} />
@@ -392,6 +538,7 @@ const Configurator = () => {
                         reset={resetForm}
                         saveConfiguration={handleSaveConfiguration}
                         config={defaultConfiguration}
+                        hasErrors={JSON.stringify(errors) !== "{}"}
                     />
                 </aside>
             </section>

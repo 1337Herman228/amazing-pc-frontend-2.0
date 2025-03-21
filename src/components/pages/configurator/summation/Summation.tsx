@@ -23,6 +23,7 @@ interface SummationProps {
     reset: () => void;
     saveConfiguration: (name: string, needAddToCart?: boolean) => void;
     config?: IConfiguration;
+    hasErrors: boolean;
 }
 
 const Summation = ({
@@ -30,8 +31,11 @@ const Summation = ({
     reset,
     saveConfiguration,
     config,
+    hasErrors,
 }: SummationProps) => {
     const router = useRouter();
+
+    console.log(hasErrors);
 
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -98,14 +102,19 @@ const Summation = ({
             <ConfigBuyBtn
                 onClick={handleAddConfigurationToCart}
                 isPressed={
-                    !!cart.items?.find((el) => el.product.id === config?.id)
+                    !!cart.items?.find(
+                        (el) =>
+                            el.product.id === config?.id && config?.userCreated
+                    )
                 }
             />
 
             <div className="summation__control-btns">
                 <button
                     onClick={() => setSaveModalOpen(true)}
-                    className="summation__control-btns-save summation__control-btns--btn"
+                    className={`summation__control-btns-save summation__control-btns--btn ${
+                        hasErrors && "summation__control-btns--disabled"
+                    }`}
                 >
                     <img
                         className="summation__control-btns-icon"

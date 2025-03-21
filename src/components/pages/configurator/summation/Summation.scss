@@ -50,6 +50,11 @@
             }
         }
 
+        &--disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
         &-icon {
             filter: invert(0.65);
         }
@@ -65,9 +70,7 @@
         flex-direction: column;
         margin-block: 15px;
         padding-block: 10px;
-        box-shadow:
-            0 -0.3px 0 gray,
-            0 0.3px 0 gray;
+        box-shadow: 0 -0.3px 0 gray, 0 0.3px 0 gray;
 
         &-title {
             // align-self: center;
@@ -85,7 +88,11 @@
                 width: 100%;
                 left: 0px;
                 bottom: -15px;
-                background: linear-gradient(to top, transparent, var(--tm-color-dark-black-2));
+                background: linear-gradient(
+                    to top,
+                    transparent,
+                    var(--tm-color-dark-black-2)
+                );
             }
         }
 
@@ -111,7 +118,11 @@
                 width: 100%;
                 left: 0px;
                 top: -30px;
-                background: linear-gradient(to bottom, transparent, var(--tm-color-dark-black-2));
+                background: linear-gradient(
+                    to bottom,
+                    transparent,
+                    var(--tm-color-dark-black-2)
+                );
             }
         }
 
