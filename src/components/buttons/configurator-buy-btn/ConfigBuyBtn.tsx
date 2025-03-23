@@ -4,9 +4,14 @@ import "./ConfigBuyBtn.scss";
 interface ConfigBuyBtnProps {
     isPressed: boolean;
     onClick: () => void;
+    disabled?: boolean;
 }
 
-const ConfigBuyBtn = ({ isPressed = false, onClick }: ConfigBuyBtnProps) => {
+const ConfigBuyBtn = ({
+    isPressed = false,
+    onClick,
+    disabled,
+}: ConfigBuyBtnProps) => {
     return (
         <>
             {isPressed ? (
@@ -20,7 +25,9 @@ const ConfigBuyBtn = ({ isPressed = false, onClick }: ConfigBuyBtnProps) => {
             ) : (
                 <button
                     onClick={onClick}
-                    className="configuration-card__buy-button _buy-button"
+                    className={`configuration-card__buy-button _buy-button ${
+                        disabled && "_buy-button--disabled"
+                    }`}
                 >
                     Купить
                 </button>

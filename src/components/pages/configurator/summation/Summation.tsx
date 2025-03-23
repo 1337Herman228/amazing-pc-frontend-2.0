@@ -23,7 +23,6 @@ interface SummationProps {
     reset: () => void;
     saveConfiguration: (name: string, needAddToCart?: boolean) => void;
     config?: IConfiguration;
-    hasErrors: boolean;
 }
 
 const Summation = ({
@@ -31,11 +30,8 @@ const Summation = ({
     reset,
     saveConfiguration,
     config,
-    hasErrors,
 }: SummationProps) => {
     const router = useRouter();
-
-    console.log(hasErrors);
 
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -45,6 +41,7 @@ const Summation = ({
     const [needAddToCart, setNeedAddToCart] = useState(false);
 
     const cart = useAppSelector((state) => state.cart);
+    const hasErrors = useAppSelector((state) => state.configurator.hasErrors);
 
     const handleSaveConfiguration = (name: string) => {
         saveConfiguration(name, needAddToCart);
@@ -100,6 +97,7 @@ const Summation = ({
             </div>
 
             <ConfigBuyBtn
+                disabled={hasErrors}
                 onClick={handleAddConfigurationToCart}
                 isPressed={
                     !!cart.items?.find(

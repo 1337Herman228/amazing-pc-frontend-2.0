@@ -21,6 +21,7 @@ import {
     PcConfigurationDto,
     PartIdWithQuantity,
     PcIdWithQuantity,
+    INotification,
 } from "@/interfaces/types-v2";
 import { useForm } from "react-hook-form";
 import FormListItemV2 from "./form-list-item/FormListItem_V2";
@@ -37,6 +38,7 @@ import {
     makeNavTreeInfoArray,
     selectSettings,
 } from "@/lib/functions";
+import { setHasErrors } from "@/lib/redux/store/slices/configuratorSlice";
 
 // default_checked - checked по умолчанию (по дефолту стоит в true, даже если поля в объекте нет)
 // когда это значение стоит в false и элемент радиокнопка, то при выборе появляется красный крестик, нажатие на который уюирает выбор кнопки
@@ -51,6 +53,32 @@ interface ICheck {
     characteristicToCheck: string;
     checkRule: "equal" | "include" | "lt" | "gt";
     toCheck?: string[];
+}
+
+function getDifferences(
+    prev: Record<string, ICheck>,
+    curr: Record<string, ICheck>
+) {
+    const differences = {
+        inPrevNotInCurr: {} as Record<string, ICheck>,
+        inCurrNotInPrev: {} as Record<string, ICheck>,
+    };
+
+    // Находим ключи, которые есть в prev, но отсутствуют в curr
+    for (const key in prev) {
+        if (!curr.hasOwnProperty(key)) {
+            differences.inPrevNotInCurr[key] = prev[key];
+        }
+    }
+
+    // Находим ключи, которые есть в curr, но отсутствуют в prev
+    for (const key in curr) {
+        if (!prev.hasOwnProperty(key)) {
+            differences.inCurrNotInPrev[key] = curr[key];
+        }
+    }
+
+    return differences;
 }
 
 const Configurator = () => {
@@ -82,34 +110,31 @@ const Configurator = () => {
     const [api, contextHolder] = notification.useNotification({
         stack: false,
     });
-    const Notification = (
-        type: "success" | "error" | "warning",
-        message: string,
-        description: string,
-        duration?: number,
-        placement?:
-            | "topRight"
-            | "top"
-            | "topLeft"
-            | "bottom"
-            | "bottomLeft"
-            | "bottomRight"
-            | undefined
-    ) => {
+    const Notification = ({
+        type,
+        message,
+        description,
+        duration,
+        key,
+        placement,
+        closeIcon,
+    }: INotification) => {
         api[type]({
+            key,
             message,
             description,
             duration,
             placement: placement || "topRight",
+            closeIcon,
         });
     };
 
     const params = useParams();
     const id = params?.id;
 
-    const errors: any = {};
-
-    console.log(errors);
+    const prevErrors = useRef<any>({});
+    const errors = useRef<any>({});
+    const hasErrors = useRef<boolean>(false);
 
     const checkList: Record<string, ICheck> = {
         socket_cpu_mb: {
@@ -190,7 +215,7 @@ const Configurator = () => {
                         products[dominant] as IPart,
                         characteristicToCheck
                     )?.item
-                ) !=
+                ) ===
                 String(
                     findCharacteristic(
                         products[omnissive] as IPart,
@@ -198,8 +223,11 @@ const Configurator = () => {
                     )?.item
                 );
 
-            if (isEq) {
-                errors[key] = reason;
+            if (!isEq) {
+                errors.current = {
+                    ...errors.current,
+                    [key]: reason,
+                };
             }
         } catch {}
     };
@@ -226,7 +254,10 @@ const Configurator = () => {
 
             arr?.find((value) => value === searchChar)
                 ? null
-                : (errors[key] = reason);
+                : (errors.current = {
+                      ...errors.current,
+                      [key]: reason,
+                  });
         } catch {}
     };
 
@@ -255,15 +286,23 @@ const Configurator = () => {
             );
 
             if (method == "lt") {
-                if (num1 && num2 && num1 < num2) errors[key] = reason;
+                if (num1 && num2 && num1 < num2)
+                    errors.current = {
+                        ...errors.current,
+                        [key]: reason,
+                    };
             }
             if (method == "gt") {
-                if (num1 && num2 && num1 > num2) errors[key] = reason;
+                if (num1 && num2 && num1 > num2)
+                    errors.current = {
+                        ...errors.current,
+                        [key]: reason,
+                    };
             }
         } catch {}
     };
 
-    const validate = (products: ConfiguratorFieldValues) => {
+    const validate = () => {
         for (const key in checkList) {
             const {
                 dominant,
@@ -307,33 +346,40 @@ const Configurator = () => {
                     break;
             }
         }
-        // return checkSocket(products);
     };
 
     const showAssemblyErrors = () => {
-        api.destroy();
-        for (let key in errors) {
-            Notification(
-                "warning",
-                "Ошибка конфигурации",
-                errors[key],
-                9999,
-                "topRight"
-            );
+        const diff = getDifferences(prevErrors.current, errors.current);
+
+        for (let key in diff.inPrevNotInCurr) {
+            api.destroy(key);
         }
+
+        for (let key in diff.inCurrNotInPrev) {
+            Notification({
+                type: "warning",
+                message: "Ошибка конфигурации",
+                description: errors.current[key],
+                duration: 9999,
+                key: key,
+                placement: "topRight",
+                closeIcon: false,
+            });
+        }
+
+        prevErrors.current = errors.current;
+        if (JSON.stringify(errors.current) === "{}")
+            dispatch(setHasErrors(false));
+        else dispatch(setHasErrors(true));
+        errors.current = {};
     };
 
     useEffect(() => {
         if (defaultConfiguration) {
-            validate(products);
-            // if (errors) showAssemblyErrors();
-            // console.log("errors", errors.current);
+            validate();
+            showAssemblyErrors();
         }
     }, [products]);
-
-    useEffect(() => {
-        showAssemblyErrors();
-    }, [errors]);
 
     const addToCart = async (dto: IConfiguratorProductsDto) => {
         await configuratorProductsToCard(dto);
@@ -378,17 +424,17 @@ const Configurator = () => {
                     const data: IPurchaseItem[] = await getUserCartItems();
                     dispatch(setCartState(data));
 
-                    Notification(
-                        "success",
-                        "Успешно",
-                        "Конфигурация успешно изменена"
-                    );
+                    Notification({
+                        type: "success",
+                        message: "Успешно",
+                        description: "Конфигурация успешно изменена",
+                    });
                 } catch {
-                    Notification(
-                        "error",
-                        "Ошибка",
-                        "Не удалось изменить конфигурацию"
-                    );
+                    Notification({
+                        type: "error",
+                        message: "Ошибка",
+                        description: "Не удалось изменить конфигурацию",
+                    });
                 }
             }
             // add new configuration
@@ -408,26 +454,27 @@ const Configurator = () => {
 
                     addToCart(dto);
 
-                    Notification(
-                        "success",
-                        "Успешно",
-                        "Конфигурация успешно добавлена в корзину"
-                    );
+                    Notification({
+                        type: "success",
+                        message: "Успешно",
+                        description: "Конфигурация успешно добавлена в корзину",
+                    });
+
                     // just save
                 } else {
-                    Notification(
-                        "success",
-                        "Успешно",
-                        "Конфигурация успешно сохранена"
-                    );
+                    Notification({
+                        type: "success",
+                        message: "Успешно",
+                        description: "Конфигурация успешно сохранена",
+                    });
                 }
             }
         } catch (error) {
-            Notification(
-                "error",
-                "Ошибка",
-                "Не удалось сохранить конфигурацию"
-            );
+            Notification({
+                type: "error",
+                message: "Ошибка",
+                description: "Не удалось сохранить конфигурацию",
+            });
         }
     };
 
@@ -484,7 +531,6 @@ const Configurator = () => {
     return (
         <>
             {contextHolder}
-            {/* <ActionModal open={validateModalOpen} /> */}
             <section className="configurator container section-decreased">
                 <aside className="aside-components-tree hidden-tablet sticky-block">
                     <NavTree categories={categories} allItems={allItems} />
@@ -538,7 +584,6 @@ const Configurator = () => {
                         reset={resetForm}
                         saveConfiguration={handleSaveConfiguration}
                         config={defaultConfiguration}
-                        hasErrors={JSON.stringify(errors) !== "{}"}
                     />
                 </aside>
             </section>

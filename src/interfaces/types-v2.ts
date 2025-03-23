@@ -8,6 +8,23 @@ export interface IIdDto {
     id: string;
 }
 
+export interface INotification {
+    type: "success" | "error" | "warning";
+    message: string;
+    description: string;
+    duration?: number;
+    key?: string;
+    closeIcon?: React.ReactNode | null | false;
+    placement?:
+        | "topRight"
+        | "top"
+        | "topLeft"
+        | "bottom"
+        | "bottomLeft"
+        | "bottomRight"
+        | undefined;
+}
+
 export interface IUserSession {
     name?: string;
     email?: string;

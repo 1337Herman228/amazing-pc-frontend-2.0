@@ -41,6 +41,12 @@
     .buy-button__text {
         z-index: 100;
     }
+
+    &--disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 }
 
 .checkout-button {

@@ -5,12 +5,14 @@ import { useSelector } from "react-redux";
 import { TypedUseSelectorHook, useDispatch } from "react-redux";
 import cartSlice from "./slices/cartSlice";
 import sessionSlice from "./slices/sessionSlice";
+import configuratorSlice from "./slices/configuratorSlice";
 
 export const makeStore = () =>
     configureStore({
         reducer: {
             cart: cartSlice,
             session: sessionSlice,
+            configurator: configuratorSlice,
         },
     });
 
