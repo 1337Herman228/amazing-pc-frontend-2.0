@@ -30,3 +30,29 @@
     max-height: 725px;
     top: 85px;
 }
+
+.ant-notification-bottomLeft {
+    width: 270px !important;
+
+    @include tablet {
+        display: none;
+    }
+
+    .ant-notification-notice {
+        width: 270px !important;
+    }
+
+    .ant-notification-notice-message {
+        font-size: 14px !important;
+    }
+
+    .ant-notification-notice-description {
+        font-size: 12px !important;
+    }
+
+    .ant-notification-notice-wrapper {
+        box-shadow: 0 2px 2px 0 rgba(228, 152, 12, 0.18),
+            0 1px 1px 1px rgba(228, 152, 12, 0.18),
+            0 4px 14px 4px rgba(228, 152, 12, 0.18);
+    }
+}

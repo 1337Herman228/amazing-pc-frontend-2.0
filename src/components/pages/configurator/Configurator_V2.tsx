@@ -134,7 +134,6 @@ const Configurator = () => {
 
     const prevErrors = useRef<any>({});
     const errors = useRef<any>({});
-    const hasErrors = useRef<boolean>(false);
 
     const checkList: Record<string, ICheck> = {
         socket_cpu_mb: {
@@ -362,7 +361,7 @@ const Configurator = () => {
                 description: errors.current[key],
                 duration: 9999,
                 key: key,
-                placement: "topRight",
+                placement: "bottomLeft",
                 closeIcon: false,
             });
         }

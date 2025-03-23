@@ -4,6 +4,11 @@
 
 .btn-icon {
     filter: invert(0.8);
+
+    &.selected {
+        filter: invert(0) !important;
+        pointer-events: none;
+    }
 }
 
 .modal-table {

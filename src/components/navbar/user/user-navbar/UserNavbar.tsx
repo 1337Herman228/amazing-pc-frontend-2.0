@@ -10,17 +10,25 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import useFetch from "@/lib/hooks/useFetch";
 import { IPurchaseItem } from "@/interfaces/types-v2";
 import { setCartState } from "@/lib/redux/store/slices/cartSlice";
+import { useRouter } from "next/navigation";
+import { setCompareState } from "@/lib/redux/store/slices/compareSlice";
+import useAddCompareItem from "@/components/pages/configurator/form-list-item/form-list-item-card/handleAddCompareItem";
 
 export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
 
-    const { getUserCartItems } = useFetch();
+    const { getUserCartItems, getCompareItemsCount } = useFetch();
 
     const cart = useAppSelector((state) => state.cart);
+    const compare = useAppSelector((state) => state.compare);
     const dispatch = useAppDispatch();
+
+    const { fetchCompareItemsCount, fetchCompareItems } = useAddCompareItem();
 
     useEffect(() => {
         fetchCartItems();
+        fetchCompareItemsCount();
+        fetchCompareItems();
     }, []);
 
     const fetchCartItems = async () => {
@@ -50,6 +58,8 @@ export default function UserNavbar() {
             }
         }
     };
+
+    const router = useRouter();
 
     return (
         <>
@@ -99,7 +109,7 @@ export default function UserNavbar() {
                     </nav>
 
                     <nav className="header__side-button-menu-list">
-                        <button className="header__side-button-menu-btn">
+                        {/* <button className="header__side-button-menu-btn">
                             <img
                                 className="btn-icon"
                                 src="/search-icon.svg"
@@ -108,10 +118,15 @@ export default function UserNavbar() {
                                 height={26}
                                 loading="lazy"
                             />
-                        </button>
+                        </button> */}
                         <button
-                            className="header__side-button-menu-btn btn--count-mark text-gray-800"
-                            data-custom="0"
+                            className={`header__side-button-menu-btn text-gray-800 text- ${
+                                cart?.items &&
+                                cart.items.length > 0 &&
+                                "btn--count-mark"
+                            }`}
+                            data-custom={compare?.compareItemsQuantity}
+                            onClick={() => router.push("/compare")}
                         >
                             <img
                                 className="btn-icon"
@@ -137,8 +152,8 @@ export default function UserNavbar() {
                                 className="btn-icon"
                                 src="/cart-icon.svg"
                                 alt="Cart"
-                                width={26}
-                                height={26}
+                                width={24}
+                                height={24}
                                 loading="lazy"
                             />
                         </button>

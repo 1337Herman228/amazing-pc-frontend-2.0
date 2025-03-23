@@ -22,6 +22,11 @@ body {
     line-height: 1.28;
     color: var(--tm-color-white);
     background-color: var(--background-main-color);
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 table {
@@ -82,6 +87,8 @@ hr {
     @include mobile {
         --padding-top: 70px;
     }
+
+    flex: 1;
 }
 
 .display-none {

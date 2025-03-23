@@ -6,6 +6,7 @@ import { TypedUseSelectorHook, useDispatch } from "react-redux";
 import cartSlice from "./slices/cartSlice";
 import sessionSlice from "./slices/sessionSlice";
 import configuratorSlice from "./slices/configuratorSlice";
+import compareSlice from "./slices/compareSlice";
 
 export const makeStore = () =>
     configureStore({
@@ -13,6 +14,7 @@ export const makeStore = () =>
             cart: cartSlice,
             session: sessionSlice,
             configurator: configuratorSlice,
+            compare: compareSlice,
         },
     });
 

@@ -111,6 +111,26 @@ const useFetch = () => {
         }
     }, [token]);
 
+    const getCompareItems = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/compare/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getCompareItemsCount = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/compare-count/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
     const getTypeById = useCallback(
         async (id: string) => {
             if (token) {
@@ -485,7 +505,52 @@ const useFetch = () => {
         [token]
     );
 
+    const deleteCompareItem = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/compare/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deleteAllCompareItems = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/compare`,
+                "DELETE"
+            );
+            return data;
+        }
+    }, [token]);
+
+    const addCompareItem = useCallback(
+        async (productId: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/compare`,
+                    "POST",
+                    JSON.stringify({ userId: user?.userId, productId })
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     return {
+        addCompareItem,
+        getCompareItemsCount,
+        deleteCompareItem,
+        deleteAllCompareItems,
+        getCompareItems,
         addPcToCard,
         editConfiguration,
         configuratorProductsToCard,

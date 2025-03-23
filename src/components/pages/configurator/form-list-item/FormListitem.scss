@@ -234,6 +234,7 @@
                         flex-shrink: 0;
                         @include reset-button;
                         cursor: pointer;
+
                         @include hover {
                             filter: invert(0.5);
                         }

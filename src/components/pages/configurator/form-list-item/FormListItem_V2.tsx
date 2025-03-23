@@ -2,10 +2,14 @@
 
 import { useEffect, useState } from "react";
 import "./FormListItem.scss";
-import { ICategory, IPart, IType } from "@/interfaces/types-v2";
+import {
+    ConfiguratorFieldValues,
+    ICategory,
+    IPart,
+    IType,
+} from "@/interfaces/types-v2";
 import FormListItemCardV2 from "./form-list-item-card/FormListItemCard_V2";
 import FormGridItemCardV2 from "./form-list-item-card/FormGridItemCard_V2";
-import { ConfiguratorFieldValues } from "../Configurator_V2";
 import { Control } from "react-hook-form";
 import { alignGridItemWidth, filterItems } from "../common";
 

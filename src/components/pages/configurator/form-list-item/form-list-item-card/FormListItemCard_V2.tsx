@@ -1,8 +1,9 @@
 import InfoModal from "@/components/modals/info-modal/InfoModal";
-import { IPart, IType } from "@/interfaces/types-v2";
-import { useState } from "react";
+import { ConfiguratorFieldValues, IPart, IType } from "@/interfaces/types-v2";
+import { useMemo, useState } from "react";
 import { Control, Controller } from "react-hook-form";
-import { ConfiguratorFieldValues } from "../../Configurator_V2";
+import { useAppSelector } from "@/lib/redux/store/store";
+import useAddCompareItem from "./handleAddCompareItem";
 
 interface FormListItemCardProps {
     selectedPart: IPart | undefined;
@@ -22,6 +23,21 @@ const FormListItemCardV2 = ({
     control,
 }: FormListItemCardProps) => {
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
+
+    const compare = useAppSelector((state) => state.compare);
+    const { fetchCompareItemsCount, fetchCompareItems, handleAddCompareItem } =
+        useAddCompareItem();
+
+    const isPartCompared = useMemo(
+        () => !!compare?.compareItems.find((p) => p.product.id === part.id),
+        [compare, part]
+    );
+
+    const addCompareItem = async (productId: string) => {
+        await handleAddCompareItem(productId);
+        await fetchCompareItemsCount();
+        await fetchCompareItems();
+    };
 
     const toggleModal = (idx: any, target: any) => {
         setIsModalOpen((p) => {
@@ -70,9 +86,19 @@ const FormListItemCardV2 = ({
                     isModalOpen={isModalOpen}
                     toggleModal={toggleModal}
                 />
-                <button className="list-display__form-item-compare-btn btn-icon">
+                <button
+                    className={`list-display__form-item-compare-btn btn-icon ${
+                        isPartCompared && "selected"
+                    }`}
+                    disabled={isPartCompared}
+                    onClick={() => addCompareItem(part.id)}
+                >
                     <img
-                        src="/compare-icon-2.svg"
+                        src={
+                            isPartCompared
+                                ? "/compare-icon-2-accent.svg"
+                                : "/compare-icon-2.svg"
+                        }
                         width={20}
                         height={20}
                         alt=""

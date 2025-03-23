@@ -8,6 +8,8 @@ export interface IIdDto {
     id: string;
 }
 
+export type TCompareViewType = "all" | "different";
+
 export interface INotification {
     type: "success" | "error" | "warning";
     message: string;
@@ -67,6 +69,7 @@ export interface IRole extends IOptionTemplate {}
 export interface IType extends IOptionTemplate {
     image?: string;
 }
+export interface ICompareType extends IOptionTemplate {}
 
 export interface ICharacteristicItem {
     label: string;
@@ -257,4 +260,15 @@ export interface PcToCartDto {
     userId: string;
     pcId: string;
     quantity: number;
+}
+
+export interface CompareItem {
+    id: string;
+    user: IUser;
+    product: IPc | IPart;
+}
+
+export interface CompareItemsDto {
+    types: ICompareType[];
+    items: CompareItem[];
 }
