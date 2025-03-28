@@ -5,16 +5,20 @@ import {
     CompareItemsDto,
     ICharacteristicItem,
     ICompareType,
+    IConfiguratorProductsDto,
     IPart,
     IPartWithQuantity,
     IPc,
+    IPurchaseItem,
     TCompareViewType,
 } from "@/interfaces/types-v2";
 import useFetch from "@/lib/hooks/useFetch";
 import { useEffect, useState } from "react";
 import "./ComparePage.scss";
-import { useAppDispatch } from "@/lib/redux/store/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import { setCompareState } from "@/lib/redux/store/slices/compareSlice";
+import ConfigBuyBtn from "@/components/buttons/configurator-buy-btn/ConfigBuyBtn";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
 
 const styleBody = () => {
     document.body.style.backgroundColor = "var(--tm-color-dark-black-2)";
@@ -24,10 +28,16 @@ const unstyleBody = () => {
 };
 
 const ComparePage = () => {
-    const { getCompareItems, deleteCompareItem, deleteAllCompareItems } =
-        useFetch();
+    const {
+        getCompareItems,
+        deleteCompareItem,
+        deleteAllCompareItems,
+        addProductToCard,
+        getUserCartItems,
+    } = useFetch();
 
     const dispatch = useAppDispatch();
+    const cart = useAppSelector((state) => state.cart);
 
     const [compareItems, setComponentsList] = useState<CompareItemsDto | null>(
         null
@@ -35,6 +45,12 @@ const ComparePage = () => {
 
     const [selectedType, setSelectedType] = useState<ICompareType | null>(null);
     const [viewType, setViewType] = useState<TCompareViewType>("different");
+
+    const addToCart = async (productId: string) => {
+        await addProductToCard(productId);
+        const data: IPurchaseItem[] = await getUserCartItems();
+        dispatch(setCartState(data));
+    };
 
     const selectType = (type: ICompareType) => {
         setSelectedType(type);
@@ -194,9 +210,24 @@ const ComparePage = () => {
                                                 Цена: {product.price} BYN
                                             </span>
                                         </div>
-                                        {/* <div className="to-cart">
-                                    <button></button>
-                                </div> */}
+                                        <div className="to-cart">
+                                            <ConfigBuyBtn
+                                                styles={{
+                                                    width: "305px",
+                                                    borderRadius: "20px",
+                                                }}
+                                                onClick={() =>
+                                                    addToCart(product.id)
+                                                }
+                                                isPressed={
+                                                    !!cart.items?.find(
+                                                        (el) =>
+                                                            el.product.id ===
+                                                            product?.id
+                                                    )
+                                                }
+                                            />
+                                        </div>
                                         <div className="characteristics">
                                             {"types" in product && (
                                                 <PartCharacteristics

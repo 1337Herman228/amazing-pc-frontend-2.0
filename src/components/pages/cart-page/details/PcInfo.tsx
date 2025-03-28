@@ -1,3 +1,8 @@
+import ConfigBuyBtn from "@/components/buttons/configurator-buy-btn/ConfigBuyBtn";
+import { IPurchaseItem } from "@/interfaces/types-v2";
+import useFetch from "@/lib/hooks/useFetch";
+import { setCartState } from "@/lib/redux/store/slices/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import Link from "next/link";
 import React from "react";
 
@@ -6,9 +11,31 @@ interface PcInfoProps {
     isConfiguration: boolean;
     id: string;
     toggleModal: Function;
+    hasToCartBtn?: boolean;
 }
 
-const PcInfo = ({ name, isConfiguration, id, toggleModal }: PcInfoProps) => {
+const PcInfo = ({
+    name,
+    isConfiguration,
+    id,
+    toggleModal,
+    hasToCartBtn,
+}: PcInfoProps) => {
+    const cart = useAppSelector((state) => state.cart);
+    const { addPcToCard, getUserCartItems } = useFetch();
+    const { user } = useAppSelector((state) => state.session);
+    const dispatch = useAppDispatch();
+
+    const handleAddPcToCard = async () => {
+        await addPcToCard({
+            pcId: id,
+            quantity: 1,
+            userId: user?.userId as string,
+        });
+        const data: IPurchaseItem[] = await getUserCartItems();
+        dispatch(setCartState(data));
+    };
+
     return (
         <div className="pc-info">
             <div className="title-div">
@@ -31,6 +58,13 @@ const PcInfo = ({ name, isConfiguration, id, toggleModal }: PcInfoProps) => {
                     Изменить
                 </Link>
             </div>
+            {hasToCartBtn && (
+                <ConfigBuyBtn
+                    styles={{ maxWidth: "305px" }}
+                    onClick={handleAddPcToCard}
+                    isPressed={!!cart.items?.find((el) => el.product.id === id)}
+                />
+            )}
         </div>
     );
 };

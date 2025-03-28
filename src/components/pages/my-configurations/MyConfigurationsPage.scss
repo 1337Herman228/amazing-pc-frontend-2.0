@@ -2,12 +2,8 @@
 @use "../../../styles/media" as *;
 @use "../../../styles/variables" as *;
 
-// body {
-//     background-color: var(--tm-color-dark-black-2) !important;
-// }
-
-.cart {
-    .cart-is-empty {
+.user-configurations {
+    .user-configurations-is-empty {
         text-align: start;
         font-size: 16px;
         max-width: 1200px;
@@ -19,13 +15,15 @@
 
     &__main-title {
         padding: 20px 20px;
-        font-size: 42px;
+        margin-block: 20px;
+        font-size: 28px;
         font-weight: 400;
         text-align: center;
     }
 
     &__products-table {
         max-width: 1200px;
+        min-width: clamp(300px, 80vw, 1200px);
         margin: 0 auto;
 
         @include tablet {
@@ -34,7 +32,7 @@
         }
 
         &-header {
-            background-color: var(--cart-table-header-color);
+            background-color: var(--user-configurations-table-header-color);
             height: 53px;
             box-shadow: 0 0.3px 0 0 var(--tm-color-grey);
 
@@ -72,17 +70,17 @@
                     display: grid;
                     gap: 5px;
                     grid-template-areas:
-                        "main-image info info info del-btn"
-                        "main-image quantity available price del-btn";
+                        "main-image info info price del-btn"
+                        "main-image info info price del-btn";
                     grid-template-columns: auto auto auto auto 60px;
                     // grid-template-rows: auto 30px;
 
                     @include mobile {
                         grid-template-areas:
-                            "main-image info del-btn"
-                            "main-image quantity  del-btn"
-                            "main-image available del-btn"
-                            "main-image price del-btn";
+                            "main-image info  del-btn"
+                            "main-image info  del-btn"
+                            "main-image info  del-btn"
+                            "main-image price  del-btn";
                         grid-template-columns: 300px auto 20px;
                     }
 
@@ -173,6 +171,7 @@
                     justify-content: center;
                     flex-direction: column;
                     gap: 10px;
+                    // min-width: 370px;
 
                     &__title {
                     }

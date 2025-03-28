@@ -131,6 +131,16 @@ const useFetch = () => {
         }
     }, [token]);
 
+    const getUserConfigurations = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/my-configurations/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
     const getTypeById = useCallback(
         async (id: string) => {
             if (token) {
@@ -291,7 +301,7 @@ const useFetch = () => {
         [token]
     );
 
-    const configuratorProductsToCard = useCallback(
+    const configuratorProductsToCart = useCallback(
         async (dto: IConfiguratorProductsDto) => {
             if (token) {
                 const data = await requestJson(
@@ -468,6 +478,25 @@ const useFetch = () => {
         [token]
     );
 
+    const addProductToCard = useCallback(
+        async (productId: string, quantity?: number) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/product-to-cart`,
+                    "POST",
+                    JSON.stringify({
+                        userId: user?.userId,
+                        productId,
+                        quantity: quantity || 1,
+                    })
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const deletePart = useCallback(async (id: String) => {
         if (token) {
             const data = await requestJson(
@@ -545,7 +574,24 @@ const useFetch = () => {
         [token]
     );
 
+    const deleteUserConfiguration = useCallback(
+        async (configurationId: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/my-configurations/${configurationId}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     return {
+        deleteUserConfiguration,
+        getUserConfigurations,
+        addProductToCard,
         addCompareItem,
         getCompareItemsCount,
         deleteCompareItem,
@@ -553,7 +599,7 @@ const useFetch = () => {
         getCompareItems,
         addPcToCard,
         editConfiguration,
-        configuratorProductsToCard,
+        configuratorProductsToCart,
         getConfigurationById,
         saveConfiguration,
         editPurchaseItemQuantity,

@@ -30,6 +30,20 @@
         font-weight: 400;
         font-size: clamp(22px, 1.5vw, 29px);
         margin-bottom: 10px;
+
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        .btn-icon {
+            cursor: pointer;
+            filter: invert(0.8);
+
+            &.selected {
+                filter: invert(0) !important;
+                pointer-events: none;
+            }
+        }
     }
 
     &__rate {

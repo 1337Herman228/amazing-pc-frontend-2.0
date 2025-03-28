@@ -2,12 +2,13 @@ import Link from "next/link";
 import "./SinglePcConfigCard.scss";
 import { Rate } from "antd";
 import "../../../styles/style.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ButtonToCart from "@/components/buttons/btn-to-cart/ButtonToCart";
 import { IPart, IPartWithQuantity, IPurchaseItem } from "@/interfaces/types-v2";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import useFetch from "@/lib/hooks/useFetch";
 import { setCartState } from "@/lib/redux/store/slices/cartSlice";
+import useAddCompareItem from "@/components/pages/configurator/form-list-item/form-list-item-card/handleAddCompareItem";
 
 interface ISinglePcConfigCardPc {
     id: string;
@@ -70,6 +71,21 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
 
     const dispatch = useAppDispatch();
 
+    const compare = useAppSelector((state) => state.compare);
+    const { fetchCompareItemsCount, fetchCompareItems, handleAddCompareItem } =
+        useAddCompareItem();
+
+    const isPartCompared = useMemo(
+        () => !!compare?.compareItems.find((p) => p.product.id === id),
+        [compare, id]
+    );
+
+    const addCompareItem = async (productId: string) => {
+        await handleAddCompareItem(productId);
+        await fetchCompareItemsCount();
+        await fetchCompareItems();
+    };
+
     const { addPcToCard, getUserCartItems } = useFetch();
 
     const [maxHeight, setMaxHeight] = useState(0);
@@ -117,7 +133,28 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                 loading="lazy"
             />
             <div className="configuration-card__header">
-                <h3 className="configuration-card__title">{name}</h3>
+                <h3 className="configuration-card__title">
+                    {name}
+                    <button
+                        className={`list-display__form-item-compare-btn btn-icon ${
+                            isPartCompared && "selected"
+                        }`}
+                        disabled={isPartCompared}
+                        onClick={() => addCompareItem(id)}
+                    >
+                        <img
+                            src={
+                                isPartCompared
+                                    ? "/compare-icon-2-accent.svg"
+                                    : "/compare-icon-2.svg"
+                            }
+                            width={24}
+                            height={24}
+                            alt=""
+                            loading="lazy"
+                        />
+                    </button>
+                </h3>
                 <div className="configuration-card__rate">
                     <Rate
                         className="configuration-card__rate-value"
@@ -134,6 +171,7 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                     </span>
                     <span className="configuration-card__buy-btn">
                         <ButtonToCart
+                            style={{ width: "305px" }}
                             isPressed={
                                 !!cart.items?.find(
                                     (el) => el.product.id === pc.id

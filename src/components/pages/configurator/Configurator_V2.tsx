@@ -87,7 +87,7 @@ const Configurator = () => {
         getCategories,
         saveConfiguration,
         getConfigurationById,
-        configuratorProductsToCard,
+        configuratorProductsToCart,
         getUserCartItems,
         editConfiguration,
     } = useFetch();
@@ -381,7 +381,7 @@ const Configurator = () => {
     }, [products]);
 
     const addToCart = async (dto: IConfiguratorProductsDto) => {
-        await configuratorProductsToCard(dto);
+        await configuratorProductsToCart(dto);
         const data: IPurchaseItem[] = await getUserCartItems();
         dispatch(setCartState(data));
     };
