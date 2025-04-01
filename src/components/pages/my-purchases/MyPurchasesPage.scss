@@ -2,12 +2,8 @@
 @use "../../../styles/media" as *;
 @use "../../../styles/variables" as *;
 
-// body {
-//     background-color: var(--tm-color-dark-black-2) !important;
-// }
-
-.cart {
-    .cart-is-empty {
+.my-purchases {
+    .my-purchases-is-empty {
         text-align: start;
         font-size: 16px;
         max-width: 1200px;
@@ -67,6 +63,9 @@
             &__cell {
                 padding: 16px;
                 font-weight: 300;
+                max-width: 500px;
+                overflow-x: hidden;
+                text-overflow: ellipsis;
 
                 .grid-cell {
                     display: grid;

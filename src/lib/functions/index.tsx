@@ -389,3 +389,20 @@ export const getPartsPurchaseItemsFromConfiguration = (
 
     return parts;
 };
+
+export const getPurchaseStatusLabel = (status: string) => {
+    switch (status) {
+        case "CREATED":
+            return "Создан";
+        case "PENDING":
+            return "Обрабатывается";
+        case "DELIVERING":
+            return "В пути";
+        case "DELIVERED":
+            return "Доставлен";
+        case "COMPLETED":
+            return "Принят";
+        case "CANCELED":
+            return "Отменен";
+    }
+};

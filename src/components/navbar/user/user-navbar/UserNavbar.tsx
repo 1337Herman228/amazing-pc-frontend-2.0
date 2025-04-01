@@ -17,7 +17,7 @@ import useAddCompareItem from "@/components/pages/configurator/form-list-item/fo
 export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
 
-    const { getUserCartItems, getCompareItemsCount } = useFetch();
+    const { getUserCartItems } = useFetch();
 
     const cart = useAppSelector((state) => state.cart);
     const compare = useAppSelector((state) => state.compare);
@@ -121,8 +121,8 @@ export default function UserNavbar() {
                         </button> */}
                         <button
                             className={`header__side-button-menu-btn text-gray-800 text- ${
-                                cart?.items &&
-                                cart.items.length > 0 &&
+                                compare?.compareItems &&
+                                compare.compareItemsQuantity > 0 &&
                                 "btn--count-mark"
                             }`}
                             data-custom={compare?.compareItemsQuantity}

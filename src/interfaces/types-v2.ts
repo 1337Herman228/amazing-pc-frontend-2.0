@@ -97,6 +97,17 @@ export interface IPurchaseItem {
     product: ICartItem;
 }
 
+export interface IPurchaseStatus extends IOptionTemplate {}
+
+export interface IPurchase {
+    id: string;
+    date: string;
+    destination: string;
+    status: string;
+    user: IUser;
+    itemList: IPurchaseItem[];
+}
+
 export interface IPurchaseItemDto {
     quantity: number;
     productId: string;

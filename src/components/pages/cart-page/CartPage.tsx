@@ -6,13 +6,16 @@ import useFetch from "@/lib/hooks/useFetch";
 import { useEffect, useState } from "react";
 import "./CartPage.scss";
 import CartTableItem from "./CartTableItem";
-import { useAppDispatch } from "@/lib/redux/store/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store/store";
 import { setCartState } from "@/lib/redux/store/slices/cartSlice";
+import { useRouter } from "next/navigation";
 
 const CartPage = () => {
     const [cartItems, setCartItems] = useState<IPurchaseItem[] | null>(null);
+    const cart = useAppSelector((state) => state.cart);
 
     const { getUserCartItems } = useFetch();
+    const { push } = useRouter();
 
     const dispatch = useAppDispatch();
 
@@ -58,9 +61,6 @@ const CartPage = () => {
                                 Товар
                             </th>
                             <th className="table-row-header__cell text-align-center">
-                                Наличие
-                            </th>
-                            <th className="table-row-header__cell text-align-center">
                                 Количество
                             </th>
                             <th className="table-row-header__cell text-align-center">
@@ -80,6 +80,27 @@ const CartPage = () => {
                         ))}
                     </tbody>
                 </table>
+            )}
+
+            {cartItems.length > 0 && (
+                <div className="flex flex-col justify-center place-items-center mt-10">
+                    <div className="mb-4 text-xl">
+                        Итого:{" "}
+                        <span className="main-color">
+                            {cart.items?.reduce(
+                                (a, b) => a + b.product.price * b.quantity,
+                                0
+                            )}{" "}
+                            BYN
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => push("/cart/checkout")}
+                        className="main-color-submit-btn text-black deal-btn"
+                    >
+                        Оформить заказ
+                    </button>
+                </div>
             )}
         </section>
     );

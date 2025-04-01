@@ -47,9 +47,7 @@ const PcItemRow = ({
                         toggleModal={toggleModal}
                     />
                 </td>
-                <td className="product-item-row__cell available">
-                    <span className="available__text">В наличии</span>
-                </td>
+
                 <td className="product-item-row__cell quantity">
                     <Quantity
                         quantity={quantity}
@@ -121,9 +119,7 @@ const PcItemRow = ({
                                 handleSetQuantity={handleSetQuantity}
                             />
                         </div>
-                        <div className="grid-cell__available available">
-                            <span className="available__text">В наличии</span>
-                        </div>
+
                         <div className="grid-cell__price price">
                             <span>{pc.price * quantity} BYN</span>
                         </div>

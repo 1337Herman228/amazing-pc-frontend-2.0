@@ -90,7 +90,7 @@ const CartWindow = ({
                 >
                     Мои конфигурации
                 </Link>
-                <Link className="_cart-window__inner-link" href="#">
+                <Link className="_cart-window__inner-link" href="/my-purchases">
                     Мои заказы
                 </Link>
                 <Link

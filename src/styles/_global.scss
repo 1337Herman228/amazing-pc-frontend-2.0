@@ -323,6 +323,10 @@ hr {
     align-items: center;
 }
 
+.main-color {
+    color: var(--main-color);
+}
+
 .manage-btn {
     @include reset-button;
     @include flex-center;

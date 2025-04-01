@@ -286,6 +286,16 @@ const useFetch = () => {
         [token]
     );
 
+    const getPurchases = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/purchases/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
     const addPartition = useCallback(
         async (partiton: IPartition) => {
             if (token) {
@@ -588,7 +598,39 @@ const useFetch = () => {
         [token]
     );
 
+    const createPurchase = useCallback(
+        async (destination: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/purchases`,
+                    "POST",
+                    JSON.stringify({ userId: user?.userId, destination })
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const cancelPurchase = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/purchases/${id}`,
+                    "PUT"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     return {
+        cancelPurchase,
+        getPurchases,
+        createPurchase,
         deleteUserConfiguration,
         getUserConfigurations,
         addProductToCard,

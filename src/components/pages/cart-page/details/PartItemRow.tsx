@@ -39,9 +39,7 @@ const PartItemRow = ({
                 <td className="product-item-row__cell">
                     <OtherInfo type={part.types.label} name={part.name} />
                 </td>
-                <td className="product-item-row__cell available">
-                    <span className="available__text">В наличии</span>
-                </td>
+
                 <td className="product-item-row__cell quantity">
                     <Quantity
                         quantity={quantity}
@@ -109,9 +107,7 @@ const PartItemRow = ({
                                 handleSetQuantity={handleSetQuantity}
                             />
                         </div>
-                        <div className="grid-cell__available available">
-                            <span className="available__text">В наличии</span>
-                        </div>
+
                         <div className="grid-cell__price price">
                             <span>{part.price * quantity} BYN</span>
                         </div>

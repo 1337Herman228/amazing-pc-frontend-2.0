@@ -33,6 +33,7 @@ const CartTableItem = ({ item, fetchCartItems }: CartTableItemProps) => {
         if (q > 0 && q < 100) {
             setQuantity(q);
             editPurchaseItemQuantity(item.id, q);
+            fetchCartItems();
         }
     };
 

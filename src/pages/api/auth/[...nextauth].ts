@@ -29,7 +29,7 @@ export interface ExtendedSession extends Session {
     };
 }
 
-const options: NextAuthOptions = {
+export const options: NextAuthOptions = {
     session: {
         maxAge: 1 * 23 * 60 * 60,
     },
