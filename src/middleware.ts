@@ -59,5 +59,8 @@ export const config = {
         "/workstation:path*",
         "/configurator:path*",
         "/cart:path*",
+        "/catalog:path*",
+        "/my-configurations:path*",
+        "/my-purchases:path*",
     ],
 };

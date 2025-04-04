@@ -105,6 +105,14 @@ export default function UserNavbar() {
                                     Конфигуратор
                                 </Link>
                             </li>
+                            <li className="header__menu-item">
+                                <Link
+                                    className="header__menu-link link-to-check uppercase-text"
+                                    href="/catalog"
+                                >
+                                    Комплектующие
+                                </Link>
+                            </li>
                         </ul>
                     </nav>
 

@@ -351,3 +351,63 @@ hr {
     margin-bottom: 20px;
     text-transform: uppercase;
 }
+
+input[type="radio"] {
+    display: none; /* скрываем оригинальную радио кнопку */
+}
+
+input[type="radio"] + label {
+    position: relative;
+    padding-left: 25px; /* добавляем отступ слева для псевдоэлемента */
+}
+
+input[type="radio"] + label::before {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    aspect-ratio: 1;
+    border: 1px solid var(--tm-color-dark-grey-2); /* стиль обводки */
+    border-radius: 50%; /* делаем круглую форму */
+    position: absolute;
+    left: 0;
+    top: 1px;
+}
+
+input[type="radio"]:checked + label::before {
+    border: 6px solid var(--main-color);
+    // background-color: var(--tm-color-lime); /* цвет заполнения при выборе */
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label {
+    position: relative;
+    padding-left: 25px; /* добавляем отступ слева для псевдоэлемента */
+}
+input[type="checkbox"] + label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #444;
+}
+input[type="checkbox"]:checked + label::before {
+    background-color: var(--main-color);
+    border: 1px solid var(--main-color);
+}
+
+input[type="checkbox"] + label::after {
+    content: url("/ic_check_48px.svg");
+    position: absolute;
+    left: 0px;
+    top: 1px;
+    display: none;
+}
+
+input[type="checkbox"]:checked + label::after {
+    display: block;
+}

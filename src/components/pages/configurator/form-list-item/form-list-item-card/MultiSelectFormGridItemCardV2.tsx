@@ -102,7 +102,7 @@ const MultiSelectFormGridItemCardV2 = ({
 
                         return (
                             <input
-                                className="list-display__form-item-input"
+                                className="list-display__form-item-input relative"
                                 type="checkbox"
                                 id={type.value + "-" + part.id}
                                 onChange={handleChange}

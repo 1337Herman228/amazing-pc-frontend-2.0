@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import "./FormListItem.scss";
 import {
+    ConfiguratorFieldValues,
     ICategory,
     IPart,
     IPartWithQuantity,
     IType,
 } from "@/interfaces/types-v2";
-import { ConfiguratorFieldValues } from "../Configurator_V2";
 import { Control } from "react-hook-form";
 import { alignGridItemWidth, filterItems } from "../common";
 import MultiSelectFormListItemCardV2 from "./form-list-item-card/MultiSelectFormListItemCard_V2";

@@ -6,7 +6,6 @@ import {
     INewUser,
     IPart,
     IPartition,
-    IPc,
     IType,
     PcConfigurationDto,
     PcToCartDto,
@@ -147,6 +146,32 @@ const useFetch = () => {
                 const data = await requestJson(
                     token,
                     `http://localhost:8080/user/types/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getTypeByValue = useCallback(
+        async (value: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/type-by-value/${value}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getPartsByType = useCallback(
+        async (typeId: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/parts-by-type/${typeId}`
                 );
                 return data;
             }
@@ -628,6 +653,8 @@ const useFetch = () => {
     );
 
     return {
+        getPartsByType,
+        getTypeByValue,
         cancelPurchase,
         getPurchases,
         createPurchase,

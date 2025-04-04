@@ -3,12 +3,12 @@
 import { CompareItem } from "@/interfaces/types-v2";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IInitialState {
+export interface ICompareInitialState {
     compareItemsQuantity: number;
     compareItems: CompareItem[];
 }
 
-const initialState: IInitialState = {
+const initialState: ICompareInitialState = {
     compareItemsQuantity: 0,
     compareItems: [],
 };
