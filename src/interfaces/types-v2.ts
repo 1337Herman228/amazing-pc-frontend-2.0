@@ -38,6 +38,12 @@ export interface IUserSession {
     role?: string;
 }
 
+export interface IChangePassword {
+    userId: string;
+    oldPassword: string;
+    newPassword: string;
+}
+
 export interface NavTreeItem {
     id: string;
     category: string;
@@ -172,11 +178,19 @@ export interface IUser {
     email: string;
 }
 
+export interface IUserInfo {
+    login: string;
+    name: string;
+    surname: string;
+    phone: string;
+    email: string;
+}
+
 export interface INewUser {
     id: string;
     login: string;
-    password: string;
-    roleId: string;
+    password?: string;
+    roleId?: string;
     name: string;
     surname: string;
     phone: string;

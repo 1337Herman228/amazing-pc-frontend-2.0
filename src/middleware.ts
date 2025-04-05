@@ -62,5 +62,6 @@ export const config = {
         "/catalog:path*",
         "/my-configurations:path*",
         "/my-purchases:path*",
+        "/profile:path*",
     ],
 };

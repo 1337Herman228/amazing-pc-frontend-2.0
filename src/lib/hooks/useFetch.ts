@@ -2,6 +2,7 @@ import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
 import { useCallback } from "react";
 import {
+    IChangePassword,
     IConfiguratorProductsDto,
     INewUser,
     IPart,
@@ -220,6 +221,36 @@ const useFetch = () => {
         [token]
     );
 
+    const editUserInfo = useCallback(
+        async (user: INewUser) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/users`,
+                    "PUT",
+                    JSON.stringify(user)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const changePassword = useCallback(
+        async (dto: IChangePassword) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/change-password`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const editPurchaseItemQuantity = useCallback(
         async (id: string, quantity: number) => {
             if (token) {
@@ -316,6 +347,16 @@ const useFetch = () => {
             const data = await requestJson(
                 token,
                 `http://localhost:8080/user/purchases/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getUserInfo = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/users/${user.userId}`
             );
             return data;
         }
@@ -653,6 +694,9 @@ const useFetch = () => {
     );
 
     return {
+        changePassword,
+        editUserInfo,
+        getUserInfo,
         getPartsByType,
         getTypeByValue,
         cancelPurchase,

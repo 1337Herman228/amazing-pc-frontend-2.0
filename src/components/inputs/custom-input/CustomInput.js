@@ -126,6 +126,7 @@ const CustomInput = ({
                         }`}
                         id={name}
                         mask="+ 999 (99) 999-99-99"
+                        defaultValue={defaultValue}
                         maskChar="X"
                         {...register(name, {
                             pattern: {

@@ -11,8 +11,8 @@ import useFetch from "@/lib/hooks/useFetch";
 import { IPurchaseItem } from "@/interfaces/types-v2";
 import { setCartState } from "@/lib/redux/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
-import { setCompareState } from "@/lib/redux/store/slices/compareSlice";
 import useAddCompareItem from "@/components/pages/configurator/form-list-item/form-list-item-card/handleAddCompareItem";
+import { User } from "lucide-react";
 
 export default function UserNavbar() {
     const [isCartWindowOpen, setIsCartWindowOpen] = useState(false);
@@ -117,16 +117,12 @@ export default function UserNavbar() {
                     </nav>
 
                     <nav className="header__side-button-menu-list">
-                        {/* <button className="header__side-button-menu-btn">
-                            <img
-                                className="btn-icon"
-                                src="/search-icon.svg"
-                                alt="Search"
-                                width={26}
-                                height={26}
-                                loading="lazy"
-                            />
-                        </button> */}
+                        <button
+                            onClick={() => router.push("/profile")}
+                            className="header__side-button-menu-btn"
+                        >
+                            <User className="hover:opacity-70 transition-all" />
+                        </button>
                         <button
                             className={`header__side-button-menu-btn text-gray-800 text- ${
                                 compare?.compareItems &&
