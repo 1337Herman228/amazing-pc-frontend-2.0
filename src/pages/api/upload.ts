@@ -17,33 +17,38 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const handler = (req: any, res: any) => {
-    const form: any = new IncomingForm();
+    try {
+        const form: any = new IncomingForm();
 
-    form.uploadDir = uploadDir;
-    form.keepExtensions = true;
+        form.uploadDir = uploadDir;
+        form.keepExtensions = true;
 
-    form.parse(req, (err: any, fields: any, files: any) => {
-        if (err) {
-            return res.status(500).json({ error: "Ошибка загрузки" });
-        }
-
-        const name = fields.name[0]; // получить поле 'name' из запроса
-        const filePath = files?.file[0]?.filepath;
-        const newFilePath = path.join(uploadDir, name + ".jpg"); //Свое название изображения
-        // const newFilePath = path.join(uploadDir, files.file[0].originalFilename ); //Оригинальное название изображения
-
-        fs.rename(filePath, newFilePath, (err) => {
+        form.parse(req, (err: any, fields: any, files: any) => {
             if (err) {
-                return res
-                    .status(500)
-                    .json({ error: "Ошибка перемещения файла" });
+                return res.status(500).json({ error: "Ошибка загрузки" });
             }
-            res.status(200).json({
-                message: "Файл загружен",
-                filePath: newFilePath,
+
+            const name = fields.name[0]; // получить поле 'name' из запроса
+            const filePath =
+                files?.file?.[0]?.filepath || files?.file?.filepath;
+            const newFilePath = path.join(uploadDir, name + ".jpg"); //Свое название изображения
+            // const newFilePath = path.join(uploadDir, files.file[0].originalFilename ); //Оригинальное название изображения
+
+            fs.rename(filePath, newFilePath, (err) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ error: "Ошибка перемещения файла" });
+                }
+                res.status(200).json({
+                    message: "Файл загружен",
+                    filePath: newFilePath,
+                });
             });
         });
-    });
+    } catch (e) {
+        console.error(e);
+    }
 };
 
 export default handler;

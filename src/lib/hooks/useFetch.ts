@@ -2,11 +2,17 @@ import useHttp from "./useHttp";
 import { useAppSelector } from "../redux/store/store";
 import { useCallback } from "react";
 import {
+    IAddPcCategory,
+    IAddPcModelGroup,
+    IAddPcType,
     IChangePassword,
     IConfiguratorProductsDto,
     INewUser,
+    IOptionTemplate,
     IPart,
     IPartition,
+    IPcCategory,
+    IPcType,
     IType,
     PcConfigurationDto,
     PcToCartDto,
@@ -437,6 +443,197 @@ const useFetch = () => {
         [token]
     );
 
+    const deletePcCategory = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-category/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getPcCategoryById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-category/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addPcCategory = useCallback(
+        async (dto: IAddPcCategory) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-category`,
+                    "POST",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPcCategory = useCallback(
+        async (dto: IPcCategory) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-category`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deletePcType = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-types/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getPcTypes = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/pc-types`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getPcModelGroups = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/pc-model-groups`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getPcModelGroupById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/user/pc-model-groups/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addPcModelGroups = useCallback(
+        async (dto: IAddPcModelGroup) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-model-groups`,
+                    "POST",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPcModelGroup = useCallback(
+        async (dto: IAddPcModelGroup) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-model-groups`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const deletePcModelGroup = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-model-groups/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getPcTypeById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-types/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const addPcType = useCallback(
+        async (dto: IAddPcType) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-types`,
+                    "POST",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPcType = useCallback(
+        async (dto: IPcType) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc-types`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const deletePartition = useCallback(
         async (id: string) => {
             if (token) {
@@ -694,6 +891,20 @@ const useFetch = () => {
     );
 
     return {
+        getPcModelGroupById,
+        editPcModelGroup,
+        getPcModelGroups,
+        addPcModelGroups,
+        deletePcModelGroup,
+        getPcTypes,
+        deletePcType,
+        addPcType,
+        editPcType,
+        getPcTypeById,
+        getPcCategoryById,
+        editPcCategory,
+        addPcCategory,
+        deletePcCategory,
         changePassword,
         editUserInfo,
         getUserInfo,

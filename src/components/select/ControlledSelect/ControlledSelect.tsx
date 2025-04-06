@@ -11,7 +11,7 @@ interface ControlledSelectProps<T> {
     name: string;
     errors: FieldErrors<FieldValues>;
     defaultValue?: T;
-    control: Control<FieldValues>;
+    control: Control<any>;
     placeholder?: string;
     style: React.CSSProperties;
 }

@@ -51,7 +51,38 @@ const data = {
             link: "/admin/accounts/add",
         },
     ],
-    pc: [],
+    pc: [
+        {
+            id: 1,
+            title: "Модельные группы ПК",
+            link: "/admin/pc/model-groups-view",
+        },
+        {
+            id: 2,
+            title: "Добавить модельные группы ПК",
+            link: "/admin/pc/model-groups-add",
+        },
+        {
+            id: 3,
+            title: "Категории ПК",
+            link: "/admin/pc/categories-view",
+        },
+        {
+            id: 4,
+            title: "Добавить категорию ПК",
+            link: "/admin/pc/categories-add",
+        },
+        {
+            id: 5,
+            title: "Типы ПК",
+            link: "/admin/pc/types-view",
+        },
+        {
+            id: 6,
+            title: "Добавить тип ПК",
+            link: "/admin/pc/types-add",
+        },
+    ],
 };
 
 const AdminDashboard = ({ type }) => {

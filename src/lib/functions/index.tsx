@@ -117,6 +117,21 @@ export const saveImg = async (imgName: string, img: any) => {
     } catch (error) {}
 };
 
+export const createImgName = (name: string, imageType: string) =>
+    `${name.toLowerCase().replace(/\s/g, "-")}-${imageType.replace(
+        /\s/g,
+        "-"
+    )}-${Date.now()}`;
+
+export const createImgPath = (
+    imgName: string,
+    path?: string,
+    imgExtension?: string
+) =>
+    `${path ? `${path}` : "/uploads"}/${imgName}${
+        imgExtension ? `.${imgExtension}` : ".jpg"
+    }`;
+
 export const deleteImg = async (imgName: string) => {
     const formData = new FormData();
     formData.append("name", stringifyName(imgName));
@@ -132,6 +147,15 @@ export const deleteImg = async (imgName: string) => {
             throw new Error("Delete failed.");
         }
     } catch (error) {}
+};
+
+export const editImg = async (
+    oldImgName: string,
+    newImgName: string,
+    img: any
+) => {
+    await deleteImg(oldImgName);
+    await saveImg(newImgName, img);
 };
 
 export const saveSvgIcon = async (imgName: string, img: any) => {

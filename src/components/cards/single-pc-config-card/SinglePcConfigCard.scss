@@ -60,6 +60,8 @@
 
     &__buy {
         display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 12px;

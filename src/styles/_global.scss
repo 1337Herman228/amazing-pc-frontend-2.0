@@ -311,6 +311,7 @@ hr {
     @include hover {
         background-color: var(--main-color-accent);
     }
+    color: black !important;
 }
 
 .horizontal_centered {

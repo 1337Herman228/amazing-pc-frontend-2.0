@@ -75,7 +75,7 @@ export default function AdminNavbar() {
                             <li className="header__menu-item">
                                 <Link
                                     className="header__menu-link link-to-check uppercase-text"
-                                    href="/admin/pc"
+                                    href="/admin/pc/categories-view"
                                 >
                                     Компьютеры
                                 </Link>

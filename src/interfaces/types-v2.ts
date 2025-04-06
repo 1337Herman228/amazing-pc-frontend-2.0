@@ -208,6 +208,17 @@ export interface IPcCategory extends IOptionTemplate {
     description: string;
 }
 
+export interface IAddPcCategory {
+    value: string;
+    label: string;
+    description: string;
+}
+
+export interface IAddPcType {
+    value: string;
+    label: string;
+}
+
 export interface IPcModelGroup {
     id: string;
     pcTypes: IPcType;
@@ -230,6 +241,13 @@ export interface IPcModelGroup {
     performanceTitle: string;
     performanceDescription: string;
     performanceImage: string;
+}
+
+export interface IAddPcModelGroup
+    extends Omit<IPcModelGroup, "id" | "pcTypes" | "pcCategories"> {
+    id?: string;
+    pcTypeId: string;
+    pcCategoryId: string;
 }
 
 export interface ICatalog {
