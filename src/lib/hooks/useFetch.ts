@@ -349,11 +349,54 @@ const useFetch = () => {
         [token]
     );
 
+    const editPurchases = useCallback(
+        async (dto: {
+            id: string;
+            userId: string;
+            status: string;
+            destination: string;
+        }) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/purchases`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const getPurchases = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
                 `http://localhost:8080/user/purchases/${user.userId}`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getPurchaseById = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/purchases/${id}`
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const getAllPurchases = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/purchases`
             );
             return data;
         }
@@ -771,6 +814,20 @@ const useFetch = () => {
         [token]
     );
 
+    const deletePurchase = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/purchases/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const editType = useCallback(
         async (type: IType) => {
             if (token) {
@@ -956,6 +1013,10 @@ const useFetch = () => {
     );
 
     return {
+        editPurchases,
+        getPurchaseById,
+        deletePurchase,
+        getAllPurchases,
         editPc,
         addPc,
         deletePc,

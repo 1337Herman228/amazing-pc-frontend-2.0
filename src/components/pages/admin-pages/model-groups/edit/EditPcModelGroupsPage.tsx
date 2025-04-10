@@ -1,6 +1,6 @@
 "use client";
 
-import { notification, UploadFile } from "antd";
+import { notification } from "antd";
 import { FieldValues, useForm } from "react-hook-form";
 import AdminDashboard from "@/components/navbar/admin/admin-dashboard/AdminDashboard";
 import CustomInput from "@/components/inputs/custom-input/CustomInput";

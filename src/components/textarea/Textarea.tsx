@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+import "../inputs/custom-input/CustomInput.scss";
+
 const Textarea = ({
     name,
     labelText,

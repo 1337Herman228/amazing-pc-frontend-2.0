@@ -1,0 +1,14 @@
+.view-purchases {
+    &__table {
+        margin: 0 auto;
+        max-width: 1500px;
+
+        .btn-30-td {
+            width: 30px;
+        }
+    }
+
+    .type-svg-icon {
+        filter: invert(0.8);
+    }
+}

@@ -93,6 +93,13 @@ const data = {
             link: "/admin/pc/types-add",
         },
     ],
+    purchases: [
+        {
+            id: 1,
+            title: "Заказы",
+            link: "/admin/purchases/purchases-view",
+        },
+    ],
 };
 
 const AdminDashboard = ({ type }) => {
