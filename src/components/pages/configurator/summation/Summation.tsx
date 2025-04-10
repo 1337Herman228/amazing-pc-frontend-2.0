@@ -17,24 +17,30 @@ import { useRouter } from "next/navigation";
 import CloseConfiguratorModal from "@/components/modals/close-configurator-modal/CloseConfiguratorModal";
 import ConfigBuyBtn from "@/components/buttons/configurator-buy-btn/ConfigBuyBtn";
 import { useAppSelector } from "@/lib/redux/store/store";
+import AddPcModal from "@/components/modals/add-pc-modal/AddPcModal";
 
 interface SummationProps {
     products: ConfiguratorFieldValues;
     reset: () => void;
     saveConfiguration: (name: string, needAddToCart?: boolean) => void;
     config?: IConfiguration;
+    isManageRole?: boolean;
+    id?: string;
 }
 
 const Summation = ({
+    id,
     products,
     reset,
     saveConfiguration,
     config,
+    isManageRole,
 }: SummationProps) => {
     const router = useRouter();
 
     const [isModalOpen, setIsModalOpen] = useState([false, false]);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
+    const [addPcModalOpen, setAddPcModalOpen] = useState(false);
     const [resetModalOpen, setResetModalOpen] = useState(false);
     const [loadModalOpen, setLoadModalOpen] = useState(false);
     const [closeModalOpen, setCloseModalOpen] = useState(false);
@@ -96,85 +102,100 @@ const Summation = ({
                 Цена {calculateTotalPrice(products)} BYN
             </div>
 
-            <ConfigBuyBtn
-                disabled={hasErrors}
-                onClick={handleAddConfigurationToCart}
-                isPressed={
-                    !!cart.items?.find(
-                        (el) =>
-                            el.product.id === config?.id && config?.userCreated
-                    )
-                }
-            />
+            {isManageRole && (
+                <button
+                    onClick={() => setAddPcModalOpen(true)}
+                    className="main-color-filled-rect-btn text-black !font-normal !py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={hasErrors}
+                >
+                    {id ? "Редактировать" : "Добавить"}
+                </button>
+            )}
 
-            <div className="summation__control-btns">
-                <button
-                    onClick={() => setSaveModalOpen(true)}
-                    className={`summation__control-btns-save summation__control-btns--btn ${
-                        hasErrors && "summation__control-btns--disabled"
-                    }`}
-                >
-                    <img
-                        className="summation__control-btns-icon"
-                        src="/configurator-svg/save.svg"
-                        width={20}
-                        height={20}
-                        alt="Save"
-                        loading="lazy"
-                    />
-                    <span className="summation__control-btns-text">
-                        Сохранить
-                    </span>
-                </button>
-                <button
-                    onClick={() => setResetModalOpen(true)}
-                    className="summation__control-btns-reset summation__control-btns--btn"
-                >
-                    <img
-                        className="summation__control-btns-icon"
-                        src="/configurator-svg/reset.svg"
-                        width={20}
-                        height={20}
-                        alt="Reset"
-                        loading="lazy"
-                    />
-                    <span className="summation__control-btns-text">
-                        Сбросить
-                    </span>
-                </button>
-                <button
-                    onClick={() => setLoadModalOpen(true)}
-                    className="summation__control-btns-load summation__control-btns--btn"
-                >
-                    <img
-                        className="summation__control-btns-icon"
-                        src="/configurator-svg/load.svg"
-                        width={20}
-                        height={20}
-                        alt="Load"
-                        loading="lazy"
-                    />
-                    <span className="summation__control-btns-text">
-                        Загрузить
-                    </span>
-                </button>
-                <button
-                    onClick={() => setCloseModalOpen(true)}
-                    className="summation__control-btns-close summation__control-btns--btn"
-                >
-                    <img
-                        className="summation__control-btns-icon"
-                        src="/configurator-svg/close.svg"
-                        width={20}
-                        height={20}
-                        alt="Close"
-                        loading="lazy"
-                    />
-                    <span className="summation__control-btns-text">
-                        Закрыть
-                    </span>
-                </button>
-            </div>
+            {!isManageRole && (
+                <ConfigBuyBtn
+                    disabled={hasErrors}
+                    onClick={handleAddConfigurationToCart}
+                    isPressed={
+                        !!cart.items?.find(
+                            (el) =>
+                                el.product.id === config?.id &&
+                                config?.userCreated
+                        )
+                    }
+                />
+            )}
+
+            {!isManageRole && (
+                <div className="summation__control-btns">
+                    <button
+                        onClick={() => setSaveModalOpen(true)}
+                        className={`summation__control-btns-save summation__control-btns--btn ${
+                            hasErrors && "summation__control-btns--disabled"
+                        }`}
+                    >
+                        <img
+                            className="summation__control-btns-icon"
+                            src="/configurator-svg/save.svg"
+                            width={20}
+                            height={20}
+                            alt="Save"
+                            loading="lazy"
+                        />
+                        <span className="summation__control-btns-text">
+                            Сохранить
+                        </span>
+                    </button>
+                    <button
+                        onClick={() => setResetModalOpen(true)}
+                        className="summation__control-btns-reset summation__control-btns--btn"
+                    >
+                        <img
+                            className="summation__control-btns-icon"
+                            src="/configurator-svg/reset.svg"
+                            width={20}
+                            height={20}
+                            alt="Reset"
+                            loading="lazy"
+                        />
+                        <span className="summation__control-btns-text">
+                            Сбросить
+                        </span>
+                    </button>
+                    <button
+                        onClick={() => setLoadModalOpen(true)}
+                        className="summation__control-btns-load summation__control-btns--btn"
+                    >
+                        <img
+                            className="summation__control-btns-icon"
+                            src="/configurator-svg/load.svg"
+                            width={20}
+                            height={20}
+                            alt="Load"
+                            loading="lazy"
+                        />
+                        <span className="summation__control-btns-text">
+                            Загрузить
+                        </span>
+                    </button>
+                    <button
+                        onClick={() => setCloseModalOpen(true)}
+                        className="summation__control-btns-close summation__control-btns--btn"
+                    >
+                        <img
+                            className="summation__control-btns-icon"
+                            src="/configurator-svg/close.svg"
+                            width={20}
+                            height={20}
+                            alt="Close"
+                            loading="lazy"
+                        />
+                        <span className="summation__control-btns-text">
+                            Закрыть
+                        </span>
+                    </button>
+                </div>
+            )}
             <div className="summation__configuration">
                 <span className="summation__configuration-title">
                     Конфигурация
@@ -247,6 +268,15 @@ const Summation = ({
                             : "Сбросить текущую конфигурацию?"
                     }
                 />
+                {isManageRole && (
+                    <AddPcModal
+                        config={config}
+                        products={products}
+                        open={addPcModalOpen}
+                        handleCancel={() => setAddPcModalOpen(false)}
+                    />
+                )}
+
                 <LoadConfigurationModal
                     open={loadModalOpen}
                     handleOk={handleLoadConfiguration}

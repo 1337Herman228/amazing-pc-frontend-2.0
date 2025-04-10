@@ -1,0 +1,20 @@
+.view-sellable-pc {
+    &__table {
+        margin: 0 auto;
+        max-width: 1600px;
+
+        .btn-30-td {
+            width: 30px;
+        }
+    }
+
+    .type-svg-icon {
+        filter: invert(0.8);
+    }
+
+    .description {
+        @media (max-width: 1200px) {
+            display: none;
+        }
+    }
+}

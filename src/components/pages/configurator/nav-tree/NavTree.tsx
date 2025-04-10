@@ -7,9 +7,10 @@ import { ICategory, NavTreeItem } from "@/interfaces/types-v2";
 interface NavTreeProps {
     categories: ICategory[];
     allItems: NavTreeItem[];
+    isManageRole?: boolean;
 }
 
-const NavTree = ({ categories, allItems }: NavTreeProps) => {
+const NavTree = ({ categories, allItems, isManageRole }: NavTreeProps) => {
     useEffect(() => {
         window.addEventListener("scroll", dynamicSecondNavLinks);
         dynamicSecondNavLinks();
@@ -38,7 +39,7 @@ const NavTree = ({ categories, allItems }: NavTreeProps) => {
                 navbarLinks[i].classList.add("active");
                 // mobileNavbarLinks[i].classList.add("active");
             } else {
-                navbarLinks[i].classList.remove("active");
+                navbarLinks[i]?.classList.remove("active");
                 // mobileNavbarLinks[i].classList.remove("active");
             }
         }
@@ -61,10 +62,14 @@ const NavTree = ({ categories, allItems }: NavTreeProps) => {
         }, 250);
     };
 
+    const categoriesList = isManageRole
+        ? categories.filter((el) => el.value === "components")
+        : categories;
+
     return (
         <>
             <ul className="tree-list">
-                {categories.map((item) => (
+                {categoriesList.map((item) => (
                     <li key={item.id} className="tree-list__item">
                         <button
                             onClick={(e) => onCategoryClick(e)}

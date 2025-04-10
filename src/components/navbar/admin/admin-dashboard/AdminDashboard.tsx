@@ -53,6 +53,16 @@ const data = {
     ],
     pc: [
         {
+            id: 7,
+            title: "Компьютеры",
+            link: "/admin/pc/pc-view",
+        },
+        {
+            id: 8,
+            title: "Добавить ПК",
+            link: "/admin/pc/pc-add",
+        },
+        {
             id: 1,
             title: "Модельные группы ПК",
             link: "/admin/pc/model-groups-view",

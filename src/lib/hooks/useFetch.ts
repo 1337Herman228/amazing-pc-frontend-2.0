@@ -3,6 +3,7 @@ import { useAppSelector } from "../redux/store/store";
 import { useCallback } from "react";
 import {
     IAddPcCategory,
+    IAddPCDto,
     IAddPcModelGroup,
     IAddPcType,
     IChangePassword,
@@ -500,6 +501,30 @@ const useFetch = () => {
         [token]
     );
 
+    const getAllPc = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/pc`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const deletePc = useCallback(
+        async (id: string) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc/${id}`,
+                    "DELETE"
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const deletePcType = useCallback(
         async (id: string) => {
             if (token) {
@@ -524,11 +549,51 @@ const useFetch = () => {
         }
     }, [token]);
 
+    const addPc = useCallback(
+        async (dto: IAddPCDto) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc`,
+                    "POST",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
+    const editPc = useCallback(
+        async (dto: IAddPCDto) => {
+            if (token) {
+                const data = await requestJson(
+                    token,
+                    `http://localhost:8080/admin/pc`,
+                    "PUT",
+                    JSON.stringify(dto)
+                );
+                return data;
+            }
+        },
+        [token]
+    );
+
     const getPcModelGroups = useCallback(async () => {
         if (token) {
             const data = await requestJson(
                 token,
                 `http://localhost:8080/user/pc-model-groups`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getPcModelGroupsReduced = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/user/pc-model-groups-reduced`
             );
             return data;
         }
@@ -891,7 +956,12 @@ const useFetch = () => {
     );
 
     return {
+        editPc,
+        addPc,
+        deletePc,
+        getAllPc,
         getPcModelGroupById,
+        getPcModelGroupsReduced,
         editPcModelGroup,
         getPcModelGroups,
         addPcModelGroups,

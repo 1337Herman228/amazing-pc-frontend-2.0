@@ -81,7 +81,11 @@ function getDifferences(
     return differences;
 }
 
-const Configurator = () => {
+interface ConfiguratorProps {
+    isManageRole?: boolean;
+}
+
+const Configurator = ({ isManageRole }: ConfiguratorProps) => {
     const {
         getConfiguratorParts,
         getCategories,
@@ -527,16 +531,30 @@ const Configurator = () => {
 
     if (!componentsList || !categories) return <LoadingPage />;
 
+    const filteredComponentList = isManageRole
+        ? componentsList.components.filter(
+              (el) => el.category.value === "components"
+          )
+        : componentsList.components;
+
     return (
         <>
             {contextHolder}
-            <section className="configurator container section-decreased">
+            <section
+                className={`configurator container section-decreased ${
+                    isManageRole && "mb-40"
+                }`}
+            >
                 <aside className="aside-components-tree hidden-tablet sticky-block">
-                    <NavTree categories={categories} allItems={allItems} />
+                    <NavTree
+                        categories={categories}
+                        allItems={allItems}
+                        isManageRole={isManageRole}
+                    />
                 </aside>
 
                 <ul className="components-list">
-                    {componentsList.components.map((item, i) => {
+                    {filteredComponentList.map((item, i) => {
                         const { multiselect, default_checked, max_quantity } =
                             selectSettings(
                                 item.type.value,
@@ -549,7 +567,7 @@ const Configurator = () => {
                                     default_checked={default_checked}
                                     max_quantity={max_quantity}
                                     products={products}
-                                    key={i}
+                                    key={`MultiSelectFormListItemV2-${i}`}
                                     type={item.type}
                                     category={item.category}
                                     partition={item.partition}
@@ -566,7 +584,7 @@ const Configurator = () => {
                                 )}
                                 default_checked={default_checked}
                                 products={products}
-                                key={i}
+                                key={`FormListItemV2-${i}`}
                                 type={item.type}
                                 category={item.category}
                                 partition={item.partition}
@@ -579,6 +597,8 @@ const Configurator = () => {
 
                 <aside className="summation sticky-block">
                     <Summation
+                        id={id as string}
+                        isManageRole={isManageRole}
                         products={products}
                         reset={resetForm}
                         saveConfiguration={handleSaveConfiguration}

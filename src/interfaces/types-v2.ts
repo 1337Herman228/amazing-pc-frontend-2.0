@@ -152,6 +152,11 @@ export interface IConfiguration {
     id: string;
     name: string;
     userCreated?: IUser;
+    image?: string;
+    description?: string;
+    pcTypes?: IPcType;
+    pcCategories?: IPcCategory;
+    pcModelGroup?: IPcModelGroup;
     configuration: ConfiguratorFieldValues;
 }
 
@@ -297,6 +302,14 @@ export interface PcConfigurationDto {
     ssd: PartIdWithQuantity[];
     fans: PartIdWithQuantity[];
     userId?: string;
+}
+
+export interface IAddPCDto extends PcConfigurationDto {
+    image: string;
+    pcTypeId: string;
+    pcCategoryId: string;
+    pcModelGroupId: string;
+    description: string;
 }
 
 export interface PcToCartDto {

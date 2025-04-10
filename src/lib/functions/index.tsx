@@ -342,6 +342,11 @@ export const makeDefaultExistingConfiguration = (config: IPc) => {
     return {
         id: config.id,
         name: config.name,
+        image: config.image,
+        description: config.description,
+        pcCategories: config.pcCategories,
+        pcTypes: config.pcType,
+        pcModelGroup: config.pcModelGroup,
         userCreated: config?.userCreated,
         configuration: {
             gpu: config.gpu,
