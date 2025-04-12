@@ -9,7 +9,6 @@ import {
     IChangePassword,
     IConfiguratorProductsDto,
     INewUser,
-    IOptionTemplate,
     IPart,
     IPartition,
     IPcCategory,
@@ -1012,7 +1011,51 @@ const useFetch = () => {
         [token]
     );
 
+    const getBestsellers = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/statistic/bestsellers`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getMostComparing = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/statistic/most-comparing`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getSellingTypes = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/statistic/selling-types`
+            );
+            return data;
+        }
+    }, [token]);
+
+    const getDailySalesIncomeStatistic = useCallback(async () => {
+        if (token) {
+            const data = await requestJson(
+                token,
+                `http://localhost:8080/admin/statistic/daily-sales-income`
+            );
+            return data;
+        }
+    }, [token]);
+
     return {
+        getDailySalesIncomeStatistic,
+        getSellingTypes,
+        getMostComparing,
+        getBestsellers,
         editPurchases,
         getPurchaseById,
         deletePurchase,

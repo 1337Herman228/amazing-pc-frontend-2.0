@@ -412,3 +412,9 @@ input[type="checkbox"] + label::after {
 input[type="checkbox"]:checked + label::after {
     display: block;
 }
+
+tspan {
+    color: #a5a6a7;
+    font-weight: 300;
+    font-size: 13px;
+}

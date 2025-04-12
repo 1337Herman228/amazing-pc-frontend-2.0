@@ -88,6 +88,14 @@ export default function AdminNavbar() {
                                     Заказы
                                 </Link>
                             </li>
+                            <li className="header__menu-item">
+                                <Link
+                                    className="header__menu-link link-to-check uppercase-text"
+                                    href="/admin/statistic"
+                                >
+                                    Статистика
+                                </Link>
+                            </li>
                         </ul>
                     </nav>
 

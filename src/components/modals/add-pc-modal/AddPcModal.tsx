@@ -64,8 +64,8 @@ const AddPcModal = ({
     const succesNotification = () => {
         api["success"]({
             message: "Успешно",
-            description: `Новая модельная группа ПК успешно ${
-                !!config?.id ? "измена" : "добавлена"
+            description: `Конфигурация успешно ${
+                !!config?.id ? "измена!" : "добавлена!"
             }!`,
         });
     };
@@ -74,7 +74,7 @@ const AddPcModal = ({
             message: "Ошибка",
             description: `Не удалось ${
                 !!config?.id ? "изменить" : "добавить"
-            } модельную группу ПК!`,
+            } конфигурацию!`,
         });
     };
     const alreadyExistErrorNotification = () => {
