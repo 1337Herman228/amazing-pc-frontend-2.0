@@ -37,8 +37,12 @@ const SignInPage = () => {
         }
     };
 
-    if (sessionData?.user?.role === "admin" && isOk) {
-        router.push("/admin");
+    if (
+        (sessionData?.user?.role === "admin" ||
+            sessionData?.user?.role === "manager") &&
+        isOk
+    ) {
+        router.push("/admin/parts/view");
     } else if (sessionData?.user?.role === "user" && isOk) {
         router.push("/");
     }

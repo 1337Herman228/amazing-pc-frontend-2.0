@@ -38,7 +38,11 @@ export async function middleware(req: NextRequest) {
         const userRole = token?.user?.role; // Например, 'admin' или 'user'
 
         // Проверка доступа к маршруту /admin
-        if (req.nextUrl.pathname.startsWith("/admin") && userRole !== "admin") {
+        if (
+            req.nextUrl.pathname.startsWith("/admin") &&
+            userRole !== "admin" &&
+            userRole !== "manager"
+        ) {
             // Если роль не admin, перенаправляем на страницу "Unauthorized"
             return NextResponse.redirect(new URL("/sign-in", req.url));
         }

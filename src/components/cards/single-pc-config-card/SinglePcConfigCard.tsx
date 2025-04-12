@@ -1,6 +1,5 @@
 import Link from "next/link";
 import "./SinglePcConfigCard.scss";
-import { Rate } from "antd";
 import "../../../styles/style.scss";
 import { useEffect, useMemo, useState } from "react";
 import ButtonToCart from "@/components/buttons/btn-to-cart/ButtonToCart";
@@ -155,7 +154,7 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                         />
                     </button>
                 </h3>
-                <div className="configuration-card__rate">
+                {/* <div className="configuration-card__rate">
                     <Rate
                         className="configuration-card__rate-value"
                         disabled
@@ -164,7 +163,7 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                     <span className="configuration-card__rate-count">
                         (12 отзывов)
                     </span>
-                </div>
+                </div> */}
                 <div className="configuration-card__buy">
                     <span className="configuration-card__buy-price">
                         Цена {price} BYN
@@ -326,7 +325,7 @@ const SinglePcConfigCard = ({ pc }: SinglePcConfigCardProps) => {
                                 Корпус:
                             </span>
                             <span className="components-list__item-info-name">
-                                {_case.name}
+                                {_case?.name}
                             </span>
                         </div>
                     </li>

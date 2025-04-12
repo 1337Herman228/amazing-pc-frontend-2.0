@@ -6,6 +6,7 @@ import "./AdminNavbar.scss";
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useAppSelector } from "@/lib/redux/store/store";
 
 export default function AdminNavbar() {
     const openModal = () => {
@@ -14,6 +15,8 @@ export default function AdminNavbar() {
         ) as HTMLDialogElement;
         dialog?.showModal();
     };
+
+    const { user } = useAppSelector((state) => state.session);
 
     const pathname = usePathname();
     useEffect(() => {
@@ -45,12 +48,9 @@ export default function AdminNavbar() {
         <>
             <header className="admin-navbar-header">
                 <div className="header__inner container">
-                    <Link
-                        className="header__logo logo link-to-check"
-                        href="/admin"
-                    >
-                        <span className="logo__text uppercase-text">
-                            Main Page
+                    <Link className="header__logo logo link-to-check " href="#">
+                        <span className="header__logo logo link-to-check logo__text uppercase-text">
+                            {user.role === "admin" ? "Admin" : "Manager"}
                         </span>
                     </Link>
 
@@ -64,14 +64,16 @@ export default function AdminNavbar() {
                                     Комплектующие
                                 </Link>
                             </li>
-                            <li className="header__menu-item">
-                                <Link
-                                    className="header__menu-link link-to-check uppercase-text"
-                                    href="/admin/accounts/view"
-                                >
-                                    Учётные записи
-                                </Link>
-                            </li>
+                            {user.role !== "manager" && (
+                                <li className="header__menu-item">
+                                    <Link
+                                        className="header__menu-link link-to-check uppercase-text"
+                                        href="/admin/accounts/view"
+                                    >
+                                        Учётные записи
+                                    </Link>
+                                </li>
+                            )}
                             <li className="header__menu-item">
                                 <Link
                                     className="header__menu-link link-to-check uppercase-text"

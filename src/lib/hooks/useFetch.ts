@@ -22,8 +22,6 @@ const useFetch = () => {
     const { requestJson, isLoading, error } = useHttp();
     const { session, token, user } = useAppSelector((state) => state.session);
 
-    // console.log(token);
-
     const getGamingPcCatalog = useCallback(async () => {
         if (token) {
             const data = await requestJson(
